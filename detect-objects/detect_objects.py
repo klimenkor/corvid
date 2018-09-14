@@ -36,7 +36,7 @@ def processFrames(frames, source, destination, confidenceThreshold):
         fileName = join(source, frame)
         processedFile = join(destination, frame.replace(".", "-detected."))
         movedFile = join(destination, frame)
-        print("%s " % fileName)
+        #print("%s " % frame)
 
         image = cv2.imread(fileName)
         (h, w) = image.shape[:2]
@@ -55,9 +55,6 @@ def processFrames(frames, source, destination, confidenceThreshold):
             # filter out weak detections by ensuring the `confidence` is
             # greater than the minimum confidence
             if confidence > confidenceThreshold:
-                # extract the index of the class label from the `detections`,
-                # then compute the (x, y)-coordinates of the bounding box for
-                # the object
                 idx = int(detections[0, 0, i, 1])
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
@@ -72,11 +69,11 @@ def processFrames(frames, source, destination, confidenceThreshold):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
                 objectsDetected = objectsDetected + 1
 
-        if objectsDetected == 0:
-            print("    NOTHING DETECTED")
+        # if objectsDetected == 0:
+        #     print("    NOTHING DETECTED")
 
-        timeElapsed = (dt.datetime.now() - timestamp1).microseconds / 1e6
-        print("   %6.2f sec" % timeElapsed)
+        # timeElapsed = (dt.datetime.now() - timestamp1).microseconds / 1e6
+        # print("   %6.2f sec" % timeElapsed)
 
         cv2.imwrite(processedFile, image)
 
@@ -103,18 +100,17 @@ def processVideos(videos, source, destination):
 
         # capture 1 frame per second
         count = 0
-        while video.isOpened():
+        while video.isOpened() and count < video_length - fps:
             ret, frame = video.read()
-            count = count + 1
-            if (count - 1) % fps == 0:
+            if count % fps == 0:
                 index = "-%#05d.jpg" % (count + 1)
                 outputFile = join(source, file.replace(".mp4", index))
                 cv2.imwrite(outputFile, frame)
-                # If there are no more frames left
 
-                if (count > (video_length - 1)):
-                    video.release()
-                    break
+            count = count + 1
+
+
+        video.release()
 
         if isfile(movedFile):
             remove(movedFile)

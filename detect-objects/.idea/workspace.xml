@@ -18,8 +18,8 @@
       <file leaf-file-name="detect_objects.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/detect_objects.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="112" column="50" lean-forward="true" selection-start-line="112" selection-start-column="50" selection-end-line="112" selection-end-column="50" />
+            <state relative-caret-position="280">
+              <caret line="38" column="9" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
               <folding>
                 <element signature="e#201#219#0" expanded="true" />
               </folding>
@@ -252,8 +252,8 @@
     <entry file="file://$PROJECT_DIR$/images/Inga-test-1-detected.jpg" />
     <entry file="file://$PROJECT_DIR$/detect_objects.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="112" column="50" lean-forward="true" selection-start-line="112" selection-start-column="50" selection-end-line="112" selection-end-column="50" />
+        <state relative-caret-position="280">
+          <caret line="38" column="9" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
           <folding>
             <element signature="e#201#219#0" expanded="true" />
           </folding>
