@@ -16,6 +16,17 @@ from os import remove
 import smtplib
 from email.mime.multipart import MIMEMultipart
 
+import os
+
+
+def fileIsReady(file):
+    if os.path.exists(file):
+        try:
+            os.rename(file, file)
+            return True
+        except OSError as e:
+            return False
+
 
 def sendEmail(recepient, message):
     s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -117,35 +128,38 @@ def processVideos(source, destination, extension):
             try:
                 fileName = join(source, file)
                 movedFile = join(destination, file)
-                print("%s " % fileName)
-                video = cv2.VideoCapture(fileName)
-                fps = int(video.get(cv2.CAP_PROP_FPS))
-                print("   %6.2f fps" % fps)
 
-                # capture 1 frame per second
-                count = 0
-                success, frame = video.read()
-                while success:
+                if fileIsReady(fileName):
+                    print("%s " % fileName)
+                    video = cv2.VideoCapture(fileName)
+                    fps = int(video.get(cv2.CAP_PROP_FPS))
+                    print("   %6.2f fps" % fps)
+
+                    # capture 1 frame per second
+                    count = 0
                     success, frame = video.read()
+                    while success:
+                        success, frame = video.read()
 
-                    if count % fps == 0:
-                        index = "-%#05d.jpg" % (count + 1)
-                        outputFile = join(source, file.replace(extension, index))
-                        cv2.imwrite(outputFile, frame)
+                        if count % fps == 0:
+                            index = "-%#05d.jpg" % (count + 1)
+                            outputFile = join(source, file.replace(extension, index))
+                            cv2.imwrite(outputFile, frame)
 
-                    count = count + 1
+                        count = count + 1
 
-                video.release()
+                    video.release()
 
-                if isfile(movedFile):
-                    remove(movedFile)
+                    if isfile(movedFile):
+                        remove(movedFile)
 
-                rename(fileName, movedFile)
+                    rename(fileName, movedFile)
             except:
                 print("[processVideos] Unexpected error:", sys.exc_info()[0])
                 raise
 
     return processed
+
 
 
 ###################################################
