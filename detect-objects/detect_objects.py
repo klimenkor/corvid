@@ -7,6 +7,7 @@ import numpy as np
 import argparse
 import cv2
 import time
+import sys
 import datetime as dt
 from os import listdir
 from os.path import isfile, join
@@ -47,99 +48,102 @@ def findFiles(path, extension):
     return [f for f in listdir(path) if isfile(join(path, f)) and f.endswith(extension)]
 
 
-def processFrames(source, destination, confidenceThreshold):
+def processFrames(source, destination, confidenceThreshold, email):
     processed = 0
     frames = findFiles(source, ".jpg")
     if len(frames) > 0:
         for frame in frames:
-            fileName = join(source, frame)
-            processedFile = join(destination, frame.replace(".", "-detected."))
-            movedFile = join(destination, frame)
-            # print("%s " % frame)
+            try:
+                fileName = join(source, frame)
+                processedFile = join(destination, frame.replace(".", "-detected."))
+                movedFile = join(destination, frame)
+                # print("%s " % frame)
 
-            image = cv2.imread(fileName)
-            (h, w) = image.shape[:2]
-            blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
+                image = cv2.imread(fileName)
+                (h, w) = image.shape[:2]
+                blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
 
-            net.setInput(blob)
-            detections = net.forward()
-            objectsDetected = 0
+                net.setInput(blob)
+                detections = net.forward()
+                objectsDetected = 0
 
-            # loop over the detections
-            for i in np.arange(0, detections.shape[2]):
-                # extract the confidence (i.e., probability) associated with the
-                # prediction
-                confidence = detections[0, 0, i, 2]
+                # loop over the detections
+                for i in np.arange(0, detections.shape[2]):
+                    # extract the confidence (i.e., probability) associated with the
+                    # prediction
+                    confidence = detections[0, 0, i, 2]
 
-                # filter out weak detections by ensuring the `confidence` is
-                # greater than the minimum confidence
-                if confidence > confidenceThreshold:
-                    idx = int(detections[0, 0, i, 1])
-                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                    (startX, startY, endX, endY) = box.astype("int")
+                    # filter out weak detections by ensuring the `confidence` is
+                    # greater than the minimum confidence
+                    if confidence > confidenceThreshold:
+                        idx = int(detections[0, 0, i, 1])
+                        box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                        (startX, startY, endX, endY) = box.astype("int")
 
-                    # display the prediction
-                    label = "   {}: {:.2f}%".format(CLASSES[idx], confidence * 100)
-                    print("   {}".format(label))
-                    sendEmail("3234592298@txt.att.net", label)
-                    cv2.rectangle(image, (startX, startY), (endX, endY),
-                                  COLORS[idx], 2)
-                    y = startY - 15 if startY - 15 > 15 else startY + 15
-                    cv2.putText(image, label, (startX, y),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-                    objectsDetected = objectsDetected + 1
+                        # display the prediction
+                        label = "   {}: {:.2f}%".format(CLASSES[idx], confidence * 100)
+                        print("   {}".format(label))
+                        sendEmail(email, label)
+                        cv2.rectangle(image, (startX, startY), (endX, endY),
+                                      COLORS[idx], 2)
+                        y = startY - 15 if startY - 15 > 15 else startY + 15
+                        cv2.putText(image, label, (startX, y),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                        objectsDetected = objectsDetected + 1
 
-            # if objectsDetected == 0:
-            #     print("    NOTHING DETECTED")
+                cv2.imwrite(processedFile, image)
 
-            # timeElapsed = (dt.datetime.now() - timestamp1).microseconds / 1e6
-            # print("   %6.2f sec" % timeElapsed)
+                if isfile(movedFile):
+                    remove(movedFile)
 
-            cv2.imwrite(processedFile, image)
+                rename(fileName, movedFile)
+                processed = processed + 1
 
-            if isfile(movedFile):
-                remove(movedFile)
-
-            rename(fileName, movedFile)
-            processed = processed + 1
+            except:
+                print("[processFrames]: Unexpected error:", sys.exc_info()[0])
+                raise
 
     return processed
 
 
-def processVideos(source, destination):
+def processVideos(source, destination, extension):
     processed = 0
-    videos = findFiles(source, ".264")
+    videos = findFiles(source, extension)
     if len(videos) > 0:
         print("found ", videos)
 
         for file in videos:
 
-            fileName = join(source, file)
-            movedFile = join(destination, file)
-            print("%s " % fileName)
-            video = cv2.VideoCapture(fileName)
-            fps = int(video.get(cv2.CAP_PROP_FPS))
-            print("   %6.2f fps" % fps)
+            try:
+                fileName = join(source, file)
+                movedFile = join(destination, file)
+                print("%s " % fileName)
+                video = cv2.VideoCapture(fileName)
+                fps = int(video.get(cv2.CAP_PROP_FPS))
+                print("   %6.2f fps" % fps)
 
-            # capture 1 frame per second
-            count = 0
-            success, frame = video.read()
-            while success:
+                # capture 1 frame per second
+                count = 0
                 success, frame = video.read()
+                while success:
+                    success, frame = video.read()
 
-                if count % fps == 0:
-                    index = "-%#05d.jpg" % (count + 1)
-                    outputFile = join(source, file.replace(".264", index))
-                    cv2.imwrite(outputFile, frame)
+                    if count % fps == 0:
+                        index = "-%#05d.jpg" % (count + 1)
+                        outputFile = join(source, file.replace(extension, index))
+                        cv2.imwrite(outputFile, frame)
 
-                count = count + 1
+                    count = count + 1
 
-            video.release()
+                video.release()
 
-            if isfile(movedFile):
-                remove(movedFile)
+                if isfile(movedFile):
+                    remove(movedFile)
 
-            rename(fileName, movedFile)
+                rename(fileName, movedFile)
+            except:
+                print("[processVideos] Unexpected error:", sys.exc_info()[0])
+                raise
 
     return processed
 
@@ -162,10 +166,12 @@ timestamp1 = dt.datetime.now()
 print("loading model...")
 net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 
+print("waiting for incoming files...")
+
 try:
     while True:
-        processVideos(args["in"], args["out"])
-        processFrames(args["in"], args["out"], args["confidence"])
+        processVideos(args["in"], args["out"], ".264")
+        processFrames(args["in"], args["out"], args["confidence"], "roman.klimenko@gmail.com") #"3234592298@txt.att.net")
         time.sleep(1)
 
 except KeyboardInterrupt:
