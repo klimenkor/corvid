@@ -1,0 +1,6 @@
+{
+    "SourceS3BucketNameParameter" : "ecorvid",
+    "FrameFetcherSourceS3KeyParameter" : "lambda_framefetcher.zip",
+    "FrameS3BucketNameParameter": "ecorvid-frames",
+    "VideoS3BucketNameParameter": "ecorvid-videos"
+}
