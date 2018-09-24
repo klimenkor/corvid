@@ -8,7 +8,6 @@ import decimal
 from datetime import timedelta
 import uuid
 import cv2
-from os import rename
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o): # pylint: disable=E0202
@@ -21,7 +20,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 def load_config():
 
-    with open('framefetcher-params.json', 'r') as conf_file:
+    with open('../../config/framefetcher-params.json', 'r') as conf_file:
         conf_json = conf_file.read()
         return json.loads(conf_json)
 
@@ -41,8 +40,8 @@ def fetch_frames(event, context):
     config = load_config()
        
     print ("-------------------------------------------------")
-    
-    for record in event['Records']:
+    print(event)
+    for record in event["Records"]:
         bucket = record['s3']['bucket']['name']
         key = record['s3']['object']['key'] 
         print (bucket)
@@ -65,12 +64,12 @@ def fetch_frames(event, context):
                 index = "-%#05d.jpg" % (count + 1)
                 outputFile = fileName.replace(".264", index)
                 cv2.imwrite(outputFile, frame)
-
+                print("     ", outputFile)
             count = count + 1
 
         video.release()
 
-        rename(fileName, movedFile)
+        # rename(fileName, movedFile)
 
 def handler(event, context):
     return fetch_frames(event, context)
