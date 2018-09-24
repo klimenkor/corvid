@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: The CloudFormation template for AWS resources required by eCorvid video object tracker 
+
+Parameters:
+
+  SourceS3BucketNameParameter: 
+    Type: String
+    MinLength: "1"
+    Default: "ecorvid-src"
+    Description: "Enter the name of the S3 bucket containing source .zip files."
+
+  FrameS3BucketNameParameter: 
+    Type: String
+    MinLength: "1"
+    Default: "ecorvid-frames"
+    Description: "Name of the S3 bucket for storage of captured frames."
+
+  VideoS3BucketNameParameter: 
+    Type: String
+    MinLength: "1"
+    Default: "ecorvid-videos"
+    Description: "Enter the name of the S3 bucket containing uploaded videos."
+
+  FrameFetcherSourceS3KeyParameter:
+    Type: String
+    MinLength: "1"
+    Default: "lambda_framefetcher.zip"
+    Description: "Enter the name of the S3 key of Frame Fetcher lambda function .zip file."
+
+  FrameFetcherLambdaFunctionName:
+    Type: String
+    Default: "framefetcher"
+    Description: "Name of the Lambda function that fetches frames from uploaded video."
+  
+  FrameFetcherLambdaHandlerName:
+    Type: String
+    Default: "framefetcher.handler"
+    Description: "Name of the Lambda function that fetches frames from uploaded video."
+
+Resources:
+
+  VideoS3Bucket:
+    Type: AWS::S3::Bucket
+    DependsOn: VideoS3BucketPermission
+    Properties: 
+      BucketName: !Ref VideoS3BucketNameParameter
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: "s3:ObjectCreated:*"
+            Function: !GetAtt FrameFetcherLambda.Arn
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: .264
+
+  VideoS3BucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref FrameFetcherLambda
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref "AWS::AccountId"
+      SourceArn: !Sub "arn:aws:s3:::${VideoS3BucketNameParameter}"
+
+  FrameFetcherLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FrameFetcherLambdaFunctionName
+      Description: "Function responds to a GET request by returning a list of frames up to a certain fetch horizon."
+      Handler: !Ref FrameFetcherLambdaHandlerName
+      Role: !GetAtt FrameFetcherLambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref SourceS3BucketNameParameter
+        S3Key: !Ref FrameFetcherSourceS3KeyParameter
+      Timeout: 10 #seconds
+      MemorySize: 128 #MB
+      Runtime: python2.7
+    DependsOn:
+      - FrameFetcherLambdaExecutionRole
+      - FrameS3Bucket
+
+  FrameS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties: 
+      BucketName: !Ref FrameS3BucketNameParameter
+
+  FrameFetcherLambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Path: "/"
+    
+
+  
+
+
+
+
