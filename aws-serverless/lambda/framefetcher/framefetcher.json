@@ -11,12 +11,12 @@
           "object": {
             "eTag": "0123456789abcdef0123456789abcdef",
             "sequencer": "0A1B2C3D4E5F678901",
-            "key": "NVR_Front+entry+right_09_20180918200455.264",
-            "size": 50638712
+            "key": "20180919095520.264",
+            "size": 34718768
           },
           "bucket": {
             "arn": "arn:aws:s3:::ecorvid-videos",
-            "name": "videobucket",
+            "name": "ecorvid-videos",
             "ownerIdentity": {
               "principalId": "EXAMPLE"
             }

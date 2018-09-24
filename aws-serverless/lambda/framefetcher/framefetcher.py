@@ -6,7 +6,9 @@ import time
 import json
 import decimal
 from datetime import timedelta
-
+import uuid
+import cv2
+from os import rename
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o): # pylint: disable=E0202
@@ -35,49 +37,40 @@ def respond(err, res=None):
 
 
 def fetch_frames(event, context):
-    print ( "Done!")
-    s3_client = boto3.client('s3')
+    s3 = boto3.resource('s3')
     config = load_config()
+       
+    print ("-------------------------------------------------")
+    
+    for record in event['Records']:
+        bucket = record['s3']['bucket']['name']
+        key = record['s3']['object']['key'] 
+        print (bucket)
+        print (key)
+        fileName = '/tmp/{}{}'.format(uuid.uuid4(), key)
+        s3.Bucket(bucket).download_file(key,fileName)
+        print(fileName)
+        movedFile = fileName.replace("264","mp4")
+        video = cv2.VideoCapture(fileName)
+        fps = int(video.get(cv2.CAP_PROP_FPS))
+        print("   %6.2f fps" % fps)
 
-    # processed = 0
-    # videos = findFiles(source, extension)
-    # if len(videos) > 0:
-    #     print("found ", videos)
+        # capture 1 frame per second
+        count = 0
+        success, frame = video.read()
+        while success:
+            success, frame = video.read()
 
-    #     for file in videos:
+            if count % fps == 0:
+                index = "-%#05d.jpg" % (count + 1)
+                outputFile = fileName.replace(".264", index)
+                cv2.imwrite(outputFile, frame)
 
-    #         try:
-    #             fileName = join(source, file)
-    #             movedFile = join(destination, file)
+            count = count + 1
 
-    #             print("%s " % fileName)
-    #             video = cv2.VideoCapture(fileName)
-    #             fps = int(video.get(cv2.CAP_PROP_FPS))
-    #             print("   %6.2f fps" % fps)
+        video.release()
 
-    #             # capture 1 frame per second
-    #             count = 0
-    #             success, frame = video.read()
-    #             while success:
-    #                 success, frame = video.read()
-
-    #                 if count % fps == 0:
-    #                     index = "-%#05d.jpg" % (count + 1)
-    #                     outputFile = join(source, file.replace(extension, index))
-    #                     cv2.imwrite(outputFile, frame)
-
-    #                 count = count + 1
-
-    #             video.release()
-
-    #             if isfile(movedFile):
-    #                 remove(movedFile)
-
-    #             rename(fileName, movedFile)
-
-    #         except:
-    #             print("[processVideos] Unexpected error:", sys.exc_info()[0])
-    #             raise
+        rename(fileName, movedFile)
 
 def handler(event, context):
     return fetch_frames(event, context)

@@ -14,7 +14,7 @@ Resources:
         An Amazon S3 trigger that retrieves metadata for the object that has
         been updated.
       MemorySize: 512
-      Timeout: 3
+      Timeout: 30
       Policies:
         - Version: '2012-10-17'
           Statement:
