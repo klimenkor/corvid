@@ -13,9 +13,8 @@
   <key attr.name="description" attr.type="string" for="edge" id="d9"/>
   <key for="edge" id="d10" yfiles.type="edgegraphics"/>
   <graph edgedefault="directed" id="G">
-    <data key="d0"/>
+    <data key="d0" xml:space="preserve"/>
     <node id="n0">
-      <data key="d5"/>
       <data key="d6">
         <y:SVGNode>
           <y:Geometry height="19.583999633789062" width="69.15814971923828" x="-455.07907485961914" y="-148.79199981689453"/>
@@ -30,7 +29,6 @@
       </data>
     </node>
     <node id="n1">
-      <data key="d5"/>
       <data key="d6">
         <y:SVGNode>
           <y:Geometry height="25.90799903869629" width="18.095298767089844" x="-429.5476493835449" y="-76.79199981689453"/>
@@ -51,7 +49,6 @@ and uploaded to S3<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:Label
       </data>
     </node>
     <node id="n2">
-      <data key="d5"/>
       <data key="d6">
         <y:SVGNode>
           <y:Geometry height="41.72100067138672" width="41.71900177001953" x="-317.8356761932373" y="-84.69850063323975"/>
@@ -122,7 +119,7 @@ as they come</y:NodeLabel>
           <y:Geometry height="60.0" width="60.0" x="128.34758853912354" y="-96.49950170516968"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="28.0" y="64.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="29.341796875" x="15.3291015625" xml:space="preserve" y="64.0">SQS</y:NodeLabel>
           <y:SVGNodeProperties usingVisualBounds="true"/>
           <y:SVGModel svgBoundsPolicy="0">
             <y:SVGContent refid="7"/>
@@ -187,7 +184,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n11">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="113.984375" width="128.0" x="-481.07907485961914" y="76.46493333333342"/>
@@ -199,7 +195,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n12">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="60.0" width="102.0" x="-468.07907485961914" y="216.86355000000026"/>
@@ -211,7 +206,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n13">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="60.0" x="-447.07907485961914" y="306.86355000000026"/>
@@ -223,7 +217,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n14">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="60.0" x="-191.64049911499023" y="306.86355000000026"/>
@@ -235,7 +228,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n15">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="60.0" x="-191.64049911499023" y="231.86355000000026"/>
@@ -247,7 +239,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n16">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="81.0" x="17.347588539123535" y="231.86355000000026"/>
@@ -259,7 +250,6 @@ as they come</y:NodeLabel>
       </data>
     </node>
     <node id="n17">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="81.0" x="17.347588539123535" y="306.86355000000026"/>
@@ -270,8 +260,155 @@ as they come</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
+    <node id="n18">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="19.583999633789062" width="69.15814971923828" x="-456.2372245788574" y="432.81017568339655"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="29.3359375" x="19.91110610961914" xml:space="preserve" y="23.583999633789062">NVR<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="-0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="4.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="1"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n19">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="41.72100067138672" width="41.71900177001953" x="-317.8356761932373" y="421.7416751645977"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="18.859500885009766" y="45.72100067138672">
+            <y:LabelModel>
+              <y:SmartNodeLabelModel distance="4.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="-0.5" nodeRatioX="0.0" nodeRatioY="0.5" offsetX="0.0" offsetY="4.0" upX="0.0" upY="-1.0"/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="3"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n20">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="60.0" width="60.0" x="-191.64049911499023" y="412.6021755002911"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="27.34375" x="16.328125" xml:space="preserve" y="64.0">EC2</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="11"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n21">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="36.39799785614014" width="41.71900177001953" x="-61.38301961232219" y="424.403176572221"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="57.3671875" x="-7.824092864990234" xml:space="preserve" y="40.39799785614014">S3 bucket</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="6"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n22">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="60.0" width="60.0" x="5.540495113518091" y="526.2443645250701"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="29.341796875" x="15.3291015625" xml:space="preserve" y="64.0">SQS</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="7"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n23">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="41.72100067138672" width="41.71900177001953" x="68.71734484944238" y="421.7416751645977"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="92.04296875" x="-25.161983489990234" xml:space="preserve" y="45.72100067138672">Processes video</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="5"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n24">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="46.887996673583984" width="45.0" x="198.81770931120695" y="419.1581771634991"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="113.013671875" x="-34.0068359375" xml:space="preserve" y="50.887996673583984">Creates a message 
+as soon as it's ready</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="4"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n25">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="41.72100067138672" width="41.71900177001953" x="200.4582084261972" y="535.3838641893767"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="116.705078125" x="-37.493038177490234" xml:space="preserve" y="45.72100067138672">Writes transcipt to db</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="5"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n26">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="60.0" width="60.0" x="374.1486997846363" y="526.2443645250701"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="28.0" y="64.0"/>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="8"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
+    <node id="n27">
+      <data key="d6">
+        <y:SVGNode>
+          <y:Geometry height="60.0" width="60.0" x="278.1629549904265" y="526.2443645250701"/>
+          <y:Fill color="#CCCCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="sandwich" modelPosition="s" textColor="#000000" verticalTextPosition="bottom" visible="true" width="23.341796875" x="18.3291015625" xml:space="preserve" y="64.0">API</y:NodeLabel>
+          <y:SVGNodeProperties usingVisualBounds="true"/>
+          <y:SVGModel svgBoundsPolicy="0">
+            <y:SVGContent refid="9"/>
+          </y:SVGModel>
+        </y:SVGNode>
+      </data>
+    </node>
     <edge id="e0" source="n4" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -282,7 +419,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e1" source="n4" target="n3">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -293,7 +429,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e2" source="n3" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -304,7 +439,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e3" source="n0" target="n1">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -315,7 +449,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e4" source="n1" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -327,7 +460,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e5" source="n2" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -338,7 +470,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e6" source="n7" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -349,7 +480,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e7" source="n7" target="n9">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -360,7 +490,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e8" source="n9" target="n8">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -371,7 +500,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e9" source="n10" target="n9">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -382,7 +510,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e10" source="n11" target="n12">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -393,7 +520,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e11" source="n12" target="n13">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -404,7 +530,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e12" source="n13" target="n14">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -415,7 +540,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e13" source="n15" target="n16">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -426,7 +550,6 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e14" source="n14" target="n15">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -437,11 +560,127 @@ as they come</y:NodeLabel>
       </data>
     </edge>
     <edge id="e15" source="n14" target="n17">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e16" source="n19" target="n20">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="36.74876308441162" y="28.000002648728582">
+            <y:LabelModel>
+              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartEdgeLabelModelParameter angle="0.0" distance="30.0" distanceToCenter="true" position="right" ratio="0.5" segment="0"/>
+            </y:ModelParameter>
+            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
+          </y:EdgeLabel>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e17" source="n20" target="n21">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e18" source="n20" target="n22">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e19" source="n23" target="n22">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e20" source="n21" target="n23">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e21" source="n23" target="n24">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e22" source="n24" target="n22">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e23" source="n25" target="n27">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e24" source="n27" target="n26">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e25" source="n25" target="n22">
+      <data key="d9"/>
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
@@ -1612,6 +1851,7 @@ as they come</y:NodeLabel>
 &lt;/svg&gt;
 </y:Resource>
       <y:Resource id="10" xml:space="preserve">&lt;svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"&gt;&lt;defs&gt;&lt;style&gt;.cls-1{fill:#9d5025;}.cls-2{fill:#f58536;}.cls-3{fill:#6b3a19;}.cls-4{fill:#fbbf93;}.cls-5{font-size:21px;font-family:HelveticaNeue-CondensedBold, Helvetica Neue;font-weight:700;}&lt;/style&gt;&lt;/defs&gt;&lt;title&gt;Compute&lt;/title&gt;&lt;polygon class="cls-1" points="39.8 13.94 39.8 50 35.59 50 35.59 83.96 50 91.16 58.67 50 50 8.84 39.8 13.94"/&gt;&lt;polygon class="cls-2" points="50 8.84 50 50 50 91.16 60.2 86.06 60.2 50 64.41 50 64.41 16.04 50 8.84"/&gt;&lt;polygon class="cls-3" points="79.74 39.48 61.51 41.2 55.52 40.45 74.52 21.1 79.74 39.48"/&gt;&lt;polygon class="cls-2" points="74.52 21.1 79.74 23.71 79.74 39.48 74.52 38.44 74.52 21.1"/&gt;&lt;polygon class="cls-1" points="55.52 40.45 74.52 38.44 74.52 21.1 55.52 26.24 55.52 40.45"/&gt;&lt;polygon class="cls-4" points="20.26 60.52 38.49 58.8 44.48 59.55 25.48 78.9 20.26 60.52"/&gt;&lt;polygon class="cls-1" points="25.48 78.9 20.26 76.29 20.26 60.52 25.48 61.62 25.48 78.9"/&gt;&lt;polygon class="cls-2" points="44.48 59.55 25.48 61.62 25.48 78.9 44.48 73.76 44.48 59.55"/&gt;&lt;text class="cls-5" transform="translate(-2.08 -31.35)"&gt;AWS Elastic &lt;tspan x="10.49" y="25.2"&gt;Beanstalk&lt;/tspan&gt;&lt;/text&gt;&lt;/svg&gt;</y:Resource>
+      <y:Resource id="11" xml:space="preserve">&lt;svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"&gt;&lt;defs&gt;&lt;style&gt;.cls-1{fill:#9d5025;}.cls-2{fill:#f58536;}&lt;/style&gt;&lt;/defs&gt;&lt;title&gt;Compute&lt;/title&gt;&lt;polygon class="cls-1" points="19.33 24.17 15.91 25.88 15.91 74.12 19.33 75.83 33.17 51.25 19.33 24.17"/&gt;&lt;polygon class="cls-2" points="27.3 73.96 19.33 75.83 19.33 24.17 27.3 25.99 27.3 73.96"/&gt;&lt;polygon class="cls-1" points="23.1 22.28 27.3 20.19 47.25 52.17 27.3 79.81 23.1 77.72 23.1 22.28"/&gt;&lt;polygon class="cls-2" points="37.24 77 27.3 79.81 27.3 20.19 37.24 23.01 37.24 77"/&gt;&lt;polygon class="cls-1" points="31.98 17.84 37.24 15.21 66.67 55.67 37.24 84.79 31.98 82.16 31.98 17.84"/&gt;&lt;polygon class="cls-2" points="49.99 80.13 37.24 84.79 37.24 15.21 49.99 19.88 49.99 80.13"/&gt;&lt;polygon class="cls-1" points="43.19 12.24 49.99 8.84 81.83 52.33 49.99 91.16 43.19 87.76 43.19 12.24"/&gt;&lt;polygon class="cls-2" points="84.09 74.11 49.99 91.16 49.99 8.84 84.09 25.89 84.09 74.11"/&gt;&lt;/svg&gt;</y:Resource>
     </y:Resources>
   </data>
 </graphml>
