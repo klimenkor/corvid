@@ -46,11 +46,12 @@ def fetch_frames(event, context):
         key = record['s3']['object']['key'] 
         print (bucket)
         print (key)
-        fileName = '/tmp/{}{}'.format(uuid.uuid4(), key)
-        s3.Bucket(bucket).download_file(key,fileName)
-        print(fileName)
-        movedFile = fileName.replace("264","mp4")
-        video = cv2.VideoCapture(fileName)
+        localPath = "/tmp/" 
+        videoFileName = '{}{}{}'.format(localPath, uuid.uuid4(), key)
+        s3.Bucket(bucket).download_file(key,videoFileName)
+        print(videoFileName)
+        # movedFile = videoFileName.replace("264","mp4")
+        video = cv2.VideoCapture(videoFileName)
         fps = int(video.get(cv2.CAP_PROP_FPS))
         print("   %6.2f fps" % fps)
 
@@ -61,10 +62,13 @@ def fetch_frames(event, context):
             success, frame = video.read()
 
             if count % fps == 0:
-                index = "-%#05d.jpg" % (count + 1)
-                outputFile = fileName.replace(".264", index)
-                cv2.imwrite(outputFile, frame)
-                print("     ", outputFile)
+                suffix = "-%#05d.jpg" % (count + 1)
+                frameFileName = videoFileName.replace(".264", suffix)
+                frameKey = videoFileName.replace(localPath, "")
+                cv2.imwrite(frameFileName, frame)
+                print("uploading to %s %s" % config["framesbucket"], frameKey)
+                s3.Bucket().upload_file(frameFileName, config["framesbucket"], frameKey)                                
+                print("     ", frameFileName)
             count = count + 1
 
         video.release()
