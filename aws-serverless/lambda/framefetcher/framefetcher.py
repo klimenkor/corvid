@@ -36,7 +36,7 @@ def respond(err, res=None):
 
 
 def fetch_frames(event, context):
-    s3 = boto3.resource('s3')
+    s3 = boto3.client('s3')
     config = load_config()
        
     print ("-------------------------------------------------")
@@ -48,7 +48,7 @@ def fetch_frames(event, context):
         print (key)
         localPath = "/tmp/" 
         videoFileName = '{}{}{}'.format(localPath, uuid.uuid4(), key)
-        s3.Bucket(bucket).download_file(key,videoFileName)
+        s3.download_file(bucket,key,videoFileName)
         print(videoFileName)
         # movedFile = videoFileName.replace("264","mp4")
         video = cv2.VideoCapture(videoFileName)
@@ -64,11 +64,11 @@ def fetch_frames(event, context):
             if count % fps == 0:
                 suffix = "-%#05d.jpg" % (count + 1)
                 frameFileName = videoFileName.replace(".264", suffix)
-                frameKey = videoFileName.replace(localPath, "")
+                frameKey = frameFileName.replace(localPath, "")
                 cv2.imwrite(frameFileName, frame)
-                print("uploading to %s %s" % config["framesbucket"], frameKey)
-                s3.Bucket().upload_file(frameFileName, config["framesbucket"], frameKey)                                
-                print("     ", frameFileName)
+                print("uploading to %s %s" % (config["framebucket"], frameKey))
+                s3.upload_file(frameFileName, config["framebucket"], frameKey)                                
+                print(frameFileName)
             count = count + 1
 
         video.release()

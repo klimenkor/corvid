@@ -151,7 +151,7 @@ def createstack(**kwargs):
 
     cfn_params_dict = read_json(cfn_params_path)
     cfn_params = []
-    for key, value in cfn_params_dict.iteritems():
+    for key, value in cfn_params_dict.items():
         cfn_params.append({
             'ParameterKey' : key,
             'ParameterValue' : value
@@ -191,7 +191,7 @@ def updatestack(**kwargs):
 
     cfn_params_dict = read_json(cfn_params_path)
     cfn_params = []
-    for key, value in cfn_params_dict.iteritems():
+    for key, value in cfn_params_dict.items():
         cfn_params.append({
             'ParameterKey' : key,
             'ParameterValue' : value
