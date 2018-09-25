@@ -1,4 +1,6 @@
 {
     "fetch_fps" : 1,
-    "fetch_limit" : 50
+    "fetch_limit" : 50,
+    "videobucket": "corvid-videos",
+    "framebucket": "corvid-frames"
 }
