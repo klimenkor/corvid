@@ -76,7 +76,7 @@ Resources:
         S3Key: !Ref FrameFetcherSourceS3KeyParameter
       Timeout: 10 #seconds
       MemorySize: 128 #MB
-      Runtime: python2.7
+      Runtime: python3.6
     DependsOn:
       - FrameFetcherLambdaExecutionRole
       - FrameS3Bucket
