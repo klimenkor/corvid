@@ -168,7 +168,7 @@ try:
                 if len(images_with_objects) > 0:
                     findings = array(images_with_objects)[:,1:].flatten()
                     images_to_upload = array(images_with_objects)[:,:1].flatten()
-                    upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix, True)
+                    upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix)
                     # archive_video(file)
                     cleanup_frames(images)
                     cleanup_video(file, sourceFolder)
