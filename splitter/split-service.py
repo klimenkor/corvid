@@ -171,7 +171,9 @@ try:
                     # archive_video(file)
                     cleanup_frames(images)
                     cleanup_video(file, sourceFolder)
-        print("waiting for incoming files...")
+        ts = time.time()
+        st = dt.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        print("%s waiting for incoming files..." % (st))
         time.sleep(1)
 
 except KeyboardInterrupt:
