@@ -166,8 +166,8 @@ try:
                     images_to_upload = array(images_with_objects)[:,:1].flatten()
                     upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix, True)
                     # archive_video(file)
-                    # os.remove(file)
                     cleanup_frames(images)
+                    os.remove(file)
         time.sleep(1)
 
 except KeyboardInterrupt:
