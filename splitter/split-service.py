@@ -155,7 +155,6 @@ videosPrefix = "archive"
 print("loading caffe model...")
 net = cv2.dnn.readNetFromCaffe(protoTxt, model)
 
-print("waiting for incoming files...")
 try:
     while True:
         videos = findFiles(sourceFolder, sourceExtension)
@@ -172,6 +171,7 @@ try:
                     # archive_video(file)
                     cleanup_frames(images)
                     cleanup_video(file, sourceFolder)
+        print("waiting for incoming files...")
         time.sleep(1)
 
 except KeyboardInterrupt:
