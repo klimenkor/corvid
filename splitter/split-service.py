@@ -33,6 +33,7 @@ def initArguments():
     ap.add_argument("-p", "--prefix", required=True, help="prefix for frames")
     ap.add_argument("-t", "--prototxt", required=True, help="prototxt file")
     ap.add_argument("-m", "--model", required=True, help="model file")
+    ap.add_argument("-w", "--wait", required=True, help="wait time between checks (sec)")
     return vars(ap.parse_args())
 
 
@@ -55,8 +56,6 @@ def get_frames(fileName,extension):
         index = 0
         success, frame = video.read()
         while success:
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 80]
-
             if count % fps == 0:
                 index = index + 1
                 suffix = "-%#05d.jpg" % index
@@ -151,6 +150,7 @@ protoTxt = args["prototxt"]
 model = args["model"]
 videosBucket = args["bucket"]
 videosPrefix = "archive"
+waitSeconds = args["wait"]
 
 print("loading caffe model...")
 net = cv2.dnn.readNetFromCaffe(protoTxt, model)
@@ -174,7 +174,7 @@ try:
         ts = time.time()
         st = dt.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         print("%s waiting for incoming files..." % (st))
-        time.sleep(1)
+        time.sleep(waitSeconds)
 
 except KeyboardInterrupt:
     print('terminated!')
