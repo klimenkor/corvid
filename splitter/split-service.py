@@ -150,7 +150,7 @@ protoTxt = args["prototxt"]
 model = args["model"]
 videosBucket = args["bucket"]
 videosPrefix = "archive"
-waitSeconds = args["wait"]
+waitSeconds = int(args["wait"])
 
 print("loading caffe model...")
 net = cv2.dnn.readNetFromCaffe(protoTxt, model)
