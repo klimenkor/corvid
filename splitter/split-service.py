@@ -157,7 +157,7 @@ net = cv2.dnn.readNetFromCaffe(protoTxt, model)
 
 print("waiting for incoming files...")
 try:
-    # while True:
+    while True:
         videos = findFiles(sourceFolder, sourceExtension)
 
         if len(videos) > 0:
