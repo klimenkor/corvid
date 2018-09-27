@@ -78,13 +78,6 @@ def get_frames(fileName,extension):
 
     return frames
 
-def upload_frames(files,source,bucket,prefix):
-    s3 = boto3.client('s3')
-    for file in files:
-        key = "%s/%s" % (prefix, file.replace(source,''))
-        print("uploading to %s %s" % (bucket, key))
-        s3.upload_file(file, bucket, key)
-
 def get_frames_with_objects(frames,confidenceThreshold):
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
                "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
@@ -124,6 +117,23 @@ def get_frames_with_objects(frames,confidenceThreshold):
 
     return images
 
+def upload_frames(files,source,bucket,prefix,cleanup = False):
+    s3 = boto3.client('s3')
+    for file in files:
+        key = "%s/%s" % (prefix, file.replace(source,''))
+        print("uploading %s to %s %s" % (file,bucket, key))
+        s3.upload_file(file, bucket, key)
+
+def cleanup_frames(files):
+    for file in files:
+        os.remove(file)
+
+def archive_video(file,sourceFolder,destinationBucket,destinationPrefix):
+    s3 = boto3.client('s3')
+    sourceFile = os.path.join(sourceFolder,file)
+    key = "%s/%s" % (destinationPrefix, file.replace(sourceFolder, ''))
+    print("uploading %s to %s %s" % (sourceFile, destinationBucket, key))
+    s3.upload_file(sourceFile, destinationBucket, key)
 
 ###################################################
 
@@ -135,8 +145,8 @@ framesBucket = args["bucket"]
 framesPrefix = args["prefix"]
 protoTxt = args["prototxt"]
 model = args["model"]
-
-
+videosBucket = args["bucket"]
+videosPrefix = "archive"
 
 print("loading caffe model...")
 net = cv2.dnn.readNetFromCaffe(protoTxt, model)
@@ -154,8 +164,10 @@ try:
                 if len(images_with_objects) > 0:
                     findings = array(images_with_objects)[:,1:].flatten()
                     images_to_upload = array(images_with_objects)[:,:1].flatten()
-                    upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix)
-
+                    upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix, True)
+                    # archive_video(file)
+                    # os.remove(file)
+                    cleanup_frames(images)
         time.sleep(1)
 
 except KeyboardInterrupt:
