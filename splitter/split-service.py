@@ -56,13 +56,12 @@ def get_frames(fileName,extension):
         success, frame = video.read()
         while success:
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 80]
-            compressedFrame = cv2.imencode('.jpg', frame, encode_param)
 
             if count % fps == 0:
                 index = index + 1
                 suffix = "-%#05d.jpg" % index
                 outputFile = fileName.replace(".%s" % extension, suffix)
-                cv2.imwrite(outputFile, frame, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
+                cv2.imwrite(outputFile, frame)#, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
                 frames.append(outputFile)
 
                 print(outputFile)
@@ -117,7 +116,7 @@ def get_frames_with_objects(frames,confidenceThreshold):
 
     return images
 
-def upload_frames(files,source,bucket,prefix,cleanup = False):
+def upload_frames(files,source,bucket,prefix):
     s3 = boto3.client('s3')
     for file in files:
         key = "%s/%s" % (prefix, file.replace(source,''))
@@ -134,6 +133,11 @@ def archive_video(file,sourceFolder,destinationBucket,destinationPrefix):
     key = "%s/%s" % (destinationPrefix, file.replace(sourceFolder, ''))
     print("uploading %s to %s %s" % (sourceFile, destinationBucket, key))
     s3.upload_file(sourceFile, destinationBucket, key)
+
+def cleanup_video(file,sourceFolder):
+    s3 = boto3.client('s3')
+    sourceFile = os.path.join(sourceFolder,file)
+    os.remove(sourceFile)
 
 ###################################################
 
@@ -167,7 +171,7 @@ try:
                     upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix, True)
                     # archive_video(file)
                     cleanup_frames(images)
-                    os.remove(file)
+                    cleanup_video(file, sourceFolder)
         time.sleep(1)
 
 except KeyboardInterrupt:
