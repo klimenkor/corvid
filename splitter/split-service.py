@@ -163,7 +163,7 @@ try:
             print("found ", videos)
             for file in videos:
                 images = get_frames("%s%s" % (sourceFolder, file), sourceExtension)
-                images_with_objects = get_frames_with_objects(images,0.3)
+                images_with_objects = get_frames_with_objects(images,0.6)
                 if len(images_with_objects) > 0:
                     findings = array(images_with_objects)[:,1:].flatten()
                     images_to_upload = array(images_with_objects)[:,:1].flatten()
