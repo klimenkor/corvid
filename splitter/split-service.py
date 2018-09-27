@@ -40,10 +40,9 @@ def initArguments():
 def findFiles(path, extension):
     return [f for f in listdir(path) if isfile(join(path, f)) and f.endswith(extension)]
 
-def get_frames(fileName,extension):
+def get_frames(fileName,extension,confidenceThreshold):
 
     frames = []
-    # if fileIsReady(fileName):
     try:
 
         print("%s " % fileName)
@@ -54,27 +53,64 @@ def get_frames(fileName,extension):
         # capture 1 frame per second
         count = 0
         index = 0
+        ts = time.time()
         success, frame = video.read()
         while success:
             if count % fps == 0:
-                index = index + 1
-                suffix = "-%#05d.jpg" % index
-                outputFile = fileName.replace(".%s" % extension, suffix)
-                cv2.imwrite(outputFile, frame)#, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
-                frames.append(outputFile)
 
-                print(outputFile)
+                found_objects = detect_objects(frame, confidenceThreshold)
+                if len(found_objects) > 0 :
+                    index = index + 1
+                    suffix = "-%#05d.jpg" % index
+                    outputFile = fileName.replace(".%s" % extension, suffix)
+                    cv2.imwrite(outputFile, frame)#, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
+                    # frames.append(outputFile)
+                    frames.append([outputFile, found_objects])
+                    print("%s %s" % (outputFile,found_objects))
 
             count = count + 1
             success, frame = video.read()
 
         video.release()
+        print ("average time per frame %6.2f sec" % ((time.time() - ts) / index))
 
     except:
         print("[processVideos] Unexpected error:", sys.exc_info()[0])
         raise
 
     return frames
+
+def detect_objects(image,confidenceThreshold):
+    CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
+               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+               "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+               "sofa", "train", "tvmonitor"]
+
+    (h, w) = image.shape[:2]
+    blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
+
+    net.setInput(blob)
+    detections = net.forward()
+    objects_detected = 0
+    label = ""
+
+    # loop over the detections
+    for i in np.arange(0, detections.shape[2]):
+        confidence = detections[0, 0, i, 2]
+
+        if confidence > confidenceThreshold:
+            idx = int(detections[0, 0, i, 1])
+            box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+            (startX, startY, endX, endY) = box.astype("int")
+
+            label = label + "{}: {:.2f}% ; ".format(CLASSES[idx], confidence * 100)
+            objects_detected = objects_detected + 1
+
+    if objects_detected > 0:
+        return label
+
+    return ""
+
 
 def get_frames_with_objects(frames,confidenceThreshold):
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
@@ -151,6 +187,7 @@ model = args["model"]
 videosBucket = args["bucket"]
 videosPrefix = "archive"
 waitSeconds = int(args["wait"])
+confidenceThreshold = 0.6
 
 print("loading caffe model...")
 net = cv2.dnn.readNetFromCaffe(protoTxt, model)
@@ -161,18 +198,19 @@ try:
 
         if len(videos) > 0:
             print("found ", videos)
+            ts = time.time()
             for file in videos:
-                images = get_frames("%s%s" % (sourceFolder, file), sourceExtension)
-                images_with_objects = get_frames_with_objects(images,0.6)
+                images_with_objects = get_frames("%s%s" % (sourceFolder, file), sourceExtension, confidenceThreshold)
+                # images_with_objects = get_frames_with_objects(images,0.6)
                 if len(images_with_objects) > 0:
                     findings = array(images_with_objects)[:,1:].flatten()
                     images_to_upload = array(images_with_objects)[:,:1].flatten()
                     upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix)
                     # archive_video(file)
-                    cleanup_frames(images)
+                    cleanup_frames(images_to_upload)
                     cleanup_video(file, sourceFolder)
-        ts = time.time()
-        st = dt.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            print ("Spent %6.2f sec" % (time.time() - ts) )
+        st = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         print("%s waiting for incoming files..." % (st))
         time.sleep(waitSeconds)
 
