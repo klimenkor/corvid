@@ -69,7 +69,12 @@ def get_frames(fileName,extension,confidenceThreshold):
                     print("%s %s" % (outputFile,found_objects))
 
             count = count + 1
-            success, frame = video.read()
+            try:
+                success, frame = video.read()
+            except cv2.error as e:
+                print("cv2.error:", e)
+            except Exception as e:
+                print("Exception:", e)
 
         video.release()
         if index > 0:
@@ -209,7 +214,7 @@ try:
                     upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix)
                     # archive_video(file)
                     cleanup_frames(images_to_upload)
-                    cleanup_video(file, sourceFolder)
+                    # cleanup_video(file, sourceFolder)
             print("Spent %6.2f sec" % (time.time() - ts))
         st = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         print("%s waiting for incoming files..." % (st))
