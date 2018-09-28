@@ -57,7 +57,7 @@ def get_frames(fileName,extension,confidenceThreshold):
         success, frame = video.read()
         while success:
             if count % fps == 0:
-                print("checking frame %d " %(count))
+                # print("checking frame %d " %(count))
 
                 found_objects = detect_objects(frame, confidenceThreshold)
                 if len(found_objects) > 0 :
@@ -68,9 +68,12 @@ def get_frames(fileName,extension,confidenceThreshold):
                     # frames.append(outputFile)
                     frames.append([outputFile, found_objects])
                     print("%s %s" % (outputFile,found_objects))
-            count = count + 1
+            count = count + fps
             try:
-                success, frame = video.read()
+                success = video.set(cv2.CAP_PROP_POS_FRAMES,count)
+                if success:
+                    success, frame = video.read()
+
             except cv2.error as e:
                 print("cv2.error:", e)
             except Exception as e:
@@ -214,7 +217,7 @@ try:
                     upload_frames(images_to_upload, sourceFolder, framesBucket, framesPrefix)
                     # archive_video(file)
                     cleanup_frames(images_to_upload)
-                    # cleanup_video(file, sourceFolder)
+                    cleanup_video(file, sourceFolder)
             print("Spent %6.2f sec" % (time.time() - ts))
         st = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         print("%s waiting for incoming files..." % (st))
