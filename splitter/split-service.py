@@ -203,9 +203,9 @@ try:
         videos = findFiles(sourceFolder, sourceExtension)
 
         if len(videos) > 0:
-            print("found ", videos)
             ts = time.time()
             for file in videos:
+                print("processing %s " % (file))
                 images_with_objects = get_frames("%s%s" % (sourceFolder, file), sourceExtension, confidenceThreshold)
                 # images_with_objects = get_frames_with_objects(images,0.6)
                 if len(images_with_objects) > 0:
