@@ -57,7 +57,7 @@ def get_frames(fileName,extension,confidenceThreshold):
         success, frame = video.read()
         while success:
             if count % fps == 0:
-                print("%d <<<< " %(count))
+                print("checking frame %d " %(count))
 
                 found_objects = detect_objects(frame, confidenceThreshold)
                 if len(found_objects) > 0 :
@@ -68,8 +68,6 @@ def get_frames(fileName,extension,confidenceThreshold):
                     # frames.append(outputFile)
                     frames.append([outputFile, found_objects])
                     print("%s %s" % (outputFile,found_objects))
-            else:
-                print (count)
             count = count + 1
             try:
                 success, frame = video.read()
