@@ -56,6 +56,7 @@ def get_frames(fileName,extension,confidenceThreshold):
         ts = time.time()
         success, frame = video.read()
         while success:
+            print(count)
             if count % fps == 0:
 
                 found_objects = detect_objects(frame, confidenceThreshold)
