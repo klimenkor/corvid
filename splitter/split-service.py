@@ -72,7 +72,8 @@ def get_frames(fileName,extension,confidenceThreshold):
             success, frame = video.read()
 
         video.release()
-        print ("average time per frame %6.2f sec" % ((time.time() - ts) / index))
+        if index > 0:
+            print ("average time per frame %6.2f sec" % ((time.time() - ts) / index))
 
     except:
         print("[processVideos] Unexpected error:", sys.exc_info()[0])
@@ -103,7 +104,7 @@ def detect_objects(image,confidenceThreshold):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
 
-            label = label + "{}: {:.2f}% ; ".format(CLASSES[idx], confidence * 100)
+            label = label + "{}:{:.2f}% ".format(CLASSES[idx], confidence * 100)
             objects_detected = objects_detected + 1
 
     if objects_detected > 0:
@@ -111,45 +112,45 @@ def detect_objects(image,confidenceThreshold):
 
     return ""
 
-
-def get_frames_with_objects(frames,confidenceThreshold):
-    CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-               "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-               "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-               "sofa", "train", "tvmonitor"]
-
-    images = []
-    for file in frames:
-        try:
-            image = cv2.imread(file)
-            (h, w) = image.shape[:2]
-            blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
-
-            net.setInput(blob)
-            detections = net.forward()
-            objects_detected = 0
-            label = ""
-
-            # loop over the detections
-            for i in np.arange(0, detections.shape[2]):
-                confidence = detections[0, 0, i, 2]
-
-                if confidence > confidenceThreshold:
-                    idx = int(detections[0, 0, i, 1])
-                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                    (startX, startY, endX, endY) = box.astype("int")
-
-                    label = label + "{}: {:.2f}% ; ".format(CLASSES[idx], confidence * 100)
-                    objects_detected = objects_detected + 1
-
-            if objects_detected>0 :
-                images.append([file,label])
-
-        except:
-            print("[processFrames]: Unexpected error:", sys.exc_info()[0])
-            raise
-
-    return images
+#
+# def get_frames_with_objects(frames,confidenceThreshold):
+#     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
+#                "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+#                "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+#                "sofa", "train", "tvmonitor"]
+#
+#     images = []
+#     for file in frames:
+#         try:
+#             image = cv2.imread(file)
+#             (h, w) = image.shape[:2]
+#             blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
+#
+#             net.setInput(blob)
+#             detections = net.forward()
+#             objects_detected = 0
+#             label = ""
+#
+#             # loop over the detections
+#             for i in np.arange(0, detections.shape[2]):
+#                 confidence = detections[0, 0, i, 2]
+#
+#                 if confidence > confidenceThreshold:
+#                     idx = int(detections[0, 0, i, 1])
+#                     box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+#                     (startX, startY, endX, endY) = box.astype("int")
+#
+#                     label = label + "{}: {:.2f}% ; ".format(CLASSES[idx], confidence * 100)
+#                     objects_detected = objects_detected + 1
+#
+#             if objects_detected>0 :
+#                 images.append([file,label])
+#
+#         except:
+#             print("[processFrames]: Unexpected error:", sys.exc_info()[0])
+#             raise
+#
+#     return images
 
 def upload_frames(files,source,bucket,prefix):
     s3 = boto3.client('s3')
@@ -209,7 +210,7 @@ try:
                     # archive_video(file)
                     cleanup_frames(images_to_upload)
                     cleanup_video(file, sourceFolder)
-            print ("Spent %6.2f sec" % (time.time() - ts) )
+            print("Spent %6.2f sec" % (time.time() - ts))
         st = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         print("%s waiting for incoming files..." % (st))
         time.sleep(waitSeconds)
