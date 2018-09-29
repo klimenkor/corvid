@@ -22,3 +22,5 @@ var/
 **/*.mp4
 **/*.jpg
 **/*.264
+.idea
+.vscode

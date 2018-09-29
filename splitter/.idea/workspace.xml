@@ -17,8 +17,8 @@
       <file leaf-file-name="split-service.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/split-service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="219" column="20" selection-start-line="219" selection-start-column="20" selection-end-line="219" selection-end-column="20" />
+            <state relative-caret-position="420">
+              <caret line="72" column="59" selection-start-line="72" selection-start-column="40" selection-end-line="72" selection-end-column="59" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#3662#3664#0" />
@@ -51,7 +51,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="width" value="2046" />
     <option name="height" value="1152" />
   </component>
@@ -156,7 +156,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
+    <frame x="-7" y="-7" width="2575" height="1415" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -284,8 +284,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/split-service.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="219" column="20" selection-start-line="219" selection-start-column="20" selection-end-line="219" selection-end-column="20" />
+        <state relative-caret-position="420">
+          <caret line="72" column="59" selection-start-line="72" selection-start-column="40" selection-end-line="72" selection-end-column="59" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#3662#3664#0" />
