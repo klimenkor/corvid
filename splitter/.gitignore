@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+.vscode/**
+.idea/**
+
+=======
 # Distribution / packaging
 .Python
 env/
@@ -22,5 +27,9 @@ var/
 **/*.mp4
 **/*.jpg
 **/*.264
+<<<<<<< HEAD
 .idea
 .vscode
+=======
+>>>>>>> dd2855eafbde2b0dc09263e686c82ad7a25230ed
+>>>>>>> 4feb577c09707bc74d9139889219b9581eabc971
