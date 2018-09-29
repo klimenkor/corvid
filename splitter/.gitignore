@@ -1,3 +1,30 @@
+<<<<<<< HEAD
 .vscode/**
 .idea/**
 
+=======
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.pyc
+
+# Serverless directories
+.serverless
+**/*.mp4
+**/*.jpg
+**/*.264
+>>>>>>> dd2855eafbde2b0dc09263e686c82ad7a25230ed

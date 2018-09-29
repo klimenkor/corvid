@@ -184,7 +184,7 @@ print("waiting for incoming files...")
 
 try:
     while True:
-        processVideos(args["in"], args["out"], ".264")
+        processVideos(args["in"], args["out"], ".mp4")
         processFrames(args["in"], args["out"], args["confidence"], "roman.klimenko@gmail.com") #"3234592298@txt.att.net")
         time.sleep(1)
 
