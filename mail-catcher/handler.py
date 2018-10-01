@@ -19,15 +19,19 @@ def get_attachment(msg, content_type):
     if ((msg_content_type == content_type or msg_content_type == 'text/plain')
             and base64.b64decode(msg.get_payload())):
         attachment = msg
+        print('       1 %s' % (msg_content_type))
 
     elif msg_content_type.startswith('multipart/'):
+        print('       2 %s' % (msg_content_type))
         for part in msg.get_payload():
+            print('       3')
             attachment = get_attachment(part, content_type)
             attachment_content_type = attachment.get_content_type()
+            print('       4 %s' %(attachment_content_type))
 
-            if (attachment and (attachment_content_type == content_type
-                                or attachment_content_type == 'text/plain')
+            if (attachment and (attachment_content_type == content_type or attachment_content_type == 'text/plain')
                     and base64.b64decode(attachment.get_payload())):
+                print('       5')
                 break
             else:
                 attachment = None
@@ -43,10 +47,11 @@ def catch_email(event, context):
 
     message = email.message_from_string(
         s3.Object('corvid-mailbox', messageId).get()['Body'].read().decode('utf-8'))
-    attachment = get_attachment(message,"image/jpeg")
+   
+    attachment = get_attachment(message,'image/jpeg')
     print('>>>>>got attachment')
-    print(attachment)
-    print('>>>>>got attachment')
+    print(attachment.get_content_type())
+    print(attachment.get_payload())
     
     filename = "/tmp/%6.2f.jpg" % (time.time())
     with open(filename, 'w+') as file:
