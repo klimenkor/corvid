@@ -48,14 +48,15 @@ def catch_email(event, context):
     message = email.message_from_string(
         s3.Object('corvid-mailbox', messageId).get()['Body'].read().decode('utf-8'))
    
-    attachment = get_attachment(message,'image/jpeg')
+    attachment = message.get_payload()[1]
+    # attachment = get_attachment(message,'image/jpeg')
     print('>>>>>got attachment')
-    print(attachment.get_content_type())
-    print(attachment.get_payload())
+    # print(attachment.get_content_type())
+    # print(attachment.get_payload())
     
     filename = "/tmp/%6.2f.jpg" % (time.time())
     with open(filename, 'w+') as file:
-        file.write(attachment)
+        file.write(attachment.get_payload())
         file.close()
     print('>>>>>saved attachment')
 
