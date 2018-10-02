@@ -28,12 +28,18 @@ provider:
     - Effect: "Allow"
       Action:
         - "s3:PutObject"
-      Resource: "arn:aws:s3:::corvid-frames"
+        - "s3:GetObject"
+      Resource: "arn:aws:s3:::corvid-frames/*"
     - Effect: "Allow"
       Action:
         - "s3:GetObject"
-      Resource: "arn:aws:s3:::corvid-mailbox"
-
+      Resource: "arn:aws:s3:::corvid-mailbox/*"
+    - Effect: "Allow"
+      Action: 
+        - "rekognition:DetectLabels"
+        - "ses:SendEmail"
+      Resource: "*"
+          
 functions:
   catch_email:
     handler: handler.catch_email
