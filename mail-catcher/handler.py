@@ -1,19 +1,41 @@
 from __future__ import print_function
 import json
 import boto3
+import botocore
 import time
 import email
  
-def catch_email(event, context):
+def object_ready(bucket,key):
     try:
-        mailBucket = 'corvid-mailbox'
-        frameBucket = 'ecorvid-frames'
-
         s3 = boto3.resource('s3')
-        ses = event["Records"][0]["ses"]
-        messageId = ses["mail"]['messageId']
-        print('>>>>got message %s' % (messageId))
+        s3.Object(bucket,key).load()
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "403":
+            return False
+        else:
+            raise
+    else:
+        return True
 
+def catch_email(event, context):
+    mailBucket = 'corvid-mailbox'
+    frameBucket = 'ecorvid-frames'
+
+    s3 = boto3.resource('s3')
+    ses = event["Records"][0]["ses"]
+    messageId = ses["mail"]['messageId']
+    print('>>>>got message %s' % (messageId))
+
+    attempt = 0
+    ready = False
+    while attempt<10:
+        ready = object_ready(mailBucket, messageId)
+        if ready:
+            break
+        else:
+            attempt=attempt+1
+            time.sleep(1)            
+    if ready:
         message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
         attachment = message.get_payload()[1]
         data = attachment.get_payload(decode=True)
@@ -30,14 +52,13 @@ def catch_email(event, context):
             "statusCode": 200,
             "body": json.dumps(body)
         }
-    except Exception as e:
+    else:
         body = {
-            "message": "Exception!!!"
+            "message": "Message was not found"
         }
 
         response = {
-            "statusCode": 404,
-            "body": json.dumps(e)
-        } 
+            "statusCode": 404
+        }
 
     return response
