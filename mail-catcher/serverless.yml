@@ -28,11 +28,11 @@ provider:
     - Effect: "Allow"
       Action:
         - "s3:PutObject"
-      Resource: "arn:aws:s3:::"
+      Resource: "arn:aws:s3:::corvid-frames"
     - Effect: "Allow"
       Action:
         - "s3:GetObject"
-      Resource: "arn:aws:s3:::"
+      Resource: "arn:aws:s3:::corvid-mailbox"
 
 functions:
   catch_email:
