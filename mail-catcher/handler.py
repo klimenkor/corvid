@@ -3,6 +3,7 @@ import json
 import boto3
 import time
 import email
+import datetime
  
 # import botocore
 
@@ -64,38 +65,52 @@ import email
 
 #     return response
 
-def send_email(sender,recipient,configuration_set,region,subject,body,charset):
+def save_data(labels):
+    client = boto3.client('dynamodb')
+    
+    l = []
+    for label in labels:
+        l.append({"M": { label["Name"] : {"N":str(label["Confidence"])}}})
+    item = {
+        "userid": {"S":"11111"},
+        "cameraid": {"S":"010"},
+        "time": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
+        "labels": {"L":l}}
 
-    client = boto3.client('ses',region_name=region)
+    client.put_item(TableName="events",Item=item)     
 
-    try:
-        response = client.send_email(
-            Destination={
-                'ToAddresses': [
-                    recipient,
-                ],
-            },
-            Message={
-                'Body': {
-                    'Text': {
-                        'Charset': charset,
-                        'Data': body,
-                    },
-                },
-                'Subject': {
-                    'Charset': charset,
-                    'Data': sbject,
-                },
-            },
-            Source=sender,
-            ConfigurationSetName=configuration_set,
-        )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
-        print("Email sent! Message ID: %s" % (response['MessageId']))
+# def send_email(sender,recipient,configuration_set,region,subject,body,charset):
 
-def detect_labels(bucket, key, max_labels=10, min_confidence=60, region="us-east-1"):
+#     client = boto3.client('ses',region_name=region)
+
+#     try:
+#         response = client.send_email(
+#             Destination={
+#                 'ToAddresses': [
+#                     recipient,
+#                 ],
+#             },
+#             Message={
+#                 'Body': {
+#                     'Text': {
+#                         'Charset': charset,
+#                         'Data': body,
+#                     },
+#                 },
+#                 'Subject': {
+#                     'Charset': charset,
+#                     'Data': sbject,
+#                 },
+#             },
+#             Source=sender,
+#             ConfigurationSetName=configuration_set,
+#         )
+#     except ClientError as e:
+#         print(e.response['Error']['Message'])
+#     else:
+#         print("Email sent! Message ID: %s" % (response['MessageId']))
+
+def detect_labels(bucket, key, max_labels=5, min_confidence=90, region="us-east-1"):
 	rekognition = boto3.client("rekognition", region)
 	response = rekognition.detect_labels(
 		Image={
@@ -117,7 +132,7 @@ def catch_email(event, context):
     mailBucket = item["bucket"]["name"]
     messageId = item["object"]["key"]
 
-    print('  new: %s / %s' % (mailBucket,messageId))
+    print('...new email: %s / %s' % (mailBucket,messageId))
 
     message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
     attachment = message.get_payload()[1]
@@ -125,14 +140,11 @@ def catch_email(event, context):
 
     s3client = boto3.client('s3')
     s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
-    print('  saved: %s / %s' % (frameBucket,messageId))
+    print('...image saved: %s / %s' % (frameBucket,messageId))
 
-    detected = ""
-    for label in detect_labels(frameBucket,messageId):
-	    detected = detected + "{Name} - {Confidence}%, ".format(**label)
-
-    print('  detected: %s' % (detected))
-    send_email("klimenkor@gmail.com","roman.klimenko@gmail.com","ConfigSet","us-east-1","Detected objects",detected,"UTF-8")
+    labels = detect_labels(frameBucket,messageId)
+    save_data(labels)
+    print("...labels saved")
 
     body = {
         "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data),messageId,frameBucket)
