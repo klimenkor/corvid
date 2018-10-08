@@ -65,17 +65,18 @@ import datetime
 
 #     return response
 
-def save_data(labels):
+def save_data(user_id, camera_id, labels,s3key):
     client = boto3.client('dynamodb')
     
     l = []
     for label in labels:
         l.append({"M": { label["Name"] : {"N":str(label["Confidence"])}}})
     item = {
-        "userid": {"S":"11111"},
-        "cameraid": {"S":"010"},
-        "time": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
-        "labels": {"L":l}}
+        "userid": {"S":user_id},
+        "cameraid": {"S":camera_id},
+        "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
+        "labels": {"L":l},
+        "frame": {"S":s3key}}
 
     client.put_item(TableName="events",Item=item)     
 
@@ -133,9 +134,9 @@ def catch_email(event, context):
     messageId = item["object"]["key"]
 
     print('...new email: %s / %s' % (mailBucket,messageId))
-
     message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
     attachment = message.get_payload()[1]
+    subject = message['Subject']
     data = attachment.get_payload(decode=True)
 
     s3client = boto3.client('s3')
@@ -143,8 +144,11 @@ def catch_email(event, context):
     print('...image saved: %s / %s' % (frameBucket,messageId))
 
     labels = detect_labels(frameBucket,messageId)
-    save_data(labels)
-    print("...labels saved")
+    if len(labels)>0:
+        save_data("111111", subject, labels, messageId)
+        print("...labels saved")
+    else:
+        s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
 
     body = {
         "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data),messageId,frameBucket)

@@ -32,9 +32,10 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 var params = {
     TableName : "events",
-    KeyConditionExpression: "userid = :i",
+    KeyConditionExpression: "userid = :i and happened > :t",
     ExpressionAttributeValues: {
-        ":i": "11111"
+        ":i": "111111",
+        ":t": 20181006000000
     }
 };
 
@@ -45,7 +46,9 @@ docClient.query(params, function(err, data) {
         i=0;
         data.Items.forEach(function(item) {
             i++;
-            console.log("UserId:", item.userid + " CameraId:" + item.cameraid + " Time: " + item.time);
+            console.log("UserId:" + item.userid + " CameraId:" + item.cameraid + " Time: " + item.happened);
+            console.log("image:" + item.frame);
+           
             item.labels.forEach(function(label){
                 Object.keys(label).forEach(function(key) {
                     console.log(key + " = "+ label[key] + "%");    
