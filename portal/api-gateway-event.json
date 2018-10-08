@@ -1,6 +1,5 @@
 {
     "httpMethod": "GET",
-    "//body": "{\"name\": \"Sam\"}",
     "path": "/events",
     "resource": "/{proxy+}",
     "queryStringParameters": {},

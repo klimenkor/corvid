@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { RestService } from '../../service/common/rest.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+    events: any = [];
 
-  ngOnInit() {
-  }
+    constructor(public rest: RestService, private route: ActivatedRoute, private router: Router) { }
 
+    ngOnInit() {
+        this.getEvents();
+    }
+
+    getEvents() {
+        this.events = [];
+        this.rest.getEvents().subscribe((data: {}) => {
+          this.events = data;
+        });
+    }
 }

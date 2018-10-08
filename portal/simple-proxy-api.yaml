@@ -10,6 +10,15 @@ paths:
     x-amazon-apigateway-any-method:
       produces:
       - application/json
+      parameters:
+      - name: operand1
+        in: query
+        required: false
+        type: string
+      - name: operand2
+        in: query
+        required: false
+        type: string
       responses:
         200:
           description: 200 response
