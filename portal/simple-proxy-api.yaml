@@ -11,12 +11,12 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: operand1
-        in: query
+      - name: from
+        in: path
         required: false
         type: string
-      - name: operand2
-        in: query
+      - name: to
+        in: path
         required: false
         type: string
       responses:

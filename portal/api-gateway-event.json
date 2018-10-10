@@ -1,8 +1,9 @@
 {
     "httpMethod": "GET",
-    "path": "/events",
+    "path": "/events/20181008000000-20181009000000",
     "resource": "/{proxy+}",
-    "queryStringParameters": {},
+    "queryStringParameters": {
+    },
     "pathParameters": {
         "proxy": "events"
     },
@@ -27,6 +28,7 @@
         "X-Forwarded-Proto": "http"
     },
     "requestContext": {
+        "dayhappened":"20181010000000",
         "accountId": "111111111111",
         "resourceId": "xxxxxx",
         "stage": "prod",

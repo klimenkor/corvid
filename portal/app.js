@@ -37,30 +37,21 @@ router.get('/sam', (req, res) => {
   res.sendFile(`${__dirname}/sam-logo.png`)
 })
 
-router.get('/events', (req, res) => {
+router.get('/events/:from-:to', (req, res) => {
+    const from = parseInt(req.params.from);
+    const to = parseInt(req.params.to);
+
     aws.config.update({
         region: "us-east-1"
     });
     
-    
-
-    var dayToshow = 20181001000000;
-    // if(req.params.happened !== null)
-    // {
-    //     console.log(req.params.happened);
-    //     dayToshow = parseInt(req.params.happened);
-    //     console.log(dayToshow);
-    // }
-
-    console.log(req.params);
-
-
     var params = {
         TableName : "events",
-        KeyConditionExpression: "userid = :i and happened > :t",
+        KeyConditionExpression: "userid = :i AND happened BETWEEN :from AND :to",
         ExpressionAttributeValues: {
             ":i": "111111",
-            ":t": dayToshow
+            ":from": from,
+            ":to": to
         }
     };
 
