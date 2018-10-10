@@ -68,16 +68,16 @@ import datetime
 def save_data(user_id, camera_id, labels,s3key):
     client = boto3.client('dynamodb')
     
-    l = []
+    l = {}
     for label in labels:
-        l.append({"M": { label["Name"] : {"N":str(label["Confidence"])}}})
+        l[label["Name"]] = {"N": str(label["Confidence"])}
+    
     item = {
         "userid": {"S":user_id},
         "cameraid": {"S":camera_id},
         "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
-        "labels": {"L":l},
+        "labels": {"M":l},
         "frame": {"S":s3key}}
-
     client.put_item(TableName="events",Item=item)     
 
 # def send_email(sender,recipient,configuration_set,region,subject,body,charset):
@@ -111,7 +111,7 @@ def save_data(user_id, camera_id, labels,s3key):
 #     else:
 #         print("Email sent! Message ID: %s" % (response['MessageId']))
 
-def detect_labels(bucket, key, max_labels=5, min_confidence=90, region="us-east-1"):
+def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1"):
 	rekognition = boto3.client("rekognition", region)
 	response = rekognition.detect_labels(
 		Image={

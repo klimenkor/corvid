@@ -36,8 +36,8 @@ export class RestService {
         return body || { };
     }
 
-    getEvents(): Observable<any> {
-        return this.http.get(endpoint + 'events').pipe(
+    getEvents(fromDay, toDay): Observable<any> {
+        return this.http.get(endpoint + 'events/' + fromDay + '-' + toDay).pipe(
         map(this.extractData));
     }
 

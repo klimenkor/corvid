@@ -62,7 +62,7 @@ router.get('/events/:from-:to', (req, res) => {
             console.log(err);
         }
         else{
-            res.json(data);
+            res.json(data.Items);
         }
     });
 })

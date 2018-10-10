@@ -24,11 +24,16 @@
           </tr>
         </tfoot>
         <tbody>
-          <tr *ngFor="let e of events.Items; let i=index;">
+          <tr *ngFor="let e of events; let i=index;">
             <td>{{e.userid}}</td>
             <td>{{e.happened}}</td>
             <td>{{e.cameraid}}</td>
-            <td></td>
+            <td>
+                <ul>
+                    <li *ngFor="let item of e.labels | keyvalue">
+                        {{item.key}}:{{item.value}}% 
+                    </li>
+                </ul>
             <td>{{e.frame}}</td>
           </tr>
         </tbody>

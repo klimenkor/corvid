@@ -5,3 +5,6 @@ venv\scripts\activate
 
 pip install numpy
 pip freeze > requirements.txt
+
+
+serverless deploy --function catch_email
