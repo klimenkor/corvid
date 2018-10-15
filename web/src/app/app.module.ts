@@ -11,6 +11,7 @@ import { RegisterComponent } from './views/register/register.component';
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 import { LoggerService } from './service/common/logger.service';
 import { ConsoleLoggerService } from './service/common/console-logger.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ConsoleLoggerService } from './service/common/console-logger.service';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    FormsModule,
     NgbModule
   ],
   providers: [ { provide: LoggerService, useClass: ConsoleLoggerService } ],

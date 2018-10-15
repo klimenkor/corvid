@@ -31,57 +31,50 @@ import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 export class DashboardComponent implements OnInit {
 
     events: IEvent[] = [];
-
-    hoveredDate: NgbDate;
     fromDate: NgbDate;
     toDate: NgbDate;
+    bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
 
     constructor(
       public rest: RestService,
-      private route: ActivatedRoute,
-      private router: Router,
       private calendar: NgbCalendar) {
 
-        this.fromDate = calendar.getToday();
-        this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
+        this.selectToday();
       }
 
     ngOnInit() {
-        const today = new Date();
-        const dd = today.getDate();
-        const ddTomorrow = today.getDate() + 1;
-        const mm = today.getMonth() + 1;
-        const yyyy = today.getFullYear();
-        // const fromDay = yyyy + '' + mm + '' + dd + '000000';
-        // const toDay = yyyy + '' + mm + '' + ddTomorrow + '000000';
-        const fromDay = '20181010000000';
-        const toDay = '20181011000000';
-
-
-        this.getEvents(fromDay, toDay);
+        this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
     }
 
     onDateSelection(date: NgbDate) {
-      if (!this.fromDate && !this.toDate) {
-        this.fromDate = date;
-      } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
-        this.toDate = date;
-      } else {
-        this.toDate = null;
-        this.fromDate = date;
-      }
+      this.fromDate = date;
+      this.toDate = this.calendar.getNext(date, 'd', 1);
+      this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+      console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
     }
 
-    isHovered(date: NgbDate) {
-      return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+    selectToday() {
+      this.fromDate = this.calendar.getToday();
+      this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 1);
     }
 
-    isInside(date: NgbDate) {
-      return date.after(this.fromDate) && date.before(this.toDate);
+    formatConfidence(value: number) {
+      return Math.round(value);
     }
 
-    isRange(date: NgbDate) {
-      return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+    formatHappenedFromDate(date: NgbDate) {
+      return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
+    }
+
+    formatDateFromHappend(value: string) {
+      const year = value.substr(0, 4);
+      const month = value.substr(4, 2);
+      const day = value.substr(6, 2);
+      const hour = value.substr(8, 2);
+      const min = value.substr(10, 2);
+      const sec = value.substr(12, 2);
+
+      return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
     }
 
     getEvents(fromDay, toDay) {

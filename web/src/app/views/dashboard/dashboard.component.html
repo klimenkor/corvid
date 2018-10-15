@@ -1,23 +1,18 @@
 <div class="card mb-3" >
   <div class="card-header">
-    <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
-    </ngb-datepicker>
+    <form class="form-inline">
+      <div class="form-group">
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="onDateSelection($event)"
+                 name="dp" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+            <button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Today</button>
+          </div>
+        </div>
+      </div>
+    </form>
 
-    <ng-template #t let-date let-focused="focused">
-      <span class="custom-day"
-            [class.focused]="focused"
-            [class.range]="isRange(date)"
-            [class.faded]="isHovered(date) || isInside(date)"
-            (mouseenter)="hoveredDate = date"
-            (mouseleave)="hoveredDate = null">
-        {{ date.day }}
-      </span>
-    </ng-template>
-
-    <hr>
-
-    <pre>From: {{ fromDate | json }} </pre>
-    <pre>To: {{ toDate | json }} </pre>
   </div>
   <div class="card-body">
     <div class="table-responsive">
@@ -25,7 +20,7 @@
         <thead>
           <tr>
             <th>UserId</th>
-            <th>Happened</th>
+            <th>Time</th>
             <th>Camera</th>
             <th>Object</th>
             <th>Frame</th>
@@ -34,7 +29,7 @@
         <tfoot>
           <tr>
             <th>UserId</th>
-            <th>Happened</th>
+            <th>Time</th>
             <th>Camera</th>
             <th>Object</th>
             <th>Frame</th>
@@ -43,15 +38,15 @@
         <tbody>
           <tr *ngFor="let e of events; let i=index;">
             <td>{{e.userid}}</td>
-            <td>{{e.happened}}</td>
+            <td>{{formatDateFromHappend(e.happened.toString())}}</td>
             <td>{{e.cameraid}}</td>
             <td>
                 <ul>
                     <li *ngFor="let item of e.labels | keyvalue">
-                        {{item.key}}:{{item.value}}%
+                        {{item.key}}:{{formatConfidence(item.value)}}%
                     </li>
                 </ul>
-            <td>{{e.frame}}</td>
+            <td><img src="{{bucketPath + e.frame}}" style="width:30%;"/></td>
           </tr>
         </tbody>
       </table>
