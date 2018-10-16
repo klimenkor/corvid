@@ -12,12 +12,12 @@ export const environment = {
 
   identityPoolId: 'us-east-1:782bd3b6-d761-4bf7-ac25-02a8ea4ee035',
   userPoolId: 'us-east-1_3Kv91pd2A',
-  clientId: '50u0csaaeqsk0tjiq4lmpa4eq8',
+  clientId: '3vcvfetpd0e0v0gp21aovkg8re',
   rekognitionBucket: 'corvid-frames',
   albumName: '',
   bucketRegion: 'us-east-1',
 
-  ddbTableName: 'LoginTrail',
+  ddbTableName: 'logintrail',
 
   cognito_idp_endpoint: '',
   cognito_identity_endpoint: '',
