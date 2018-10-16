@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core";
-import {Callback, CognitoUtil} from "./cognito.service";
-import * as AWS from "aws-sdk/global";
+import {Injectable} from '@angular/core';
+import {Callback, CognitoUtil} from './cognito.service';
+import * as AWS from 'aws-sdk/global';
 
 /**
  * Created by Vladimir Budilov
@@ -10,11 +10,24 @@ import * as AWS from "aws-sdk/global";
 
 @Injectable()
 export class AwsUtil {
-    public static firstLogin: boolean = false;
-    public static runningInit: boolean = false;
 
     constructor(public cognitoUtil: CognitoUtil) {
         AWS.config.region = CognitoUtil._REGION;
+    }
+    public static firstLogin = false;
+    public static runningInit = false;
+
+    static getCognitoParametersForIdConsolidation(idTokenJwt: string): {} {
+        console.log('AwsUtil: enter getCognitoParametersForIdConsolidation()');
+        const url = 'cognito-idp.' + CognitoUtil._REGION.toLowerCase() + '.amazonaws.com/' + CognitoUtil._USER_POOL_ID;
+        const logins: Array<string> = [];
+        logins[url] = idTokenJwt;
+        const params = {
+            IdentityPoolId: CognitoUtil._IDENTITY_POOL_ID, /* required */
+            Logins: logins
+        };
+
+        return params;
     }
 
     /**
@@ -24,7 +37,7 @@ export class AwsUtil {
 
         if (AwsUtil.runningInit) {
             // Need to make sure I don't get into an infinite loop here, so need to exit if this method is running already
-            console.log("AwsUtil: Aborting running initAwsService()...it's running already.");
+            console.log('AwsUtil: Aborting running initAwsService()...it\'s running already.');
             // instead of aborting here, it's best to put a timer
             if (callback != null) {
                 callback.callback();
@@ -34,14 +47,15 @@ export class AwsUtil {
         }
 
 
-        console.log("AwsUtil: Running initAwsService()");
+        console.log('AwsUtil: Running initAwsService()');
         AwsUtil.runningInit = true;
 
 
-        let mythis = this;
+        const mythis = this;
         // First check if the user is authenticated already
-        if (isLoggedIn)
+        if (isLoggedIn) {
             mythis.setupAWS(isLoggedIn, callback, idToken);
+        }
 
     }
 
@@ -49,17 +63,15 @@ export class AwsUtil {
     /**
      * Sets up the AWS global params
      *
-     * @param isLoggedIn
-     * @param callback
      */
     setupAWS(isLoggedIn: boolean, callback: Callback, idToken: string): void {
-        console.log("AwsUtil: in setupAWS()");
+        console.log('AwsUtil: in setupAWS()');
         if (isLoggedIn) {
-            console.log("AwsUtil: User is logged in");
+            console.log('AwsUtil: User is logged in');
             // Setup mobile analytics
-            var options = {
+            const options = {
                 appId: '32673c035a0b40e99d6e1f327be0cb60',
-                appTitle: "aws-cognito-angular2-quickstart"
+                appTitle: 'aws-cognito-angular2-quickstart'
             };
 
             // TODO: The mobile Analytics client needs some work to handle Typescript. Disabling for the time being.
@@ -68,11 +80,10 @@ export class AwsUtil {
 
             this.addCognitoCredentials(idToken);
 
-            console.log("AwsUtil: Retrieving the id token");
+            console.log('AwsUtil: Retrieving the id token');
 
-        }
-        else {
-            console.log("AwsUtil: User is not logged in");
+        } else {
+            console.log('AwsUtil: User is not logged in');
         }
 
         if (callback != null) {
@@ -84,7 +95,7 @@ export class AwsUtil {
     }
 
     addCognitoCredentials(idTokenJwt: string): void {
-        let creds = this.cognitoUtil.buildCognitoCreds(idTokenJwt);
+        const creds = this.cognitoUtil.buildCognitoCreds(idTokenJwt);
 
         AWS.config.credentials = creds;
 
@@ -92,24 +103,11 @@ export class AwsUtil {
             if (!err) {
                 if (AwsUtil.firstLogin) {
                     // save the login info to DDB
-                    this.ddb.writeLogEntry("login");
+                    this.ddb.writeLogEntry('login');
                     AwsUtil.firstLogin = false;
                 }
             }
         });
-    }
-
-    static getCognitoParametersForIdConsolidation(idTokenJwt: string): {} {
-        console.log("AwsUtil: enter getCognitoParametersForIdConsolidation()");
-        let url = 'cognito-idp.' + CognitoUtil._REGION.toLowerCase() + '.amazonaws.com/' + CognitoUtil._USER_POOL_ID;
-        let logins: Array<string> = [];
-        logins[url] = idTokenJwt;
-        let params = {
-            IdentityPoolId: CognitoUtil._IDENTITY_POOL_ID, /* required */
-            Logins: logins
-        };
-
-        return params;
     }
 
 }

@@ -10,11 +10,11 @@ export const environment = {
 
   region: 'us-east-1',
 
-  identityPoolId: 'us-east-1:fbe0340f-9ffc-4449-a935-bb6a6661fd53',
-  userPoolId: 'us-east-1_PGSbCVZ7S',
-  clientId: 'hh5ibv67so0qukt55c5ulaltk',
-  rekognitionBucket: 'rekognition-pics',
-  albumName: 'usercontent',
+  identityPoolId: 'us-east-1:782bd3b6-d761-4bf7-ac25-02a8ea4ee035',
+  userPoolId: 'us-east-1_3Kv91pd2A',
+  clientId: '50u0csaaeqsk0tjiq4lmpa4eq8',
+  rekognitionBucket: 'corvid-frames',
+  albumName: '',
   bucketRegion: 'us-east-1',
 
   ddbTableName: 'LoginTrail',

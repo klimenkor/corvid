@@ -1,8 +1,10 @@
-import {Component} from "@angular/core";
-import {Router} from "@angular/router";
-import {UserRegistrationService} from "../../../service/user-registration.service";
-import {UserLoginService} from "../../../service/user-login.service";
-import {CognitoCallback} from "../../../service/cognito.service";
+// tslint:disable:component-selector
+
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserRegistrationService} from '../../../service/auth/user-registration.service';
+import {UserLoginService} from '../../../service/auth/user-login.service';
+import {CognitoCallback} from '../../../service/auth/cognito.service';
 
 export class NewPasswordUser {
     username: string;
@@ -32,9 +34,10 @@ export class NewPasswordComponent implements CognitoCallback {
         this.errorMessage = null;
     }
 
+    // tslint:disable-next-line:use-life-cycle-interface
     ngOnInit() {
         this.errorMessage = null;
-        console.log("Checking if the user is already authenticated. If so, then redirect to the secure site");
+        console.log('Checking if the user is already authenticated. If so, then redirect to the secure site');
         this.userService.isAuthenticated(this);
     }
 
@@ -45,18 +48,19 @@ export class NewPasswordComponent implements CognitoCallback {
     }
 
     cognitoCallback(message: string, result: any) {
-        if (message != null) { //error
+        if (message != null) { // error
             this.errorMessage = message;
-            console.log("result: " + this.errorMessage);
-        } else { //success
-            //move to the next step
-            console.log("redirecting");
+            console.log('result: ' + this.errorMessage);
+        } else { // success
+            // move to the next step
+            console.log('redirecting');
             this.router.navigate(['/securehome']);
         }
     }
 
     isLoggedIn(message: string, isLoggedIn: boolean) {
-        if (isLoggedIn)
+        if (isLoggedIn) {
             this.router.navigate(['/securehome']);
+        }
     }
 }

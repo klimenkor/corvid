@@ -5,8 +5,7 @@ import { CognitoUtil, LoggedInCallback } from './service/auth/cognito.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: 'template/app.html'
 })
 export class AppComponent implements OnInit, LoggedInCallback {
   title = 'web';

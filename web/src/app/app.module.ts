@@ -5,10 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './views/login/login.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { RegisterComponent } from './views/register/register.component';
-import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 import { LoggerService } from './service/common/logger.service';
 import { ConsoleLoggerService } from './service/common/console-logger.service';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +19,14 @@ import { UseractivityComponent } from './secure/useractivity/useractivity.compon
 import { MyProfileComponent } from './secure/profile/myprofile.component';
 import { SecureHomeComponent } from './secure/landing/securehome.component';
 import { JwtComponent } from './secure/jwttokens/jwt.component';
+import { LoginComponent } from './public/auth/login/login.component';
+import { RegisterComponent } from './public/auth/register/registration.component';
+import { CognitoUtil } from './service/auth/cognito.service';
+import { AwsUtil } from './service/auth/aws.service';
+import { DynamoDBService } from './service/auth/ddb.service';
+import { UserRegistrationService } from './service/auth/user-registration.service';
+import { UserLoginService } from './service/auth/user-login.service';
+import { UserParametersService } from './service/auth/user-parameters.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +56,15 @@ import { JwtComponent } from './secure/jwttokens/jwt.component';
     FormsModule,
     NgbModule
   ],
-  providers: [ { provide: LoggerService, useClass: ConsoleLoggerService } ],
+  providers: [
+      CognitoUtil,
+      AwsUtil,
+      DynamoDBService,
+      UserRegistrationService,
+      UserLoginService,
+      UserParametersService,
+    { provide: LoggerService, useClass: ConsoleLoggerService }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

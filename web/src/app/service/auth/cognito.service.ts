@@ -103,7 +103,7 @@ export class CognitoUtil {
 
     getAccessToken(callback: Callback): void {
         if (callback == null) {
-            thrownew; Error(('CognitoUtil: callback in getAccessToken is null...returning'));
+            throw new Error(('CognitoUtil: callback in getAccessToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
             this.getCurrentUser().getSession(function (err, session) {
@@ -123,7 +123,7 @@ export class CognitoUtil {
 
     getIdToken(callback: Callback): void {
         if (callback == null) {
-            thrownew; Error(('CognitoUtil: callback in getIdToken is null...returning'));
+            throw new Error(('CognitoUtil: callback in getIdToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
             this.getCurrentUser().getSession(function (err, session) {
@@ -145,7 +145,7 @@ export class CognitoUtil {
 
     getRefreshToken(callback: Callback): void {
         if (callback == null) {
-            thrownew; Error(('CognitoUtil: callback in getRefreshToken is null...returning'));
+            throw new Error(('CognitoUtil: callback in getRefreshToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
             this.getCurrentUser().getSession(function (err, session) {

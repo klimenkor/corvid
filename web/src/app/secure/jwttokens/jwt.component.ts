@@ -1,7 +1,7 @@
-import {Component} from "@angular/core";
-import {UserLoginService} from "../../service/user-login.service";
-import {Callback, CognitoUtil, LoggedInCallback} from "../../service/cognito.service";
-import {Router} from "@angular/router";
+import {Component} from '@angular/core';
+import {UserLoginService} from '../../service/auth/user-login.service';
+import {Callback, CognitoUtil, LoggedInCallback} from '../../service/auth/cognito.service';
+import {Router} from '@angular/router';
 
 
 export class Stuff {
@@ -10,6 +10,7 @@ export class Stuff {
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'awscognito-angular2-app',
     templateUrl: './jwt.html'
 })
@@ -19,7 +20,7 @@ export class JwtComponent implements LoggedInCallback {
 
     constructor(public router: Router, public userService: UserLoginService, public cognitoUtil: CognitoUtil) {
         this.userService.isAuthenticated(this);
-        console.log("in JwtComponent");
+        console.log('in JwtComponent');
 
     }
 

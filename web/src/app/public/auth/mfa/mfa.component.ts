@@ -1,4 +1,6 @@
-import { Component, Input } from "@angular/core";
+// tslint:disable:component-selector
+
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'awscognito-mfa',
@@ -9,6 +11,6 @@ export class MFAComponent {
     @Input() onSubmit: (code: string) => void;
 
     constructor() {
-        console.log("MFAComponent constructor");
+        console.log('MFAComponent constructor');
     }
 }

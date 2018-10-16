@@ -120,7 +120,7 @@ export class UserLoginService {
 
     isAuthenticated(callback: LoggedInCallback) {
         if (callback == null) {
-            thrownew; Error(('UserLoginService: Callback in isAuthenticated() cannot be null'));
+            throw new Error(('UserLoginService: Callback in isAuthenticated() cannot be null'));
         }
 
         const cognitoUser = this.cognitoUtil.getCurrentUser();
