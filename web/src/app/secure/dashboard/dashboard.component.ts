@@ -3,11 +3,13 @@ import { RestService } from '../../service/common/rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IEvent } from '../../model/event';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { routerTransition } from '../../router.animations';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  animations: [routerTransition()],
   styles: [`
     .custom-day {
       text-align: center;

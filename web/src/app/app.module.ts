@@ -27,6 +27,10 @@ import { DynamoDBService } from './service/auth/ddb.service';
 import { UserRegistrationService } from './service/auth/user-registration.service';
 import { UserLoginService } from './service/auth/user-login.service';
 import { UserParametersService } from './service/auth/user-parameters.service';
+import { SidebarComponent } from './secure/components/sidebar/sidebar.component';
+import { HeaderComponent } from './secure/components/header/header.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -47,10 +51,13 @@ import { UserParametersService } from './service/auth/user-parameters.service';
     SecureHomeComponent,
     JwtComponent,
     AppComponent,
-    DashboardComponent
+    DashboardComponent,
+    SidebarComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
