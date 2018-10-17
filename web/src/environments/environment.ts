@@ -21,7 +21,7 @@ export const environment = {
 
   cognito_idp_endpoint: '',
   cognito_identity_endpoint: '',
-  sts_endpoint: '',
+  sts_endpoint: 'http://localhost:4200',
   dynamodb_endpoint: '',
   s3_endpoint: ''
 };

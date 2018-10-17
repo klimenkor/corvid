@@ -42,7 +42,7 @@ export class LoginComponent implements CognitoCallback, LoggedInCallback, OnInit
     }
 
     cognitoCallback(message: string, result: any) {
-        if (message != null) { // error
+        if (message != null && message !== 'Unknown error, the response body from fetch is: undefined') { // error
             this.errorMessage = message;
             console.log('result: ' + this.errorMessage);
             if (this.errorMessage === 'User is not confirmed.') {
@@ -53,8 +53,9 @@ export class LoginComponent implements CognitoCallback, LoggedInCallback, OnInit
                 this.router.navigate(['/home/newPassword']);
             }
         } else { // success
-            this.ddb.writeLogEntry('login');
-            this.router.navigate(['/dashboard']);
+          console.log('result: ' + this.errorMessage);
+          this.ddb.writeLogEntry('login');
+          this.router.navigate(['/securehome/dashboard']);
         }
     }
 

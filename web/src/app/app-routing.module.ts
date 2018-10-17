@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { DashboardComponent } from './secure/dashboard/dashboard.component';
 import { HomeComponent, AboutComponent, HomeLandingComponent } from './public/home.component';
 import { RegistrationConfirmationComponent, LogoutComponent } from './public/auth/confirm/confirmRegistration.component';
 import { ResendCodeComponent } from './public/auth/resend/resendCode.component';
@@ -52,7 +52,7 @@ const secureHomeRoutes: Routes = [
         {path: 'jwttokens', component: JwtComponent},
         {path: 'myprofile', component: MyProfileComponent},
         {path: 'useractivity', component: UseractivityComponent},
-        {path: '', component: MyProfileComponent}
+        {path: '', component: DashboardComponent }
       ]
   }
 ];
@@ -72,8 +72,13 @@ const routes: Routes = [
 
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+// @NgModule({
+//   imports: [RouterModule.forRoot(routes)],
+//   exports: [RouterModule]
+// })
+
+export const appRoutingProviders: any[] = [];
+
+export const AppRoutingModule: ModuleWithProviders = RouterModule.forRoot(routes);
+
+// export class AppRoutingModule { }

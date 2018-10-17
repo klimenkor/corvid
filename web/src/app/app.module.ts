@@ -5,7 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { DashboardComponent } from './secure/dashboard/dashboard.component';
 import { LoggerService } from './service/common/logger.service';
 import { ConsoleLoggerService } from './service/common/console-logger.service';
 import { FormsModule } from '@angular/forms';
