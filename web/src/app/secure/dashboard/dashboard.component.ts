@@ -45,13 +45,13 @@ export class DashboardComponent implements OnInit {
       }
 
     ngOnInit() {
-        this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+      this.onDateSelection(this.fromDate);
     }
 
     onDateSelection(date: NgbDate) {
       this.fromDate = date;
       this.toDate = this.calendar.getNext(date, 'd', 1);
-      this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+      // this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
       console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
     }
 
