@@ -7,7 +7,6 @@ import {LoggedInCallback} from '../../service/auth/cognito.service';
     // tslint:disable-next-line:component-selector
     selector: 'awscognito-angular2-app',
     templateUrl: './secureHome.html'
-    // styleUrls: ['/assets/css/sb-admin.css']
 })
 export class SecureHomeComponent implements OnInit, LoggedInCallback {
 

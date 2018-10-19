@@ -16,24 +16,18 @@ import { UseractivityComponent } from './secure/useractivity/useractivity.compon
 const homeRoutes: Routes = [
     {
         path: '',
-        redirectTo: '/home',
+        redirectTo: '/login',
         pathMatch: 'full'
     },
-    {
-        path: 'home',
-        component: HomeComponent,
-        children: [
-            {path: 'about', component: AboutComponent},
-            {path: 'login', component: LoginComponent},
-            {path: 'register', component: RegisterComponent},
-            {path: 'confirmRegistration/:username', component: RegistrationConfirmationComponent},
-            {path: 'resendCode', component: ResendCodeComponent},
-            {path: 'forgotPassword/:email', component: ForgotPassword2Component},
-            {path: 'forgotPassword', component: ForgotPasswordStep1Component},
-            {path: 'newPassword', component: NewPasswordComponent},
-            {path: '', component: HomeLandingComponent}
-        ]
-    }
+    {path: 'about', component: AboutComponent},
+    {path: 'login', component: LoginComponent},
+    {path: 'register', component: RegisterComponent},
+    {path: 'confirmRegistration/:username', component: RegistrationConfirmationComponent},
+    {path: 'resendCode', component: ResendCodeComponent},
+    {path: 'forgotPassword/:email', component: ForgotPassword2Component},
+    {path: 'forgotPassword', component: ForgotPasswordStep1Component},
+    {path: 'newPassword', component: NewPasswordComponent},
+    {path: '', component: HomeLandingComponent}
 ];
 
 const secureHomeRoutes: Routes = [
@@ -72,13 +66,7 @@ const routes: Routes = [
 
 ];
 
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes)],
-//   exports: [RouterModule]
-// })
-
 export const appRoutingProviders: any[] = [];
 
 export const AppRoutingModule: ModuleWithProviders = RouterModule.forRoot(routes);
 
-// export class AppRoutingModule { }
