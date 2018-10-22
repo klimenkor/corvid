@@ -8,6 +8,13 @@ const awsServerlessExpressMiddleware = require('aws-serverless-express/middlewar
 const app = express()
 const router = express.Router()
 const aws = require("aws-sdk");
+const shortid = require('shortid');
+
+aws.config.update({
+    region: "us-east-1"
+});
+var client = new aws.DynamoDB.DocumentClient();
+
 
 app.set('view engine', 'pug')
 
@@ -33,18 +40,10 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/sam', (req, res) => {
-  res.sendFile(`${__dirname}/sam-logo.png`)
-})
-
 router.get('/events/:from-:to', (req, res) => {
     const from = parseInt(req.params.from);
     const to = parseInt(req.params.to);
 
-    aws.config.update({
-        region: "us-east-1"
-    });
-    
     var params = {
         TableName : "events",
         KeyConditionExpression: "userid = :i AND happened BETWEEN :from AND :to",
@@ -55,7 +54,6 @@ router.get('/events/:from-:to', (req, res) => {
         }
     };
 
-    var client = new aws.DynamoDB.DocumentClient();
 
     client.query(params, function(err, data) {
         if(err){
@@ -65,6 +63,130 @@ router.get('/events/:from-:to', (req, res) => {
             res.json(data.Items);
         }
     });
+})
+
+// SELECT
+router.get('/settings/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    aws.config.update({
+        region: "us-east-1"
+    });
+    
+    var params = {
+        TableName : "settings",
+        KeyConditionExpression: "#userid = :id",
+        ExpressionAttributeNames: {
+            "#userid": "userid"
+        },
+        ExpressionAttributeValues: {
+            ":id": userId
+        }
+    };
+
+    client.query(params, function(err, data) {
+        if(err){
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        }
+        else{
+            console.log("Query succeeded.");
+        data.Items.forEach(function(item) {
+                console.log(item);
+            });
+        }
+    });
+})
+
+// INSERT
+router.post('/settings', (req, res) => {
+    const userId = req.body.userId;
+    const alarmEmail =  req.body.alarmEmail;
+    const labels = req.body.labels;
+    const emailPattern = req.body.emailPattern;
+
+    var item = {
+        "userid": {"S":userId},
+        "email_pattern": {"S":emailPattern},
+        "alarm_email": {"S":alarmEmail},
+        "labels": {"L":labels}
+    }    
+    var params = {
+        TableName:"settings",
+        Item: item
+    };
+
+    // console.log(shortid.generate());
+    // console.log(shortid.generate());
+    // console.log(shortid.generate());
+    // console.log(shortid.generate());
+    // console.log(shortid.generate());
+
+    client.put(params, function(err, data) {
+        if (err) {
+            console.log('1');
+            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log('2');
+            console.log("Added item:", JSON.stringify(data, null, 2));
+        }
+    });
+
+    res.status(201).json("");
+})
+
+// UPDATE
+router.put('/settings/:userId', (req, res) => {
+    const userId = getSettings(req.params.userId);
+    const alarmEmail =  req.body.alarmEmail;
+    const labels = req.body.labels;
+    const emailPattern = req.body.emailPattern;
+
+    if (!settings) return res.status(404).json({});
+    var params = {
+        TableName: "settings",
+        Key: {
+            "userid":  userId
+        },
+        UpdateExpression: "set alarm_email = :e, email_pattern=:p, labels=:l",
+        ExpressionAttributeValues:{
+            ":e":alarmEmail,
+            ":p":emailPattern,
+            ":l":labels
+        },
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    client.update(params, function(err, data) {
+        if (err) {
+            console.error("Unable to update setting. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+    
+    res.json(settings)
+})
+
+// DELETE
+router.delete('/settings/:userId', (req, res) => {
+    const userId = getUserIndex(req.params.userId)
+  
+    var params = {
+        TableName: "settings",
+        Key:{
+            "userid": userId
+        }
+    };
+
+    client.delete(params, function(err, data) {
+        if (err) {
+            console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+    
+    res.json(userId);
 })
 
 // router.get('/users/:userId', (req, res) => {

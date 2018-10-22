@@ -39,7 +39,7 @@ Resources:
             - logs:PutLogEvents
             Resource: 
             - arn:aws:logs:*:*:*
-            - arn:aws:dynamodb:us-east-1:558796877616:table/events
+            - arn:aws:dynamodb:us-east-1:558796877616:table/*
 
   LambdaApiGatewayExecutionPermission:
     Type: AWS::Lambda::Permission
