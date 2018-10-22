@@ -6,9 +6,12 @@ import {LoggedInCallback} from '../../service/auth/cognito.service';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'awscognito-angular2-app',
-    templateUrl: './secureHome.html'
+    templateUrl: './secureHome.html',
+    styleUrls: ['./secureHome.scss']
 })
 export class SecureHomeComponent implements OnInit, LoggedInCallback {
+
+    collapedSideBar: boolean;
 
     constructor(public router: Router, public userService: UserLoginService) {
         this.userService.isAuthenticated(this);
@@ -17,6 +20,10 @@ export class SecureHomeComponent implements OnInit, LoggedInCallback {
 
     ngOnInit() {
 
+    }
+
+    receiveCollapsed($event) {
+      this.collapedSideBar = $event;
     }
 
     isLoggedIn(message: string, isLoggedIn: boolean) {

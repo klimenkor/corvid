@@ -4,66 +4,70 @@ import boto3
 import time
 import email
 import datetime
+import re
+
+from boto3.dynamodb.conditions import Key, Attr
+from botocore.exceptions import ClientError
  
-# import botocore
+def send_email(recipient,subject,body):
+    
+    sender = "klimenkor@gmail.com"
+    charset = "UTF-8"
+    region="us-east-1"
+    client = boto3.client('ses',region_name=region)
 
-# def object_ready(bucket,key):
-#     try:
-#         s3 = boto3.resource('s3')
-#         s3.Object(bucket,key).load()
-#     except botocore.exceptions.ClientError as e:
-#         if e.response['Error']['Code'] == "403":
-#             return False
-#         else:
-#             raise
-#     else:
-#         return True
+    try:
+        response = client.send_email(
+            Destination={
+                'ToAddresses': [
+                    recipient,
+                ],
+            },
+            Message={
+                'Body': {
+                    'Text': {
+                        'Charset': charset,
+                        'Data': body,
+                    },
+                },
+                'Subject': {
+                    'Charset': charset,
+                    'Data': subject,
+                },
+            },
+            Source=sender
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("Email sent! Message ID: %s" % (response['MessageId']))
 
-# def catch_email(event, context):
-#     mailBucket = 'corvid-mailbox'
-#     frameBucket = 'ecorvid-frames'
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if o % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
 
-#     s3 = boto3.resource('s3')
-#     ses = event["Records"][0]["ses"]
-#     messageId = ses["mail"]['messageId']
-#     print('>>>>got message %s' % (messageId))
-
-#     attempt = 0
-#     ready = False
-#     while attempt<10:
-#         ready = object_ready(mailBucket, messageId)
-#         if ready:
-#             break
-#         else:
-#             attempt=attempt+1
-#             time.sleep(1)            
-#     if ready:
-#         message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
-#         attachment = message.get_payload()[1]
-#         data = attachment.get_payload(decode=True)
-
-#         s3client = boto3.client('s3')
-#         s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
-#         print('>>>>>saved attachment')
-
-#         body = {
-#             "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data),messageId,frameBucket)
-#         }
-
-#         response = {
-#             "statusCode": 200,
-#             "body": json.dumps(body)
-#         }
-#     else:
-#         body = {
-#             "message": "Message was not found"
-#         }
-
-#         response = {
-#             "statusCode": 404
-#         }
-
-#     return response
+def get_settings(user_id):
+    item = None
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table('settings')
+    try:
+        response = table.get_item(
+            Key={
+                'userid': user_id
+            }
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print(response)
+        item = response['Item']
+ 
+    return item
 
 def save_data(user_id, camera_id, labels,s3key):
     client = boto3.client('dynamodb')
@@ -78,38 +82,7 @@ def save_data(user_id, camera_id, labels,s3key):
         "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
         "labels": {"M":l},
         "frame": {"S":s3key}}
-    client.put_item(TableName="events",Item=item)     
-
-# def send_email(sender,recipient,configuration_set,region,subject,body,charset):
-
-#     client = boto3.client('ses',region_name=region)
-
-#     try:
-#         response = client.send_email(
-#             Destination={
-#                 'ToAddresses': [
-#                     recipient,
-#                 ],
-#             },
-#             Message={
-#                 'Body': {
-#                     'Text': {
-#                         'Charset': charset,
-#                         'Data': body,
-#                     },
-#                 },
-#                 'Subject': {
-#                     'Charset': charset,
-#                     'Data': sbject,
-#                 },
-#             },
-#             Source=sender,
-#             ConfigurationSetName=configuration_set,
-#         )
-#     except ClientError as e:
-#         print(e.response['Error']['Message'])
-#     else:
-#         print("Email sent! Message ID: %s" % (response['MessageId']))
+    client.put_item(TableName="events",Item=item)  
 
 def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1"):
 	rekognition = boto3.client("rekognition", region)
@@ -125,6 +98,24 @@ def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east
 	)
 	return response['Labels']
 
+def parse_subject(subject):
+    userid = ''
+    cameraid = ''
+    parse = re.compile("Motion Detection from User(.*)-Camera(.*)-")
+    found = parse.search(subject)
+    if found is not None and len(found.groups())==2:
+        userid = found.group(1)
+        cameraid = found.group(2)
+
+    return {'userid':userid,'cameraid':cameraid}
+
+def labels_of_concern(alarm_labels,detected_labels):
+    labels = []
+    for label in detected_labels:
+        if label["Name"] in alarm_labels:
+            labels.append(label["Name"])
+    return labels
+
 def catch_email(event, context):
     
     frameBucket = 'corvid-frames'
@@ -137,18 +128,35 @@ def catch_email(event, context):
     message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
     attachment = message.get_payload()[1]
     subject = message['Subject']
-    data = attachment.get_payload(decode=True)
 
-    s3client = boto3.client('s3')
-    s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
-    print('...image saved: %s / %s' % (frameBucket,messageId))
+    ids = parse_subject(subject)
+    user_id = ids['userid']
+    camera_id = ids['cameraid']
+    alarm_email=""
+    alarm_labels=[]
+    if user_id is not None and camera_id is not None:
+        print('...user_id: %s camera_id: %s' % (user_id,camera_id))
+        settings = get_settings(user_id)
+        if settings is not None:
+            data = attachment.get_payload(decode=True)
+            alarm_email = settings['alarm_email']
+            alarm_labels = settings['labels']
+            s3client = boto3.client('s3')
+            s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
+            print('...image saved: %s / %s' % (frameBucket,messageId))
 
-    labels = detect_labels(frameBucket,messageId)
-    if len(labels)>0:
-        save_data("111111", subject, labels, messageId)
-        print("...labels saved")
-    else:
-        s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
+            labels = detect_labels(frameBucket,messageId)
+            if len(labels)>0:
+                save_data(user_id, camera_id, labels, messageId)
+                print("...labels saved")
+                l = labels_of_concern(alarm_labels,labels)
+                if len(l)>0:
+                    labels_string = ','.join(s for s in l)
+                    subject = "Detected on %s: %s "%(camera_id, labels_string)
+                    print("...alarming %s about %s"%(alarm_email,subject))
+                    send_email(alarm_email,subject,'')    
+            else:
+                s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
 
     body = {
         "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data),messageId,frameBucket)

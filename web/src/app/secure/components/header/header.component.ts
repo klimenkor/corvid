@@ -42,11 +42,13 @@ export class HeaderComponent implements OnInit {
     }
 
     isToggled(): boolean {
+      console.log('!');
         const dom: Element = document.querySelector('body');
         return dom.classList.contains(this.pushRightClass);
     }
 
     toggleSidebar() {
+      console.log('!');
         const dom: any = document.querySelector('body');
         dom.classList.toggle(this.pushRightClass);
     }
