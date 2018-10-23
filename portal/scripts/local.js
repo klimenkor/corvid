@@ -1,6 +1,7 @@
 const lambdaFunction = require('../lambda.js')
-// const apiGatewayEvent = require('../mockup-events/api-gateway-settings-get.json')
-const apiGatewayEvent = require('../mockup-events/api-gateway-settings-post.json')
+// const apiGatewayEvent = require('../mockup-events/api-gateway-event.json')
+const apiGatewayEvent = require('../mockup-events/api-gateway-settings-get.json')
+// const apiGatewayEvent = require('../mockup-events/api-gateway-settings-post.json')
 
 const server = lambdaFunction.handler(apiGatewayEvent, {
   succeed: v => {

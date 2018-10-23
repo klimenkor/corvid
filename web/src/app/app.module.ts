@@ -30,6 +30,7 @@ import { UserParametersService } from './service/auth/user-parameters.service';
 import { SidebarComponent } from './secure/components/sidebar/sidebar.component';
 import { HeaderComponent } from './secure/components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SettingsComponent } from './secure/settings/settings.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     DashboardComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

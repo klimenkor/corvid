@@ -1,9 +1,6 @@
-export interface ISettingDetection {
-  userid: string;
-  labels: ILabelSetting[];
-}
-
-export interface ILabelSetting {
-  name: string;
-  enable: boolean;
+export interface ISetting {
+  userId: string;
+  alarm_email: string;
+  email_pattern: string;
+  labels: string[];
 }

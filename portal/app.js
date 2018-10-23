@@ -89,10 +89,7 @@ router.get('/settings/:userId', (req, res) => {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         }
         else{
-            console.log("Query succeeded.");
-        data.Items.forEach(function(item) {
-                console.log(item);
-            });
+            res.json(data.Items);
         }
     });
 })

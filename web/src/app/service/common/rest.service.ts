@@ -6,6 +6,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { CurrentUserService } from './current-user.service';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from './logger.service';
+import { ISetting } from 'src/app/model/_index';
 
 
 const endpoint = 'http' + (environment.ssl ? 's://' : '://') + environment.apiHost;
@@ -36,9 +37,25 @@ export class RestService {
         return body || { };
     }
 
+    // events
     getEvents(fromDay, toDay): Observable<any> {
         return this.http.get(endpoint + 'events/' + fromDay + '-' + toDay).pipe(
         map(this.extractData));
+    }
+
+    // sessings
+    getSettings(userId): Observable<any> {
+      return this.http.get(endpoint + 'settings/' + userId).pipe(
+      map(this.extractData));
+    }
+
+    addSettings(setting: ISetting): Observable<any> {
+      console.log(setting);
+      return this.http.post<any>(endpoint + 'settings', JSON.stringify(setting), httpOptions).pipe(
+        // tslint:disable-next-line:no-shadowed-variable
+        tap((setting) => console.log(`added setting w/ userId=${setting.userId}`)),
+        catchError(this.handleError<any>('addSetting'))
+      );
     }
 
     getProduct(id): Observable<any> {

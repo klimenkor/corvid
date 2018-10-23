@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../../service/common/rest.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { IEvent } from '../../model/event';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { slideToLeft } from '../../router.animations';
@@ -51,7 +50,7 @@ export class DashboardComponent implements OnInit {
     onDateSelection(date: NgbDate) {
       this.fromDate = date;
       this.toDate = this.calendar.getNext(date, 'd', 1);
-      // this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+      this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
       console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
     }
 
