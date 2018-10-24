@@ -38,8 +38,8 @@ export class RestService {
     }
 
     // events
-    getEvents(fromDay, toDay): Observable<any> {
-        return this.http.get(endpoint + 'events/' + fromDay + '-' + toDay).pipe(
+    getEvents(userId, fromDay, toDay): Observable<any> {
+        return this.http.get(endpoint + 'events/' + userId + '/' + fromDay + '-' + toDay).pipe(
         map(this.extractData));
     }
 

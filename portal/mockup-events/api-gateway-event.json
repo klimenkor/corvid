@@ -1,6 +1,6 @@
 {
     "httpMethod": "GET",
-    "path": "/events/20181008000000-20181009000000",
+    "path": "/events/111111/20181022000000-20181023000000",
     "resource": "/{proxy+}",
     "queryStringParameters": {
     },

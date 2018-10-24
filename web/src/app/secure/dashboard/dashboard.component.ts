@@ -32,6 +32,7 @@ import { slideToLeft } from '../../router.animations';
 export class DashboardComponent implements OnInit {
 
     events: IEvent[] = [];
+    userId: string;
     fromDate: NgbDate;
     toDate: NgbDate;
     bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
@@ -48,9 +49,10 @@ export class DashboardComponent implements OnInit {
     }
 
     onDateSelection(date: NgbDate) {
+      this.userId = '111111';
       this.fromDate = date;
       this.toDate = this.calendar.getNext(date, 'd', 1);
-      this.getEvents(this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+      this.getEvents(this.userId, this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
       console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
     }
 
@@ -78,9 +80,9 @@ export class DashboardComponent implements OnInit {
       return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
     }
 
-    getEvents(fromDay, toDay) {
+    getEvents(userId, fromDay, toDay) {
         this.events = [];
-        this.rest.getEvents(fromDay, toDay).subscribe((data: IEvent[]) => {
+        this.rest.getEvents(userId, fromDay, toDay).subscribe((data: IEvent[]) => {
             this.events = data;
         });
     }

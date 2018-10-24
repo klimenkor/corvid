@@ -40,15 +40,16 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/events/:from-:to', (req, res) => {
+router.get('/events/:userId/:from-:to', (req, res) => {
+    const userId = '111111'; //req.params.userId;
     const from = parseInt(req.params.from);
     const to = parseInt(req.params.to);
 
     var params = {
         TableName : "events",
-        KeyConditionExpression: "userid = :i AND happened BETWEEN :from AND :to",
+        KeyConditionExpression: "userid = :id AND happened BETWEEN :from AND :to",
         ExpressionAttributeValues: {
-            ":i": "111111",
+            ":id": userId,
             ":from": from,
             ":to": to
         }
@@ -69,10 +70,6 @@ router.get('/events/:from-:to', (req, res) => {
 router.get('/settings/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    aws.config.update({
-        region: "us-east-1"
-    });
-    
     var params = {
         TableName : "settings",
         KeyConditionExpression: "#userid = :id",
@@ -120,7 +117,6 @@ router.post('/settings', (req, res) => {
 
     client.put(params, function(err, data) {
         if (err) {
-            console.log('1');
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
             console.log('2');
@@ -133,12 +129,12 @@ router.post('/settings', (req, res) => {
 
 // UPDATE
 router.put('/settings/:userId', (req, res) => {
-    const userId = getSettings(req.params.userId);
+    const userId = req.params.userId;
     const alarmEmail =  req.body.alarmEmail;
-    const labels = req.body.labels;
+    const labels = "aaa,aaa";//req.body.labels;
     const emailPattern = req.body.emailPattern;
 
-    if (!settings) return res.status(404).json({});
+    // if (!settings) return res.status(404).json({});
     var params = {
         TableName: "settings",
         Key: {
@@ -148,7 +144,7 @@ router.put('/settings/:userId', (req, res) => {
         ExpressionAttributeValues:{
             ":e":alarmEmail,
             ":p":emailPattern,
-            ":l":labels
+            ":l":labels.split(',')
         },
         ReturnValues: "UPDATED_NEW"
     };
@@ -156,17 +152,19 @@ router.put('/settings/:userId', (req, res) => {
     client.update(params, function(err, data) {
         if (err) {
             console.error("Unable to update setting. Error JSON:", JSON.stringify(err, null, 2));
+            res.status(500).json(data);
         } else {
             console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+            res.status(201).json(data);
         }
     });
+
     
-    res.json(settings)
 })
 
 // DELETE
 router.delete('/settings/:userId', (req, res) => {
-    const userId = getUserIndex(req.params.userId)
+    const userId = req.params.userId;
   
     var params = {
         TableName: "settings",
@@ -180,10 +178,11 @@ router.delete('/settings/:userId', (req, res) => {
             console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
             console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+            res.json(userId);
         }
     });
-    
-    res.json(userId);
+    res.status(201).json("");
+
 })
 
 // router.get('/users/:userId', (req, res) => {

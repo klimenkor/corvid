@@ -107,7 +107,7 @@ def parse_subject(subject):
         userid = found.group(1)
         cameraid = found.group(2)
 
-    return {'userid':userid,'cameraid':cameraid}
+    return [userid,cameraid]
 
 def labels_of_concern(alarm_labels,detected_labels):
     labels = []
@@ -130,8 +130,8 @@ def catch_email(event, context):
     subject = message['Subject']
 
     ids = parse_subject(subject)
-    user_id = ids['userid']
-    camera_id = ids['cameraid']
+    user_id = ids[0]
+    camera_id = ids[1]
     alarm_email=""
     alarm_labels=[]
     if user_id is not None and camera_id is not None:
