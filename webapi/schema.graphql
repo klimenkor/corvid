@@ -1,0 +1,27 @@
+type Profile {
+  UserId: String
+  TierId: String
+#   Email: String!
+#   Labels: [String]
+}
+
+type Query {
+  getProfile(UserId: String!): Profile
+}
+
+input ProfileInput {
+  TierId: String
+#   Email: String
+#   Labels: [String]
+}
+
+type Mutation {
+    addProfile(TierId:String!): Profile
+    saveProfile(UserId: String!, TierId: String!, Email: String!, Labels: [String]): Profile
+    deleteProfile(UserId: ID!): Profile
+}
+
+# type Schema {
+#   query: Query
+#   mutation: Mutation
+# }

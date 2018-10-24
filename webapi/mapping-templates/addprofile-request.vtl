@@ -1,0 +1,10 @@
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "UserId": $util.dynamodb.toDynamoDBJson($ctx.identity.sub)
+    },
+    "attributeValues": {
+        "TierId": $util.dynamodb.toDynamoDBJson($ctx.args.tierid)
+    }
+}

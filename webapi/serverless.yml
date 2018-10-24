@@ -1,0 +1,187 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: webapi # NOTE: update this with your service name
+plugins:
+  - serverless-appsync-plugin
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  apiname: 'corvid'
+  region: 'us-east-1'
+
+functions:
+  hello:
+    handler: handler.hello
+
+custom:
+  accountId: { Ref: AWS::AccountId }
+  appSync:
+    name: ${self:provider.apiname}
+    region: ${self:provider.region}
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: { Ref: AWS::Region }
+      defaultAction: ALLOW
+      userPoolId: "us-east-1_3Kv91pd2A" #{ Ref: UserPool }
+    schema: schema.graphql # In case you want to change it
+    serviceRole: "AppSyncServiceRole"
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: ProfileTableDS
+        description: "DynamoDB Profile Table"
+        config:
+          tableName: { Ref: ProfileTable }
+          serviceRoleArn: { Fn::GetAtt: [ DynamoDBRole, Arn ] }
+    mappingTemplates:
+      - dataSource: ProfileTableDS
+        type: Mutation
+        field: addProfile
+        request: "addprofile-request.vtl"
+        response: "common-response.vtl"
+      - dataSource: ProfileTableDS
+        type: Query
+        field: getProfile
+        request: "getprofile-request.vtl"
+        response: "common-response.vtl"
+      - dataSource: ProfileTableDS
+        type: Mutation
+        field: saveProfile
+        request: "saveprofile-request.vtl"
+        response: "common-response.vtl"
+      - dataSource: ProfileTableDS
+        type: Mutation
+        field: deleteProfile
+        request: "deleteprofile-request.vtl"
+        response: "common-response.vtl"
+
+resources:
+  Resources:
+    # Amazon Cognito user pool
+    # UserPool:
+    #   Type: "AWS::Cognito::UserPool"
+    #   Description: "An Amazon Cognito user pool for authenticating users"
+    #   Properties:
+    #     UserPoolName: ecorvid
+
+    # An app client for the Amazon Cognito user pool
+    # UserPoolClient:
+    #   Type: "AWS::Cognito::UserPoolClient"
+    #   Description: "App Client used by AWS AppSync"
+    #   Properties:
+    #     ClientName: corvid
+    #     GenerateSecret: false
+    #     UserPoolId: { Ref: UserPool }
+
+    # DynamoDB Table
+    ProfileTable:
+      Type: "AWS::DynamoDB::Table"
+      Description: "Data Store for AWS AppSync Profile Type"
+      Properties:
+        TableName: Profile
+        AttributeDefinitions:
+          - AttributeName: "UserId"
+            AttributeType: "S"
+          - AttributeName: "TierId"
+            AttributeType: "S"
+          # - AttributeName: "Email"
+          #   AttributeType: "S"
+          # - AttributeName: "Labels"
+          #   AttributeType: "L"
+        KeySchema:
+          - AttributeName: "UserId"
+            KeyType: "HASH"
+          - AttributeName: "TierId"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    # IAM Policy to allow working with DynamoDB
+    AppSyncDynamoDBPolicy:
+      Type: "AWS::IAM::ManagedPolicy"
+      Properties:
+        Description: "Managed Policy to allow AWS AppSync to access tables in DynamoDB"
+        Path: /appsync/
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+                - dynamodb:UpdateItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource: 
+                - { Fn::Join: [ '', [ { Fn::GetAtt: [ ProfileTable, Arn ] }, '/*' ] ] }
+
+    # IAM Role for implementing the AppSync / DynamoDB policy
+    DynamoDBRole:
+      Type: "AWS::IAM::Role"
+      Description: "IAM Role for allowing AppSync to access DynamoDB"
+      DependsOn:
+        - AppSyncDynamoDBPolicy
+      Properties:
+        RoleName: ${self:provider.apiname}-appsync-dynamodb-role
+        ManagedPolicyArns:
+          - Ref: AppSyncDynamoDBPolicy
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - appsync.amazonaws.com        
+
+
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+# you can define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**                  

@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  Settings:
+    Type: AWS::Serverless::SimpleTable
+  SettingsApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs8.10
+      CodeUri: ./api
+      Handler: settings.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref settings
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        AddSetting:
+          Type: Api
+          Properties:
+            Path: /settings
+            Method: post
+        GetSetting:
+          Type: Api
+          Properties:
+            Path: /settings/{id}
+            Method: get
+        UpdateSetting:
+          Type: Api
+          Properties:
+            Path: /books/{id}
+            Method: put
+        DeleteSetting:
+          Type: Api
+          Properties:
+            Path: /books/{id}
+            Method: delete
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
