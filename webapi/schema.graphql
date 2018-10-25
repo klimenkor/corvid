@@ -1,27 +1,33 @@
 type Profile {
-  UserId: String
-  TierId: String
-#   Email: String!
-#   Labels: [String]
+  userid: String!
+  tierid: String!
+  email: String!
+  labels: [String]
+}
+
+type Label {
+  Key: String
+  Value: Float
+}
+
+type Event {
+  userid: String!
+  cameraid: String!
+  happened: Int!
+  labels: [Label]
 }
 
 type Query {
-  getProfile(UserId: String!): Profile
-}
-
-input ProfileInput {
-  TierId: String
-#   Email: String
-#   Labels: [String]
+  getProfile(userid: String!): Profile
+  getEvents(userid: String!): Event
 }
 
 type Mutation {
-    addProfile(TierId:String!): Profile
-    saveProfile(UserId: String!, TierId: String!, Email: String!, Labels: [String]): Profile
-    deleteProfile(UserId: ID!): Profile
+  saveProfile(tierid:String!, email:String!, labels: [String]): Profile
 }
 
-# type Schema {
-#   query: Query
-#   mutation: Mutation
-# }
+type Schema {
+  query: Query
+  mutation: Mutation
+}
+

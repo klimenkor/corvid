@@ -1,23 +1,9 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: webapi # NOTE: update this with your service name
+service: webapi 
 plugins:
   - serverless-appsync-plugin
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+parameters:
+  shouldcreatetable: "false"
 
 provider:
   name: aws
@@ -46,71 +32,67 @@ custom:
         name: ProfileTableDS
         description: "DynamoDB Profile Table"
         config:
-          tableName: { Ref: ProfileTable }
-          serviceRoleArn: { Fn::GetAtt: [ DynamoDBRole, Arn ] }
+          tableName: "profile"
+          serviceRoleArn: "arn:aws:iam::558796877616:role/corvid-appsync-dynamodb-role"
+      - type: AMAZON_DYNAMODB
+        name: EventsTableDS
+        description: "DynamoDB Profile Table"
+        config:
+          tableName: "events"
+          serviceRoleArn: "arn:aws:iam::558796877616:role/corvid-appsync-dynamodb-role"
     mappingTemplates:
-      - dataSource: ProfileTableDS
-        type: Mutation
-        field: addProfile
-        request: "addprofile-request.vtl"
-        response: "common-response.vtl"
-      - dataSource: ProfileTableDS
-        type: Query
-        field: getProfile
-        request: "getprofile-request.vtl"
-        response: "common-response.vtl"
       - dataSource: ProfileTableDS
         type: Mutation
         field: saveProfile
         request: "saveprofile-request.vtl"
         response: "common-response.vtl"
       - dataSource: ProfileTableDS
-        type: Mutation
-        field: deleteProfile
-        request: "deleteprofile-request.vtl"
+        type: Query
+        field: getProfile
+        request: "getprofile-request.vtl"
         response: "common-response.vtl"
+      - dataSource: EventsTableDS
+        type: Query
+        field: getEvents
+        request: "getevents-request.vtl"
+        response: "common-response.vtl"  
 
 resources:
   Resources:
-    # Amazon Cognito user pool
-    # UserPool:
-    #   Type: "AWS::Cognito::UserPool"
-    #   Description: "An Amazon Cognito user pool for authenticating users"
-    #   Properties:
-    #     UserPoolName: ecorvid
 
-    # An app client for the Amazon Cognito user pool
-    # UserPoolClient:
-    #   Type: "AWS::Cognito::UserPoolClient"
-    #   Description: "App Client used by AWS AppSync"
+    # ProfileTable:
+    #   Type: "AWS::DynamoDB::Table"
+    #   Description: "Data Store for AWS AppSync Profile Type"
     #   Properties:
-    #     ClientName: corvid
-    #     GenerateSecret: false
-    #     UserPoolId: { Ref: UserPool }
+    #     TableName: profile
+    #     AttributeDefinitions:
+    #       - AttributeName: "userid"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "userid"
+    #         KeyType: "HASH"
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 5
+    #       WriteCapacityUnits: 5
 
-    # DynamoDB Table
-    ProfileTable:
-      Type: "AWS::DynamoDB::Table"
-      Description: "Data Store for AWS AppSync Profile Type"
-      Properties:
-        TableName: Profile
-        AttributeDefinitions:
-          - AttributeName: "UserId"
-            AttributeType: "S"
-          - AttributeName: "TierId"
-            AttributeType: "S"
-          # - AttributeName: "Email"
-          #   AttributeType: "S"
-          # - AttributeName: "Labels"
-          #   AttributeType: "L"
-        KeySchema:
-          - AttributeName: "UserId"
-            KeyType: "HASH"
-          - AttributeName: "TierId"
-            KeyType: "RANGE"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+    # EventsTable:
+    #   Type: "AWS::DynamoDB::Table"
+    #   Description: "Data Store for AWS AppSync event Type"
+    #   Properties:
+    #     TableName: events
+    #     AttributeDefinitions:
+    #       - AttributeName: "userid"
+    #         AttributeType: "S"
+    #       - AttributeName: "happend"
+    #         AttributeType: "N"
+    #     KeySchema:
+    #       - AttributeName: "userid"
+    #         KeyType: "HASH"
+    #       - AttributeName: "happend"
+    #         KeyType: "RANGE"
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 5
+    #       WriteCapacityUnits: 5
 
     # IAM Policy to allow working with DynamoDB
     AppSyncDynamoDBPolicy:
@@ -130,7 +112,7 @@ resources:
                 - dynamodb:Query
                 - dynamodb:Scan
               Resource: 
-                - { Fn::Join: [ '', [ { Fn::GetAtt: [ ProfileTable, Arn ] }, '/*' ] ] }
+                - arn:aws:dynamodb:us-east-1:558796877616:table/*
 
     # IAM Role for implementing the AppSync / DynamoDB policy
     DynamoDBRole:

@@ -1,13 +1,8 @@
 {
     "version": "2017-02-28",
-    "operation": "UpdateItem",
+    "operation": "PutItem",
     "key": {
-        "UserId": $util.dynamodb.toDynamoDBJson($ctx.identity.sub)
+        "userid": $util.dynamodb.toDynamoDBJson($ctx.identity.sub)
     },
-    "attributeValues": {
-        "Email": $util.dynamodb.toDynamoDBJson($ctx.args.email),
-        "TierId": $util.dynamodb.toDynamoDBJson($ctx.args.tierid),
-        "Labels": $util.dynamodb.toDynamoDBJson($ctx.args.lables)
-    }
-
+    "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args)
 }
