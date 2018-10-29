@@ -1,0 +1,34 @@
+type User @model {
+  id: ID!
+  email: String!
+  labels: [String],
+  cameras: [Camera] @connection (name: "UserCameras")
+  tier: Tier @connection (name: "UserTier")
+}
+
+type Tier @model {
+  id: ID!
+  name: String!
+  user: User @connection (name: "UserTier")
+}
+
+type Camera @model {
+  id: ID!
+  name: String!
+  user: User @connection (name: "UserCameras")
+  motions: Motion @connection (name: "CameraMotions")
+}
+
+type Label {
+  name: String,
+  confidence: Float
+}
+
+type Motion @model {
+  id: ID!
+  labels: [Label]
+  frame: String!
+  user: Camera @connection (name: "CameraMotions")
+}
+
+

@@ -1,0 +1,209 @@
+type User {
+  id: ID!
+  email: String!
+  labels: [String]
+  cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
+}
+
+type Camera {
+  id: ID!
+  name: String!
+  user: User
+}
+
+type Label {
+  name: String
+  confidence: Float
+}
+
+type Motion {
+  id: ID!
+  labels: [Label]
+  frame: String!
+  user: User
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  email: ModelStringFilterInput
+  labels: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getCamera(id: ID!): Camera
+  listCameras(filter: ModelCameraFilterInput, limit: Int, nextToken: String): ModelCameraConnection
+  getMotion(id: ID!): Motion
+  listMotions(filter: ModelMotionFilterInput, limit: Int, nextToken: String): ModelMotionConnection
+}
+
+input CreateUserInput {
+  email: String!
+  labels: [String]
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: String
+  labels: [String]
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  createCamera(input: CreateCameraInput!): Camera
+  updateCamera(input: UpdateCameraInput!): Camera
+  deleteCamera(input: DeleteCameraInput!): Camera
+  createMotion(input: CreateMotionInput!): Motion
+  updateMotion(input: UpdateMotionInput!): Motion
+  deleteMotion(input: DeleteMotionInput!): Motion
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateCamera: Camera @aws_subscribe(mutations: ["createCamera"])
+  onUpdateCamera: Camera @aws_subscribe(mutations: ["updateCamera"])
+  onDeleteCamera: Camera @aws_subscribe(mutations: ["deleteCamera"])
+  onCreateMotion: Motion @aws_subscribe(mutations: ["createMotion"])
+  onUpdateMotion: Motion @aws_subscribe(mutations: ["updateMotion"])
+  onDeleteMotion: Motion @aws_subscribe(mutations: ["deleteMotion"])
+}
+
+type ModelCameraConnection {
+  items: [Camera]
+  nextToken: String
+}
+
+input ModelCameraFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelCameraFilterInput]
+  or: [ModelCameraFilterInput]
+  not: ModelCameraFilterInput
+}
+
+input CreateCameraInput {
+  name: String!
+  cameraUserId: ID
+}
+
+input UpdateCameraInput {
+  id: ID!
+  name: String
+  cameraUserId: ID
+}
+
+input DeleteCameraInput {
+  id: ID
+}
+
+input LabelInput {
+  name: String
+  confidence: Float
+}
+
+type ModelMotionConnection {
+  items: [Motion]
+  nextToken: String
+}
+
+input ModelMotionFilterInput {
+  id: ModelIDFilterInput
+  frame: ModelStringFilterInput
+  and: [ModelMotionFilterInput]
+  or: [ModelMotionFilterInput]
+  not: ModelMotionFilterInput
+}
+
+input CreateMotionInput {
+  labels: [LabelInput]
+  frame: String!
+  motionUserId: ID
+}
+
+input UpdateMotionInput {
+  id: ID!
+  labels: [LabelInput]
+  frame: String
+  motionUserId: ID
+}
+
+input DeleteMotionInput {
+  id: ID
+}
