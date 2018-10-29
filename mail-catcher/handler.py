@@ -9,7 +9,7 @@ import re
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
  
-def send_email(recipient,subject,body):
+def send_email(recipient,subject,body,html):
     
     sender = "klimenkor@gmail.com"
     charset = "UTF-8"
@@ -29,6 +29,10 @@ def send_email(recipient,subject,body):
                         'Charset': charset,
                         'Data': body,
                     },
+                    'Html': {
+                        'Charset': charset,
+                        'Data': html,
+                    }
                 },
                 'Subject': {
                     'Charset': charset,
@@ -123,6 +127,7 @@ def catch_email(event, context):
     item = event["Records"][0]["s3"]
     mailBucket = item["bucket"]["name"]
     messageId = item["object"]["key"]
+    bucketPath = 'https://s3.amazonaws.com/corvid-frames/'
 
     print('...new email: %s / %s' % (mailBucket,messageId))
     message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
@@ -153,8 +158,9 @@ def catch_email(event, context):
                 if len(l)>0:
                     labels_string = ','.join(s for s in l)
                     subject = "Detected on %s: %s "%(camera_id, labels_string)
+                    html = "<body><img src=\"%s%s\" width=\"640\"/><body>"%(bucketPath,messageId) 
                     print("...alarming %s about %s"%(alarm_email,subject))
-                    send_email(alarm_email,subject,'')    
+                    send_email(alarm_email,subject,'',html)    
             else:
                 s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
 
