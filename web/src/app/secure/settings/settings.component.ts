@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../../service/common/rest.service';
 import { ISetting } from 'src/app/model/_index';
+import { AmplifyService } from 'aws-amplify-angular';
 
 @Component({
   selector: 'app-settings',
@@ -13,7 +14,10 @@ export class SettingsComponent implements OnInit {
   userId = '111111';
 
   constructor(
-    public rest: RestService) {
+    public rest: RestService,
+    public amplifyService: AmplifyService ) {
+
+      this.amplifyService = amplifyService;
     }
 
   ngOnInit() {

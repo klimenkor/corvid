@@ -13,6 +13,10 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       }
       nextToken
     }
+    tier {
+      id
+      name
+    }
   }
 }
 `;
@@ -27,6 +31,10 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         name
       }
       nextToken
+    }
+    tier {
+      id
+      name
     }
   }
 }
@@ -43,6 +51,46 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       }
       nextToken
     }
+    tier {
+      id
+      name
+    }
+  }
+}
+`;
+export const createTier = `mutation CreateTier($input: CreateTierInput!) {
+  createTier(input: $input) {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
+  }
+}
+`;
+export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
+  updateTier(input: $input) {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
+  }
+}
+`;
+export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
+  deleteTier(input: $input) {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -54,6 +102,14 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
       id
       email
       labels
+    }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
     }
   }
 }
@@ -67,6 +123,14 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
       email
       labels
     }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
+    }
   }
 }
 `;
@@ -78,6 +142,14 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
       id
       email
       labels
+    }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
     }
   }
 }
@@ -92,8 +164,7 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }
@@ -108,8 +179,7 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }
@@ -124,8 +194,7 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }

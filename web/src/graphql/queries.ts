@@ -13,6 +13,10 @@ export const getUser = `query GetUser($id: ID!) {
       }
       nextToken
     }
+    tier {
+      id
+      name
+    }
   }
 }
 `;
@@ -33,6 +37,41 @@ export const listUsers = `query ListUsers(
         }
         nextToken
       }
+      tier {
+        id
+        name
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const getTier = `query GetTier($id: ID!) {
+  getTier(id: $id) {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
+  }
+}
+`;
+export const listTiers = `query ListTiers(
+  $filter: ModelTierFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTiers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      user {
+        id
+        email
+        labels
+      }
     }
     nextToken
   }
@@ -46,6 +85,14 @@ export const getCamera = `query GetCamera($id: ID!) {
       id
       email
       labels
+    }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
     }
   }
 }
@@ -64,6 +111,14 @@ export const listCameras = `query ListCameras(
         email
         labels
       }
+      motions {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+      }
     }
     nextToken
   }
@@ -79,8 +134,7 @@ export const getMotion = `query GetMotion($id: ID!) {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }
@@ -100,8 +154,7 @@ export const listMotions = `query ListMotions(
       frame
       user {
         id
-        email
-        labels
+        name
       }
     }
     nextToken

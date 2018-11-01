@@ -13,6 +13,10 @@ export const onCreateUser = `subscription OnCreateUser {
       }
       nextToken
     }
+    tier {
+      id
+      name
+    }
   }
 }
 `;
@@ -27,6 +31,10 @@ export const onUpdateUser = `subscription OnUpdateUser {
         name
       }
       nextToken
+    }
+    tier {
+      id
+      name
     }
   }
 }
@@ -43,6 +51,46 @@ export const onDeleteUser = `subscription OnDeleteUser {
       }
       nextToken
     }
+    tier {
+      id
+      name
+    }
+  }
+}
+`;
+export const onCreateTier = `subscription OnCreateTier {
+  onCreateTier {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
+  }
+}
+`;
+export const onUpdateTier = `subscription OnUpdateTier {
+  onUpdateTier {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
+  }
+}
+`;
+export const onDeleteTier = `subscription OnDeleteTier {
+  onDeleteTier {
+    id
+    name
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -54,6 +102,14 @@ export const onCreateCamera = `subscription OnCreateCamera {
       id
       email
       labels
+    }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
     }
   }
 }
@@ -67,6 +123,14 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
       email
       labels
     }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
+    }
   }
 }
 `;
@@ -78,6 +142,14 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
       id
       email
       labels
+    }
+    motions {
+      id
+      labels {
+        name
+        confidence
+      }
+      frame
     }
   }
 }
@@ -92,8 +164,7 @@ export const onCreateMotion = `subscription OnCreateMotion {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }
@@ -108,8 +179,7 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }
@@ -124,8 +194,7 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
     frame
     user {
       id
-      email
-      labels
+      name
     }
   }
 }

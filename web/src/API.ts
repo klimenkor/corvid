@@ -4,27 +4,46 @@
 export type CreateUserInput = {
   email: string,
   labels?: Array< string | null > | null,
+  userTierId?: string | null,
 };
 
 export type UpdateUserInput = {
   id: string,
   email?: string | null,
   labels?: Array< string | null > | null,
+  userTierId?: string | null,
 };
 
 export type DeleteUserInput = {
   id?: string | null,
 };
 
+export type CreateTierInput = {
+  name: string,
+  tierUserId?: string | null,
+};
+
+export type UpdateTierInput = {
+  id: string,
+  name?: string | null,
+  tierUserId?: string | null,
+};
+
+export type DeleteTierInput = {
+  id?: string | null,
+};
+
 export type CreateCameraInput = {
   name: string,
   cameraUserId?: string | null,
+  cameraMotionsId?: string | null,
 };
 
 export type UpdateCameraInput = {
   id: string,
   name?: string | null,
   cameraUserId?: string | null,
+  cameraMotionsId?: string | null,
 };
 
 export type DeleteCameraInput = {
@@ -88,6 +107,14 @@ export type ModelStringFilterInput = {
   beginsWith?: string | null,
 };
 
+export type ModelTierFilterInput = {
+  id?: ModelIDFilterInput | null,
+  name?: ModelStringFilterInput | null,
+  and?: Array< ModelTierFilterInput | null > | null,
+  or?: Array< ModelTierFilterInput | null > | null,
+  not?: ModelTierFilterInput | null,
+};
+
 export type ModelCameraFilterInput = {
   id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
@@ -123,6 +150,11 @@ export type CreateUserMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
+    } | null,
   } | null,
 };
 
@@ -144,6 +176,11 @@ export type UpdateUserMutation = {
         name: string,
       } | null > | null,
       nextToken: string | null,
+    } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
     } | null,
   } | null,
 };
@@ -167,6 +204,65 @@ export type DeleteUserMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
+    } | null,
+  } | null,
+};
+
+export type CreateTierMutationVariables = {
+  input: CreateTierInput,
+};
+
+export type CreateTierMutation = {
+  createTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
+  } | null,
+};
+
+export type UpdateTierMutationVariables = {
+  input: UpdateTierInput,
+};
+
+export type UpdateTierMutation = {
+  updateTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
+  } | null,
+};
+
+export type DeleteTierMutationVariables = {
+  input: DeleteTierInput,
+};
+
+export type DeleteTierMutation = {
+  deleteTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -184,6 +280,16 @@ export type CreateCameraMutation = {
       id: string,
       email: string,
       labels: Array< string | null > | null,
+    } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
     } | null,
   } | null,
 };
@@ -203,6 +309,16 @@ export type UpdateCameraMutation = {
       email: string,
       labels: Array< string | null > | null,
     } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
+    } | null,
   } | null,
 };
 
@@ -220,6 +336,16 @@ export type DeleteCameraMutation = {
       id: string,
       email: string,
       labels: Array< string | null > | null,
+    } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
     } | null,
   } | null,
 };
@@ -239,10 +365,9 @@ export type CreateMotionMutation = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -262,10 +387,9 @@ export type UpdateMotionMutation = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -285,10 +409,9 @@ export type DeleteMotionMutation = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -311,6 +434,11 @@ export type GetUserQuery = {
         name: string,
       } | null > | null,
       nextToken: string | null,
+    } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
     } | null,
   } | null,
 };
@@ -338,6 +466,53 @@ export type ListUsersQuery = {
         } | null > | null,
         nextToken: string | null,
       } | null,
+      tier:  {
+        __typename: "Tier",
+        id: string,
+        name: string,
+      } | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type GetTierQueryVariables = {
+  id: string,
+};
+
+export type GetTierQuery = {
+  getTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
+  } | null,
+};
+
+export type ListTiersQueryVariables = {
+  filter?: ModelTierFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListTiersQuery = {
+  listTiers:  {
+    __typename: "ModelTierConnection",
+    items:  Array< {
+      __typename: "Tier",
+      id: string,
+      name: string,
+      user:  {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -357,6 +532,16 @@ export type GetCameraQuery = {
       id: string,
       email: string,
       labels: Array< string | null > | null,
+    } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
     } | null,
   } | null,
 };
@@ -380,6 +565,16 @@ export type ListCamerasQuery = {
         email: string,
         labels: Array< string | null > | null,
       } | null,
+      motions:  {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -400,10 +595,9 @@ export type GetMotionQuery = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -427,10 +621,9 @@ export type ListMotionsQuery = {
       } | null > | null,
       frame: string,
       user:  {
-        __typename: "User",
+        __typename: "Camera",
         id: string,
-        email: string,
-        labels: Array< string | null > | null,
+        name: string,
       } | null,
     } | null > | null,
     nextToken: string | null,
@@ -452,6 +645,11 @@ export type OnCreateUserSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
+    } | null,
   } | null,
 };
 
@@ -469,6 +667,11 @@ export type OnUpdateUserSubscription = {
         name: string,
       } | null > | null,
       nextToken: string | null,
+    } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
     } | null,
   } | null,
 };
@@ -488,6 +691,53 @@ export type OnDeleteUserSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    tier:  {
+      __typename: "Tier",
+      id: string,
+      name: string,
+    } | null,
+  } | null,
+};
+
+export type OnCreateTierSubscription = {
+  onCreateTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
+  } | null,
+};
+
+export type OnUpdateTierSubscription = {
+  onUpdateTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
+  } | null,
+};
+
+export type OnDeleteTierSubscription = {
+  onDeleteTier:  {
+    __typename: "Tier",
+    id: string,
+    name: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -501,6 +751,16 @@ export type OnCreateCameraSubscription = {
       id: string,
       email: string,
       labels: Array< string | null > | null,
+    } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
     } | null,
   } | null,
 };
@@ -516,6 +776,16 @@ export type OnUpdateCameraSubscription = {
       email: string,
       labels: Array< string | null > | null,
     } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
+    } | null,
   } | null,
 };
 
@@ -529,6 +799,16 @@ export type OnDeleteCameraSubscription = {
       id: string,
       email: string,
       labels: Array< string | null > | null,
+    } | null,
+    motions:  {
+      __typename: "Motion",
+      id: string,
+      labels:  Array< {
+        __typename: "Label",
+        name: string | null,
+        confidence: number | null,
+      } | null > | null,
+      frame: string,
     } | null,
   } | null,
 };
@@ -544,10 +824,9 @@ export type OnCreateMotionSubscription = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -563,10 +842,9 @@ export type OnUpdateMotionSubscription = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };
@@ -582,10 +860,9 @@ export type OnDeleteMotionSubscription = {
     } | null > | null,
     frame: string,
     user:  {
-      __typename: "User",
+      __typename: "Camera",
       id: string,
-      email: string,
-      labels: Array< string | null > | null,
+      name: string,
     } | null,
   } | null,
 };

@@ -31,7 +31,7 @@ import { SidebarComponent } from './secure/components/sidebar/sidebar.component'
 import { HeaderComponent } from './secure/components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsComponent } from './secure/settings/settings.component';
-
+import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
 
 @NgModule({
   declarations: [
@@ -63,7 +63,8 @@ import { SettingsComponent } from './secure/settings/settings.component';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    AmplifyAngularModule
   ],
   providers: [
       CognitoUtil,
@@ -72,6 +73,7 @@ import { SettingsComponent } from './secure/settings/settings.component';
       UserRegistrationService,
       UserLoginService,
       UserParametersService,
+      AmplifyService,
     { provide: LoggerService, useClass: ConsoleLoggerService }
   ],
   bootstrap: [AppComponent]

@@ -6,8 +6,8 @@
             "Outputs.UserPoolId"
         ]
     },
-    "schemaGraphql": "s3://web-20181026180214-deployment/amplify-appsync-files/schema.graphql.1540772820026",
+    "schemaGraphql": "s3://web-20181026180214-deployment/amplify-appsync-files/schema.graphql.1540773446319",
     "ResolverBucket": "web-20181026180214-deployment",
     "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1540772820026"
+    "DeploymentTimestamp": "1540773446319"
 }

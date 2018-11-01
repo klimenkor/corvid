@@ -37,6 +37,7 @@ provider:
     - Effect: "Allow"
       Action: 
         - "rekognition:DetectLabels"
+        - "rekognition:DetectFaces"
         - "ses:SendEmail"
       Resource: "*"
     - Effect: "Allow"

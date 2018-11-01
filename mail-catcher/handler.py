@@ -102,6 +102,19 @@ def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east
 	)
 	return response['Labels']
 
+def detect_faces(bucket, key, attributes=['ALL'], region="us-east-1"):
+	rekognition = boto3.client("rekognition", region)
+	response = rekognition.detect_faces(
+	    Image={
+			"S3Object": {
+				"Bucket": bucket,
+				"Name": key,
+			}
+		},
+	    Attributes=attributes,
+	)
+	return response['FaceDetails']
+
 def parse_subject(subject):
     userid = ''
     cameraid = ''
@@ -155,12 +168,46 @@ def catch_email(event, context):
                 save_data(user_id, camera_id, labels, messageId)
                 print("...labels saved")
                 l = labels_of_concern(alarm_labels,labels)
+                # include only labels of concern
                 if len(l)>0:
+
                     labels_string = ','.join(s for s in l)
-                    subject = "Detected on %s: %s "%(camera_id, labels_string)
-                    html = "<body><img src=\"%s%s\" width=\"640\"/><body>"%(bucketPath,messageId) 
+                    timestamp = datetime.datetime.today().strftime('%m/%d/%Y %H:%M:%S')
+                    subject = " %s: %s at %s"%(camera_id, labels_string, timestamp)
+                    html_body = "<body><ul>"
+                    # faces
+                    for face in detect_faces(frameBucket,messageId):
+                        line = "Face ({Confidence}%)".format(**face)
+                        html_body = html_body + "<li><b>%s</b><ul>"%(line) 
+                        # emotions
+                        for emotion in face['Emotions']:
+                            line = "  {Type} : {Confidence}%".format(**emotion)
+                            html_body = html_body + "<li>%s</li>"%(line) 
+                        html_body = html_body + "</ul><ul>" 
+                        
+                        # quality
+                        for quality, value in face['Quality'].items():
+                            line = "  {quality} : {value}".format(quality=quality, value=value)
+                            html_body = html_body + "<li>%s</li>"%(line) 
+                        html_body = html_body + "</ul><ul>" 
+
+                        # facial features
+                        # FEATURES_BLACKLIST = ("Landmarks", "Emotions", "Pose", "Quality", "BoundingBox", "Confidence")
+                        # for feature, data in face.items():
+                        #     if feature not in FEATURES_BLACKLIST:
+                        #         line = "  {feature}({data['Value']}) : {data['Confidence']}%".format(feature=feature, data=data)  
+                        #         html_body = "<li>%s</li>"%(line)       
+                        # html_body = html_body + "</ul></ul>" 
+                        
+                        html_body = html_body + "</ul>" 
+
+
+                    html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p><body>"%(html_body,bucketPath,messageId) 
                     print("...alarming %s about %s"%(alarm_email,subject))
-                    send_email(alarm_email,subject,'',html)    
+                    send_email(alarm_email,subject,'',html_body)
+
+
+
             else:
                 s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
 
