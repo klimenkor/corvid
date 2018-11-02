@@ -5,14 +5,13 @@
 export const environment = {
   production: false,
   envName: 'dev',
-  apiHost: 'ap2x0k2ppb.execute-api.us-east-1.amazonaws.com/prod/',
+  apiHost: 'https://wh7aunokg5eupnhfo2c5nj66ai.appsync-api.us-east-1.amazonaws.com/graphql',
   ssl: true,
 
   region: 'us-east-1',
-
-  identityPoolId: 'us-east-1:782bd3b6-d761-4bf7-ac25-02a8ea4ee035',
-  userPoolId: 'us-east-1_3Kv91pd2A',
-  clientId: '3vcvfetpd0e0v0gp21aovkg8re',
+  identityPoolId: '',
+  userPoolId: 'us-east-1_zPjv6WY1k',
+  clientId: '2lrjtu9odnmjocgae3ivje07sj',
   rekognitionBucket: 'corvid-frames',
   albumName: '',
   bucketRegion: 'us-east-1',
