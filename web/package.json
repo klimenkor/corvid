@@ -24,7 +24,6 @@
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
     "@ng-bootstrap/ng-bootstrap": "^3.3.0",
-    "amazon-cognito-identity-js": "^3.0.2",
     "angular-fontawesome": "^1.0.0",
     "angular-resource": "^1.7.5",
     "aws-amplify": "^1.1.7",

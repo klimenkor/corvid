@@ -11,27 +11,7 @@
 			"StackId": "arn:aws:cloudformation:us-east-1:558796877616:stack/web-20181026180214/f144c800-d983-11e8-959d-0ecb4f4abeea"
 		}
 	},
-	"auth": {
-		"cognitoa0484166": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/web-20181026180214-deployment/amplify-cfn-templates/auth/cognitoa0484166-cloudformation-template.yml",
-				"logicalId": "authcognitoa0484166"
-			},
-			"lastPushTimeStamp": "2018-10-29T00:40:06.943Z",
-			"output": {
-				"AppClientSecret": "1758fie11vh8ud0no128ul0vn6ogih0uhrikguh4e6ji21ji6ej",
-				"UserPoolId": "us-east-1_6ERiitdKw",
-				"AppClientIDWeb": "76du3rm7jd2bl15m0j3k5mnri2",
-				"AppClientID": "4ijpgeeglibpcuprjt45kmot2k",
-				"IdentityPoolId": "us-east-1:cacd3139-0e3b-463c-a98e-68042e62fd18",
-				"IdentityPoolName": "cognitoa0484166_identitypool_a0484166",
-				"UserPoolName": "cognitoa0484166_userpool_a0484166"
-			},
-			"lastPushDirHash": "toClDX9pdOp2tNm/Vluiwc0pPsk="
-		}
-	},
+	"auth": {},
 	"api": {
 		"api": {
 			"service": "AppSync",
