@@ -1,5 +1,5 @@
 export class CurrentUser {
-  username: string;
-  token: string;
-  refreshToken: string;
+  id: string;
+  email: string;
+  name: string;
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ISetting } from 'src/app/model/_index';
+import { ISetting, CurrentUser } from 'src/app/model/_index';
 import { AmplifyService } from 'aws-amplify-angular';
+import { CognitoUtil } from 'src/app/service/auth/cognito.service';
+import { CurrentUserService } from 'src/app/service/common/current-user.service';
 
 @Component({
   selector: 'app-settings',
@@ -11,18 +13,18 @@ export class SettingsComponent implements OnInit {
 
   setting: ISetting = null;
   userId = '111111';
+  user: CurrentUser;
 
   constructor(
-    public amplifyService: AmplifyService ) {
-
+    private currentUser: CurrentUserService,
+    public amplifyService: AmplifyService,
+    private cognitoUtil: CognitoUtil ) {
       this.amplifyService = amplifyService;
     }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setting = null;
-    // this.rest.getSettings(this.userId).subscribe((data: ISetting[]) => {
-    //     this.setting = data[0];
-    // });
+    this.user = await this.currentUser.get();
   }
 
 }

@@ -29,6 +29,7 @@ import { UserRegistrationService } from './service/auth/user-registration.servic
 import { UserLoginService } from './service/auth/user-login.service';
 import { UserParametersService } from './service/auth/user-parameters.service';
 import { DynamoDBService } from './service/auth/ddb.service';
+import { CurrentUser } from './model/_index';
 
 @NgModule({
   declarations: [
@@ -69,13 +70,14 @@ import { DynamoDBService } from './service/auth/ddb.service';
     HttpClientModule,
     FormsModule,
     NgbModule,
-    AmplifyAngularModule,
+    AmplifyService,
     AwsUtil,
     CognitoUtil,
     UserRegistrationService,
     UserLoginService,
     UserParametersService,
-    DynamoDBService
+    DynamoDBService,
+    CurrentUser
   ],
   bootstrap: [AppComponent]
 })

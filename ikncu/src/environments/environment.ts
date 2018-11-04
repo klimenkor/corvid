@@ -9,7 +9,7 @@ export const environment = {
   ssl: true,
 
   region: 'us-east-1',
-  identityPoolId: '',
+  identityPoolId: 'us-east-1:1aaa072e-635b-43b6-90c8-ffc8985bea4d',
   userPoolId: 'us-east-1_zPjv6WY1k',
   clientId: '2lrjtu9odnmjocgae3ivje07sj',
   rekognitionBucket: 'corvid-frames',
