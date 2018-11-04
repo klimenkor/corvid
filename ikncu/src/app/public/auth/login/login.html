@@ -1,3 +1,63 @@
+<!--Login Page Starts-->
+<section id="login">
+    <div class="container-fluid">
+        <div class="row full-height-vh">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="card gradient-indigo-purple text-center width-400">
+                    <div class="card-img overlap">
+                        <img alt="element 06" class="mb-1" src="assets/img/portrait/avatars/corvid1.png" width="190">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-block">
+                            <h2 class="white">Login</h2>
+                            <form novalidate="" (ngSubmit)="onLogin()" #f="ngForm">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <input id="signupEmail" required type="email" maxlength="100" class="form-control" [(ngModel)]="email" [ngModelOptions]="{standalone: true}">
+                                        <!-- <input type="email" class="form-control" name="inputEmail" id="inputEmail" placeholder="Email" ngModel required email> -->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <input id="signupPassword" required type="password" maxlength="25" class="form-control" length="40" [(ngModel)]="password" [ngModelOptions]="{standalone: true}">
+                                        <!-- <input type="password" class="form-control" name="inputPass" id="inputPass" placeholder="Password" ngModel required> -->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0 ml-3">
+                                                <input type="checkbox" class="custom-control-input" checked id="rememberme">
+                                                <label class="custom-control-label float-left white" for="rememberme">Remember Me</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-pink btn-block btn-raised">Submit</button>
+                                        <button type="button" class="btn btn-secondary btn-block btn-raised">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-left"><a [routerLink]="['/register']"> <i class="fa fa-fw fa-group"></i> Register</a></div>
+                        <div class="float-left"><a [routerLink]="['/forgotPassword']"> <i class="fa fa-fw fa-group"></i> Forgot Password?</a></div>
+                        <div class="float-right"><a [routerLink]="['/resendCode']"> <i class="fa fa-fw fa-group"></i> Resend Confirmation Code</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Login Page Ends-->
+
+<!--
 <div class="container">
   <div class="card card-login mx-auto mt-5">
     <div class="card-header"><h2>Login</h2></div>
@@ -43,4 +103,4 @@
     </div>
   </div>
 </div>
-
+ -->

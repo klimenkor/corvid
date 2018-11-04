@@ -15,7 +15,7 @@ prevTime = 0
 while True:
     ret, frame = video_capture.read()
     frame = cv2.resize(frame, (0, 0), fx=2, fy=2)  # resize frame (optional)
-
+    time.sleep(1)
     curTime = time.time()  # calc fps
     find_results = []
 
