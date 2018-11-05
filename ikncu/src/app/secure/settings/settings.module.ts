@@ -1,17 +1,22 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { SettingsComponent } from './settings.component';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
+import { BasicComponent } from './basic/basic.component';
+import { LabelsComponent } from './labels/labels.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 
 @NgModule({
   imports: [
     BrowserModule,
-    FormsModule,
-    SettingsComponent
+    FormsModule
   ],
-  declarations: [],
+  declarations: [
+    BasicComponent,
+    LabelsComponent,
+    Ng2SmartTableModule
+  ],
   providers: [
     CurrentUserService
   ]

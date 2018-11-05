@@ -21,7 +21,6 @@ import { JwtComponent } from './secure/jwttokens/jwt.component';
 import { DashboardComponent } from './secure/dashboard/dashboard.component';
 import { SidebarComponent } from './secure/components/sidebar/sidebar.component';
 import { HeaderComponent } from './secure/components/header/header.component';
-import { SettingsComponent } from './secure/settings/settings.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AwsUtil } from './service/auth/aws.service';
 import { CognitoUtil } from './service/auth/cognito.service';
@@ -30,6 +29,9 @@ import { UserLoginService } from './service/auth/user-login.service';
 import { UserParametersService } from './service/auth/user-parameters.service';
 import { DynamoDBService } from './service/auth/ddb.service';
 import { CurrentUser } from './model/_index';
+import { LabelsComponent } from './secure/settings/labels/labels.component';
+import { BasicComponent } from './secure/settings/basic/basic.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table/ng2-smart-table.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { CurrentUser } from './model/_index';
     DashboardComponent,
     SidebarComponent,
     HeaderComponent,
-    SettingsComponent
+    BasicComponent,
+    LabelsComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +65,8 @@ import { CurrentUser } from './model/_index';
     AppRoutingModule,
     FormsModule,
     NgbModule,
-    AmplifyAngularModule
+    AmplifyAngularModule,
+    Ng2SmartTableModule
   ],
   providers: [
     BrowserModule,

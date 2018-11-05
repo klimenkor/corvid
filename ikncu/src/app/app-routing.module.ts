@@ -12,7 +12,7 @@ import { SecureHomeComponent } from './secure/landing/securehome.component';
 import { JwtComponent } from './secure/jwttokens/jwt.component';
 import { MyProfileComponent } from './secure/profile/myprofile.component';
 import { UseractivityComponent } from './secure/useractivity/useractivity.component';
-import { SettingsComponent } from './secure/settings/settings.component';
+import { BasicComponent } from './secure/settings/basic/basic.component';
 
 const homeRoutes: Routes = [
     {
@@ -46,7 +46,7 @@ const secureHomeRoutes: Routes = [
         {path: 'dashboard', component: DashboardComponent },
         {path: 'jwttokens', component: JwtComponent},
         {path: 'myprofile', component: MyProfileComponent},
-        {path: 'settings', component: SettingsComponent},
+        {path: 'settings', component: BasicComponent},
         {path: 'useractivity', component: UseractivityComponent},
         {path: '', component: DashboardComponent }
       ]

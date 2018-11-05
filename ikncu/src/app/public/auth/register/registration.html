@@ -1,42 +1,68 @@
-<div class="container">
-  <div class="card card-login mx-auto mt-5">
-    <div class="card-header"><h2>Create account</h2></div>
-    <div class="card-body">
-      <form class="form-signin" method="POST" action="#" role="form">
-        <div *ngIf="errorMessage!=null" class="alert alert-danger">
-            {{ errorMessage }}
+<!--Registration Page Starts-->
+<section id="regestration">
+    <div class="container">
+        <div class="row full-height-vh">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex">
+                            <div class="col-12 col-sm-12 col-md-6 gradient-deep-orange-orange">
+                                <div class="card-block">
+                                    <div class="card-img overlap">
+                                        <img alt="Card image cap" src="assets/img/elements/13.png" width="350" class="mx-auto d-block">
+                                    </div>
+                                    <h2 class="card-title font-large-1 text-center white mt-3">Registration</h2>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-6 d-flex align-items-center">
+                                <div class="card-block mx-auto">
+                                    <form   (ngSubmit)="onRegister()" #f="ngForm">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-user"></i>
+                                                </span>
+                                            </div>
+                                            <input id="signupName" type="text" class="form-control" placeholder="Name" required maxlength="50" class="form-control" [(ngModel)]="registrationUser.name" [ngModelOptions]="{standalone: true}">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="ft-mail"></i>
+                                                </span>
+                                            </div>
+                                            <input id="signupEmail" type="email" class="form-control" placeholder="Email" required maxlength="50" class="form-control" [(ngModel)]="registrationUser.email" [ngModelOptions]="{standalone: true}">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="ft-lock"></i>
+                                                </span>
+                                            </div>
+                                            <input id="signupPassword" type="password" class="form-control" placeholder="Password" required maxlength="25" class="form-control" length="40" [(ngModel)]="registrationUser.password" [ngModelOptions]="{standalone: true}">
+                                        </div>
+                                        <div class="form-group col-sm-offset-1">
+                                            <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                                <input type="checkbox" class="custom-control-input" checked id="terms">
+                                                <label class="custom-control-label pl-2" for="terms">I agree <a>terms and conditions</a></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-offset-1">
+                                            <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                                <p>Already have an account? <a [routerLink]="['/login']"> <i class="fa fa-fw fa-lock"></i>Login</a></p>
+                                              </div>
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button type="button" class="btn btn-warning btn-raised" [disabled]="!f.valid">Get Started</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" for="signupName">Name</label>
-            <input id="signupName" type="text" maxlength="50" class="form-control"
-                  [(ngModel)]="registrationUser.name" [ngModelOptions]="{standalone: true}">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="signupEmail">Email</label>
-            <input id="signupEmail" type="email" maxlength="50" class="form-control"
-                  [(ngModel)]="registrationUser.email" [ngModelOptions]="{standalone: true}">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="signupPhone">Phone number</label>
-            <input id="signupPhone" type="text" maxlength="13" class="form-control"
-                  [(ngModel)]="registrationUser.phone_number" [ngModelOptions]="{standalone: true}">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="signupPassword">Password</label>
-            <input id="signupPassword" type="password" maxlength="25" class="form-control"
-                  placeholder="at least 8 characters" length="40" [(ngModel)]="registrationUser.password"
-                  [ngModelOptions]="{standalone: true}">
-        </div>
-        <div class="form-group">
-            <button (click)="onRegister()" id="signupSubmit" type="submit" class="btn btn-info btn-block">
-                Create your account
-            </button>
-        </div>
-        <hr>
-        <p>Already have an account? <a [routerLink]="['/login']"> <i class="fa fa-fw fa-lock"></i>Login</a></p>
-      </form>
     </div>
-  </div>
-</div>
-
-
+</section>
+<!--Registration Page Ends-->
