@@ -1,21 +1,29 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
+
 import { BasicComponent } from './basic/basic.component';
 import { LabelsComponent } from './labels/labels.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { SettingsComponent } from './settings.component';
+import { CamerasComponent } from './cameras/cameras.component';
+import { FacesComponent } from './faces/faces.component';
 
 
 @NgModule({
   imports: [
-    BrowserModule,
-    FormsModule
+    FormsModule,
+    NgbModule,
+    Ng2SmartTableModule
   ],
   declarations: [
+    SettingsComponent,
     BasicComponent,
     LabelsComponent,
-    Ng2SmartTableModule
+    CamerasComponent,
+    FacesComponent
   ],
   providers: [
     CurrentUserService

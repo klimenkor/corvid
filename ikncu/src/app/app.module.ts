@@ -18,7 +18,6 @@ import { UseractivityComponent } from './secure/useractivity/useractivity.compon
 import { MyProfileComponent } from './secure/profile/myprofile.component';
 import { SecureHomeComponent } from './secure/landing/securehome.component';
 import { JwtComponent } from './secure/jwttokens/jwt.component';
-import { DashboardComponent } from './secure/dashboard/dashboard.component';
 import { SidebarComponent } from './secure/components/sidebar/sidebar.component';
 import { HeaderComponent } from './secure/components/header/header.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,9 +28,8 @@ import { UserLoginService } from './service/auth/user-login.service';
 import { UserParametersService } from './service/auth/user-parameters.service';
 import { DynamoDBService } from './service/auth/ddb.service';
 import { CurrentUser } from './model/_index';
-import { LabelsComponent } from './secure/settings/labels/labels.component';
-import { BasicComponent } from './secure/settings/basic/basic.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table/ng2-smart-table.module';
+import { SettingsModule } from './secure/settings/settings.module';
+import { DashboardModule } from './secure/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -52,11 +50,8 @@ import { Ng2SmartTableModule } from 'ng2-smart-table/ng2-smart-table.module';
     SecureHomeComponent,
     JwtComponent,
     AppComponent,
-    DashboardComponent,
     SidebarComponent,
-    HeaderComponent,
-    BasicComponent,
-    LabelsComponent
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -64,16 +59,15 @@ import { Ng2SmartTableModule } from 'ng2-smart-table/ng2-smart-table.module';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    NgbModule,
     AmplifyAngularModule,
-    Ng2SmartTableModule
+    SettingsModule,
+    DashboardModule
   ],
   providers: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    NgbModule,
     AmplifyService,
     AwsUtil,
     CognitoUtil,

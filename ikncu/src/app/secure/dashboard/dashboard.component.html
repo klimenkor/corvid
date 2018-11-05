@@ -1,55 +1,22 @@
-<div>
-    <div class="row">
-    <form class="form-inline">
-        <div class="form-group">
-            <div class="input-group">
-            <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="onDateSelection($event)"
-                    name="dp" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-                <button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Today</button>
-            </div>
-            </div>
-        </div>
-    </form>
-    </div>
+<!--Tabset Starts-->
+<div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Dashboard</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-block">
+          <ngb-tabset>
 
-    <div class="row">
-        <div class="card-body table-responsive">
-            <table class="table" id="dataTable"  cellspacing="0">
-            <thead>
-                <tr>
-                <th>UserId</th>
-                <th>Time</th>
-                <th>Camera</th>
-                <th>Object</th>
-                <th>Frame</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                <th>UserId</th>
-                <th>Time</th>
-                <th>Camera</th>
-                <th>Object</th>
-                <th>Frame</th>
-                </tr>
-            </tfoot>
-            <tbody>
-                <tr *ngFor="let e of events; let i=index;">
-                <td>{{e.userid}}</td>
-                <td>{{formatDateFromHappend(e.happened.toString())}}</td>
-                <td>{{e.cameraid}}</td>
-                <td>
-                    <ul>
-                        <li *ngFor="let item of e.labels | keyvalue">
-                            {{item.key}}:{{formatConfidence(item.value)}}%
-                        </li>
-                    </ul>
-                <td><img src="{{bucketPath + e.frame}}" style="width:30%;"/></td>
-                </tr>
-            </tbody>
-            </table>
+            <ngb-tab title="Motion">
+              <ng-template ngbTabContent>
+                <app-dashboard-motion></app-dashboard-motion>
+              </ng-template>
+            </ngb-tab>
+
+            </ngb-tabset>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+  <!--Tabset Ends-->
