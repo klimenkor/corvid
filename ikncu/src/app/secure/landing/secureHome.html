@@ -1,5 +1,25 @@
-<app-header></app-header>
+<!-- <app-header></app-header>
 <app-sidebar (collapsedEvent)="receiveCollapsed($event)"></app-sidebar>
 <section class="main-container" [ngClass]="{collapsed: collapedSideBar}">
     <router-outlet></router-outlet>
-</section>
+</section> -->
+
+<div class="wrapper">
+    <div class="app-sidebar" data-active-color="white" data-background-color="black" data-image="assets/img/sidebar-bg/05.jpg">
+        <app-sidebar></app-sidebar>
+        <div class="sidebar-background"></div>
+    </div>
+    <app-header></app-header>
+    <div class="main-panel">
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+        <!-- <app-footer></app-footer> -->
+    </div>
+    <!-- <app-notification-sidebar></app-notification-sidebar> -->
+    <!-- <app-customizer (directionEvent)="getOptions($event)"></app-customizer> -->
+</div>

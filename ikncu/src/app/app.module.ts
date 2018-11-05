@@ -55,6 +55,7 @@ import { DashboardModule } from './secure/dashboard/dashboard.module';
   ],
   imports: [
     BrowserModule,
+    NgbModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,

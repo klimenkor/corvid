@@ -2,12 +2,14 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 // import { TranslateService } from '@ngx-translate/core';
 
+declare var $: any;
+
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
     isActive = false;
     collapsed = false;
     showMenu = '';
@@ -16,12 +18,7 @@ export class SidebarComponent {
     @Output() collapsedEvent = new EventEmitter<boolean>();
 
     constructor(
-        // private translate: TranslateService,
         public router: Router) {
-        // this.translate.addLangs(['en', 'fr', 'ur', 'es', 'it', 'fa', 'de']);
-        // this.translate.setDefaultLang('en');
-        // const browserLang = this.translate.getBrowserLang();
-        // this.translate.use(browserLang.match(/en|fr|ur|es|it|fa|de/) ? browserLang : 'en');
 
         this.router.events.subscribe(val => {
             if (
@@ -32,6 +29,10 @@ export class SidebarComponent {
                 this.toggleSidebar();
             }
         });
+    }
+
+    ngOnInit(): void {
+        $.getScript('./assets/js/app-sidebar.js');
     }
 
     eventCalled() {
@@ -65,10 +66,6 @@ export class SidebarComponent {
         const dom: any = document.querySelector('body');
         dom.classList.toggle('rtl');
     }
-
-    // changeLang(language: string) {
-    //     this.translate.use(language);
-    // }
 
     onLoggedout() {
         localStorage.removeItem('isLoggedin');
