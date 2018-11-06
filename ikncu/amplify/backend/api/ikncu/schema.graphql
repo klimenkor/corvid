@@ -3,22 +3,22 @@ type User @model {
   shortid: String!
   email: String!
   labels: [String],
-  cameras: [Camera] @connection (name: "UserCameras")
-  tier: Tier @connection (name: "UserTier")
+  cameras: [ID] #@connection (name: "UserCameras")
+  tier: ID! #Tier @connection (name: "UserTier")
 }
 
 type Tier @model {
   id: ID!
   name: String!
-  user: User @connection (name: "UserTier")
+#   user: User @connection (name: "UserTier")
 }
 
 type Camera @model {
   id: ID!
   shortid: String!
   name: String!
-  user: User @connection (name: "UserCameras")
-  motions: Motion @connection (name: "CameraMotions")
+  user: ID! #User @connection (name: "UserCameras")
+  #motions: Motion @connection (name: "CameraMotions")
 }
 
 type Label {
@@ -30,7 +30,9 @@ type Motion @model {
   id: ID!
   labels: [Label]
   frame: String!
-  user: Camera @connection (name: "CameraMotions")
+  cameraid: ID!
+  userid: ID!
+  #user: Camera @connection (name: "CameraMotions")
 }
 
 

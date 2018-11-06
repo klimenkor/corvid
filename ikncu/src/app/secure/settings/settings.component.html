@@ -8,31 +8,37 @@
       <div class="card-block">
         <ngb-tabset>
 
-          <ngb-tab title="Basic">
-            <ng-template ngbTabContent>
-              <app-settings-basic></app-settings-basic>
-            </ng-template>
-          </ngb-tab>
-
-          <ngb-tab title="Labels">
-            <ng-template ngbTabContent>
-                <app-settings-labels></app-settings-labels>
-            </ng-template>
-          </ngb-tab>
-
-          <ngb-tab title="Cameras">
-              <ng-template ngbTabContent>
-                  <app-settings-cameras></app-settings-cameras>
-              </ng-template>
+            <ngb-tab title="Tiers">
+                <ng-template ngbTabContent>
+                    <app-settings-tiers></app-settings-tiers>
+                </ng-template>
             </ngb-tab>
 
-          <ngb-tab title="Faces">
-            <ng-template ngbTabContent>
-                <app-settings-faces></app-settings-faces>
-            </ng-template>
-          </ngb-tab>
+            <ngb-tab title="Basic">
+                <ng-template ngbTabContent>
+                <app-settings-basic></app-settings-basic>
+                </ng-template>
+            </ngb-tab>
 
-          </ngb-tabset>
+            <ngb-tab title="Labels">
+                <ng-template ngbTabContent>
+                    <app-settings-labels></app-settings-labels>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="Cameras">
+                <ng-template ngbTabContent>
+                    <app-settings-cameras></app-settings-cameras>
+                </ng-template>
+                </ngb-tab>
+
+            <ngb-tab title="Faces">
+                <ng-template ngbTabContent>
+                    <app-settings-faces></app-settings-faces>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
       </div>
     </div>
   </div>

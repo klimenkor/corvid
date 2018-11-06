@@ -25,6 +25,7 @@
     "@angular/router": "^6.1.0",
     "@ng-bootstrap/ng-bootstrap": "^3.3.0",
     "@swimlane/ngx-datatable": "^14.0.0",
+    "amplify-provider-awscloudformation": "^0.1.32",
     "angular-calendar": "^0.26.3",
     "aws-amplify": "^1.1.9",
     "aws-amplify-angular": "^2.0.12",

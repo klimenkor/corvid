@@ -10,6 +10,7 @@ import { LabelsComponent } from './labels/labels.component';
 import { SettingsComponent } from './settings.component';
 import { CamerasComponent } from './cameras/cameras.component';
 import { FacesComponent } from './faces/faces.component';
+import { TiersComponent } from './tiers/tiers.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FacesComponent } from './faces/faces.component';
     BasicComponent,
     LabelsComponent,
     CamerasComponent,
-    FacesComponent
+    FacesComponent,
+    TiersComponent
   ],
   providers: [
     CurrentUserService

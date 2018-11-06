@@ -61,8 +61,10 @@ export class CamerasComponent implements OnInit {
     // const newTodo = await API.graphql(graphqlOperation(mutations.createCamera, {input: item}));
     // console.log(newTodo);
 
-    await API.graphql(graphqlOperation(queries.listCameras))
-    console.log(await API.graphql(graphqlOperation(queries.listCameras)));
+    // await API.graphql(graphqlOperation(queries.listCameras));
+    // console.log(await API.graphql(graphqlOperation(queries.listCameras)));
+    const camera = await API.graphql(graphqlOperation(queries.getCamera, { id: '00ddaa81-568b-4fb5-b4e7-eca0fa4e58b1' }));
+    console.log(camera);
   }
 
 }
