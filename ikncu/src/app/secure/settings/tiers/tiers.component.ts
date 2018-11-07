@@ -3,6 +3,7 @@ import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
 import { ListTiersQuery, CreateTierMutation } from '../../../../graphql/types';
+import { GraphQLResult } from '@aws-amplify/api/lib/types';
 
 
 @Component({
@@ -43,14 +44,12 @@ export class TiersComponent implements OnInit {
 
     constructor() { }
 
-    ngOnInit() {
-      const result = API.graphql(graphqlOperation(queries.listTiers)) as Promise<ListTiersQuery>;
+    async ngOnInit() {
+      const result = API.graphql(graphqlOperation(queries.listTiers)) as Promise<GraphQLResult>;
+
       result.then((value) => {
-        const v: ListTiersQuery = value;
-        var a = value.listTiers;
-        console.log(a);
-        // this.source = v.listTiers.items;
-        //this.source = value.data.listTiers.items;
+        const v = value.data as ListTiersQuery;
+        this.source = v.listTiers.items;
       });
     }
 
@@ -59,24 +58,15 @@ export class TiersComponent implements OnInit {
 
     }
 
-    onDelete(event) {
-        console.log('onDelete');
-        if (window.confirm('Are you sure you want to delete?')) {
-          console.log(event);
-
-          event.confirm.resolve();
-        } else {
-          event.confirm.reject();
-        }
-    }
-
     onDeleteConfirm(event) {
         console.log('onDeleteConfirm');
-        if (window.confirm('Are you sure you want to delete?')) {
-            event.confirm.resolve();
-        } else {
-            event.confirm.reject();
-        }
+        const item = {
+            id: event.data.id
+        };
+        const result = API.graphql(graphqlOperation(mutations.deleteTier, {input: item})) as Promise<GraphQLResult>;
+        result.then((value) => {
+            event.confirm.resolve(event.newData);
+        });
     }
 
     onSaveConfirm(event) {
@@ -93,10 +83,10 @@ export class TiersComponent implements OnInit {
         name: event.newData.name
       };
 
-      const result = API.graphql(graphqlOperation(mutations.createTier, {input: item})) as Promise<CreateTierMutation>;
+      const result = API.graphql(graphqlOperation(mutations.createTier, {input: item})) as Promise<GraphQLResult>;
       result.then((value) => {
-        // const v = value as CreateTierMutation;
-        event.newData.id = value.createTier.id;
+        const v = value.data as CreateTierMutation;
+        event.newData.id = v.createTier.id;
         event.confirm.resolve(event.newData);
       });
     }
