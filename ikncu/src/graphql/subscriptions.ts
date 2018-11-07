@@ -7,18 +7,8 @@ export const onCreateUser = `subscription OnCreateUser {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -28,18 +18,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -49,18 +29,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -68,12 +38,6 @@ export const onCreateTier = `subscription OnCreateTier {
   onCreateTier {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -81,12 +45,6 @@ export const onUpdateTier = `subscription OnUpdateTier {
   onUpdateTier {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -94,12 +52,6 @@ export const onDeleteTier = `subscription OnDeleteTier {
   onDeleteTier {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -108,20 +60,7 @@ export const onCreateCamera = `subscription OnCreateCamera {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -130,20 +69,7 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -152,20 +78,7 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -177,11 +90,8 @@ export const onCreateMotion = `subscription OnCreateMotion {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;
@@ -193,11 +103,8 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;
@@ -209,11 +116,8 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;

@@ -3,22 +3,20 @@ type User {
   shortid: String!
   email: String!
   labels: [String]
-  cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
-  tier: Tier
+  cameras: [ID]
+  tier: ID!
 }
 
 type Tier {
   id: ID!
   name: String!
-  user: User
 }
 
 type Camera {
   id: ID!
   shortid: String!
   name: String!
-  user: User
-  motions: Motion
+  user: ID!
 }
 
 type Label {
@@ -30,7 +28,8 @@ type Motion {
   id: ID!
   labels: [Label]
   frame: String!
-  user: Camera
+  cameraid: ID!
+  userid: ID!
 }
 
 enum ModelSortDirection {
@@ -103,6 +102,8 @@ input ModelUserFilterInput {
   shortid: ModelStringFilterInput
   email: ModelStringFilterInput
   labels: ModelStringFilterInput
+  cameras: ModelIDFilterInput
+  tier: ModelIDFilterInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
   not: ModelUserFilterInput
@@ -123,7 +124,8 @@ input CreateUserInput {
   shortid: String!
   email: String!
   labels: [String]
-  userTierId: ID
+  cameras: [ID]
+  tier: ID!
 }
 
 input UpdateUserInput {
@@ -131,7 +133,8 @@ input UpdateUserInput {
   shortid: String
   email: String
   labels: [String]
-  userTierId: ID
+  cameras: [ID]
+  tier: ID
 }
 
 input DeleteUserInput {
@@ -183,13 +186,11 @@ input ModelTierFilterInput {
 
 input CreateTierInput {
   name: String!
-  tierUserId: ID
 }
 
 input UpdateTierInput {
   id: ID!
   name: String
-  tierUserId: ID
 }
 
 input DeleteTierInput {
@@ -205,6 +206,7 @@ input ModelCameraFilterInput {
   id: ModelIDFilterInput
   shortid: ModelStringFilterInput
   name: ModelStringFilterInput
+  user: ModelIDFilterInput
   and: [ModelCameraFilterInput]
   or: [ModelCameraFilterInput]
   not: ModelCameraFilterInput
@@ -213,16 +215,14 @@ input ModelCameraFilterInput {
 input CreateCameraInput {
   shortid: String!
   name: String!
-  cameraUserId: ID
-  cameraMotionsId: ID
+  user: ID!
 }
 
 input UpdateCameraInput {
   id: ID!
   shortid: String
   name: String
-  cameraUserId: ID
-  cameraMotionsId: ID
+  user: ID
 }
 
 input DeleteCameraInput {
@@ -242,6 +242,8 @@ type ModelMotionConnection {
 input ModelMotionFilterInput {
   id: ModelIDFilterInput
   frame: ModelStringFilterInput
+  cameraid: ModelIDFilterInput
+  userid: ModelIDFilterInput
   and: [ModelMotionFilterInput]
   or: [ModelMotionFilterInput]
   not: ModelMotionFilterInput
@@ -250,14 +252,16 @@ input ModelMotionFilterInput {
 input CreateMotionInput {
   labels: [LabelInput]
   frame: String!
-  motionUserId: ID
+  cameraid: ID!
+  userid: ID!
 }
 
 input UpdateMotionInput {
   id: ID!
   labels: [LabelInput]
   frame: String
-  motionUserId: ID
+  cameraid: ID
+  userid: ID
 }
 
 input DeleteMotionInput {

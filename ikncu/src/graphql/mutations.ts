@@ -7,18 +7,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -28,18 +18,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -49,18 +29,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -68,12 +38,6 @@ export const createTier = `mutation CreateTier($input: CreateTierInput!) {
   createTier(input: $input) {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -81,12 +45,6 @@ export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
   updateTier(input: $input) {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -94,12 +52,6 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
   deleteTier(input: $input) {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -108,20 +60,7 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -130,20 +69,7 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -152,20 +78,7 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -177,11 +90,8 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;
@@ -193,11 +103,8 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;
@@ -209,11 +116,8 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;

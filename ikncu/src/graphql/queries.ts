@@ -7,18 +7,8 @@ export const getUser = `query GetUser($id: ID!) {
     shortid
     email
     labels
-    cameras {
-      items {
-        id
-        shortid
-        name
-      }
-      nextToken
-    }
-    tier {
-      id
-      name
-    }
+    cameras
+    tier
   }
 }
 `;
@@ -33,18 +23,8 @@ export const listUsers = `query ListUsers(
       shortid
       email
       labels
-      cameras {
-        items {
-          id
-          shortid
-          name
-        }
-        nextToken
-      }
-      tier {
-        id
-        name
-      }
+      cameras
+      tier
     }
     nextToken
   }
@@ -54,12 +34,6 @@ export const getTier = `query GetTier($id: ID!) {
   getTier(id: $id) {
     id
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
   }
 }
 `;
@@ -72,12 +46,6 @@ export const listTiers = `query ListTiers(
     items {
       id
       name
-      user {
-        id
-        shortid
-        email
-        labels
-      }
     }
     nextToken
   }
@@ -88,20 +56,7 @@ export const getCamera = `query GetCamera($id: ID!) {
     id
     shortid
     name
-    user {
-      id
-      shortid
-      email
-      labels
-    }
-    motions {
-      id
-      labels {
-        name
-        confidence
-      }
-      frame
-    }
+    user
   }
 }
 `;
@@ -115,20 +70,7 @@ export const listCameras = `query ListCameras(
       id
       shortid
       name
-      user {
-        id
-        shortid
-        email
-        labels
-      }
-      motions {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-      }
+      user
     }
     nextToken
   }
@@ -142,11 +84,8 @@ export const getMotion = `query GetMotion($id: ID!) {
       confidence
     }
     frame
-    user {
-      id
-      shortid
-      name
-    }
+    cameraid
+    userid
   }
 }
 `;
@@ -163,11 +102,8 @@ export const listMotions = `query ListMotions(
         confidence
       }
       frame
-      user {
-        id
-        shortid
-        name
-      }
+      cameraid
+      userid
     }
     nextToken
   }

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Query } from '@angular/core';
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
-import { LocalDataSource } from 'ng2-smart-table';
+import { ListTiersQuery, CreateTierMutation } from '../../../../graphql/types';
+
 
 @Component({
   selector: 'app-settings-tiers',
@@ -12,57 +13,60 @@ import { LocalDataSource } from 'ng2-smart-table';
 export class TiersComponent implements OnInit {
 
     settings = {
-        columns: {
-          id: {
-            title: 'ID',
-            filter: false,
-          },
-          label: {
-            title: 'Name',
-            filter: false,
-          }
+      columns: {
+        id: {
+          title: 'ID',
+          filter: false,
         },
-        attr: {
-          class: 'table table-responsive'
-        },
-        edit: {
-          editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>'
-        },
-        delete: {
-          deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>'
+        name: {
+          title: 'Name',
+          filter: false,
         }
-      };
-    source = [
-    {
-        id: 1,
-        label: 'Human'
-    },
-    {
-        id: 2,
-        label: 'Person'
-    },
-    {
-        id: 3,
-        label: 'Plant'
-    },
-    ];
+      },
+      attr: {
+        class: 'table table-responsive'
+      },
+      edit: {
+        editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
+        confirmEdit: true
+      },
+      delete: {
+        deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
+        confirmDelete: true
+      },
+      add: {
+        confirmCreate: true
+      }
+    };
 
-    async ngOnInit(): Promise<void> {
-        console.log(await API.graphql(graphqlOperation(queries.listTiers)));
+    source = [];
+
+    constructor() { }
+
+    ngOnInit() {
+      const result = API.graphql(graphqlOperation(queries.listTiers)) as Promise<ListTiersQuery>;
+      result.then((value) => {
+        const v: ListTiersQuery = value;
+        var a = value.listTiers;
+        console.log(a);
+        // this.source = v.listTiers.items;
+        //this.source = value.data.listTiers.items;
+      });
     }
 
-    // source: LocalDataSource;
+    onRowSelect(event) {
+      console.log('onRowSelect');
 
-    constructor() {
-        // this.source = new LocalDataSource(this.data);
     }
 
     onDelete(event) {
         console.log('onDelete');
         if (window.confirm('Are you sure you want to delete?')) {
-            event.confirm.resolve();
+          console.log(event);
+
+          event.confirm.resolve();
         } else {
-            event.confirm.reject();
+          event.confirm.reject();
         }
     }
 
@@ -84,13 +88,17 @@ export class TiersComponent implements OnInit {
         }
     }
 
-    onCreateConfirm(event) {
-        if (window.confirm('Are you sure you want to create?')) {
-            event.newData['name'] += ' + added in code';
-            event.confirm.resolve(event.newData);
-        } else {
-            event.confirm.reject();
-        }
+    async onCreateConfirm(event) {
+      const item = {
+        name: event.newData.name
+      };
+
+      const result = API.graphql(graphqlOperation(mutations.createTier, {input: item})) as Promise<CreateTierMutation>;
+      result.then((value) => {
+        // const v = value as CreateTierMutation;
+        event.newData.id = value.createTier.id;
+        event.confirm.resolve(event.newData);
+      });
     }
 
 

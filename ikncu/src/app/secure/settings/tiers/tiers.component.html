@@ -4,13 +4,14 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-block">
-                        <ng2-smart-table 
+                        <ng2-smart-table
                             [source]="source"
-                            [settings]="settings" 
-                            (delete)="onDelete($event)" 
-                            (deleteConfirm)="onDeleteConfirm($event)" 
+                            [settings]="settings"
+                            (delete)="onDelete($event)"
+                            (deleteConfirm)="onDeleteConfirm($event)"
                             (editConfirm)="onSaveConfirm($event)"
-                            (createConfirm)="onCreateConfirm($event)">
+                            (createConfirm)="onCreateConfirm($event)"
+                            (userRowSelect)="onRowSelect($event)">
                         </ng2-smart-table>
                     </div>
                 </div>
@@ -18,4 +19,3 @@
         </div>
     </div>
 </section>
-  
