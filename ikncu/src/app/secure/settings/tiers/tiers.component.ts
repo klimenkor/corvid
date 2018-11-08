@@ -4,7 +4,7 @@ import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
 import { ListTiersQuery, CreateTierMutation } from '../../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
-
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-settings-tiers',
@@ -12,7 +12,6 @@ import { GraphQLResult } from '@aws-amplify/api/lib/types';
   styleUrls: ['./tiers.component.css']
 })
 export class TiersComponent implements OnInit {
-    loading = true;
 
     settings = {
       columns: {
@@ -44,15 +43,18 @@ export class TiersComponent implements OnInit {
 
     source = [];
 
-    constructor() { }
+    constructor(private spinner: NgxSpinnerService) { }
 
     async ngOnInit() {
+
+      this.spinner.show();
+
       const result = API.graphql(graphqlOperation(queries.listTiers)) as Promise<GraphQLResult>;
 
       result.then((value) => {
         const v = value.data as ListTiersQuery;
         this.source = v.listTiers.items;
-        this.loading = false;
+        this.spinner.hide();
       });
     }
 

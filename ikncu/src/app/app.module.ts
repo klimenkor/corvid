@@ -1,8 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule } from '@angular/forms';
 import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
 import { AppComponent } from './app.component';
@@ -32,6 +33,9 @@ import { SettingsModule } from './secure/settings/settings.module';
 import { DashboardModule } from './secure/dashboard/dashboard.module';
 
 @NgModule({
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
   declarations: [
     NewPasswordComponent,
     LoginComponent,
@@ -55,6 +59,7 @@ import { DashboardModule } from './secure/dashboard/dashboard.module';
   ],
   imports: [
     BrowserModule,
+    // NgxSpinnerModule,
     NgbModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,

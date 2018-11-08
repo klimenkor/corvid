@@ -14,6 +14,7 @@ import { SettingsComponent } from './settings.component';
 import { CamerasComponent } from './cameras/cameras.component';
 import { FacesComponent } from './faces/faces.component';
 import { TiersComponent } from './tiers/tiers.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { TiersComponent } from './tiers/tiers.component';
     CommonModule,
     FormsModule,
     NgbModule,
+    NgxSpinnerModule,
     Ng2SmartTableModule
   ],
   declarations: [
