@@ -12,12 +12,14 @@ import { GraphQLResult } from '@aws-amplify/api/lib/types';
   styleUrls: ['./tiers.component.css']
 })
 export class TiersComponent implements OnInit {
+    loading = true;
 
     settings = {
       columns: {
         id: {
           title: 'ID',
           filter: false,
+          editable: false
         },
         name: {
           title: 'Name',
@@ -29,7 +31,7 @@ export class TiersComponent implements OnInit {
       },
       edit: {
         editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-        confirmEdit: true
+        confirmSave: true
       },
       delete: {
         deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
@@ -50,6 +52,7 @@ export class TiersComponent implements OnInit {
       result.then((value) => {
         const v = value.data as ListTiersQuery;
         this.source = v.listTiers.items;
+        this.loading = false;
       });
     }
 
@@ -70,12 +73,11 @@ export class TiersComponent implements OnInit {
     }
 
     onSaveConfirm(event) {
-        if (window.confirm('Are you sure you want to save?')) {
-            event.newData['name'] += ' + added in code';
+        console.log('onSaveConfirm');
+        const result = API.graphql(graphqlOperation(mutations.updateTier, {input: event.newData})) as Promise<GraphQLResult>;
+        result.then((value) => {
             event.confirm.resolve(event.newData);
-        } else {
-            event.confirm.reject();
-        }
+        });
     }
 
     async onCreateConfirm(event) {
