@@ -10,6 +10,7 @@ import { CurrentUserService } from 'src/app/service/common/current-user.service'
   styleUrls: ['./basic.component.css']
 })
 export class BasicComponent implements OnInit {
+  emailChanged = false;
 
   setting: ISetting = null;
   userId = '111111';
@@ -23,9 +24,17 @@ export class BasicComponent implements OnInit {
       this.user = new CurrentUser;
     }
 
+  saveEmail(event) {
+
+  }
+
   async ngOnInit() {
     this.setting = null;
     this.user = await this.currentUser.get();
+  }
+
+  onEmailChange(event) {
+    this.emailChanged = true;
   }
 
 }

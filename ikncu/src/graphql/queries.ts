@@ -56,7 +56,8 @@ export const getCamera = `query GetCamera($id: ID!) {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
@@ -70,7 +71,8 @@ export const listCameras = `query ListCameras(
       id
       shortid
       name
-      user
+      active
+      userid
     }
     nextToken
   }

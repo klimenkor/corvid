@@ -16,7 +16,8 @@ type Camera {
   id: ID!
   shortid: String!
   name: String!
-  user: ID!
+  active: Boolean!
+  userid: String!
 }
 
 type Label {
@@ -206,7 +207,8 @@ input ModelCameraFilterInput {
   id: ModelIDFilterInput
   shortid: ModelStringFilterInput
   name: ModelStringFilterInput
-  user: ModelIDFilterInput
+  active: ModelBooleanFilterInput
+  userid: ModelStringFilterInput
   and: [ModelCameraFilterInput]
   or: [ModelCameraFilterInput]
   not: ModelCameraFilterInput
@@ -215,14 +217,16 @@ input ModelCameraFilterInput {
 input CreateCameraInput {
   shortid: String!
   name: String!
-  user: ID!
+  active: Boolean!
+  userid: String!
 }
 
 input UpdateCameraInput {
   id: ID!
   shortid: String
   name: String
-  user: ID
+  active: Boolean
+  userid: String
 }
 
 input DeleteCameraInput {

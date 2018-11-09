@@ -17,8 +17,8 @@ type Camera @model {
   id: ID!
   shortid: String!
   name: String!
-  user: ID! #User @connection (name: "UserCameras")
-  #motions: Motion @connection (name: "CameraMotions")
+  active: Boolean!
+  userid: String! #User @connection (name: "UserCameras")
 }
 
 type Label {

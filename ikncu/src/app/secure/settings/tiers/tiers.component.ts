@@ -1,5 +1,5 @@
 import { Component, OnInit, Query } from '@angular/core';
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
 import { ListTiersQuery, CreateTierMutation } from '../../../../graphql/types';
@@ -13,33 +13,33 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class TiersComponent implements OnInit {
 
-    settings = {
-      columns: {
-        id: {
-          title: 'ID',
-          filter: false,
-          editable: false
-        },
-        name: {
-          title: 'Name',
-          filter: false,
-        }
+  settings = {
+    columns: {
+      id: {
+        title: 'ID',
+        filter: false,
+        editable: false
       },
-      attr: {
-        class: 'table table-responsive'
-      },
-      edit: {
-        editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-        confirmSave: true
-      },
-      delete: {
-        deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
-        confirmDelete: true
-      },
-      add: {
-        confirmCreate: true
+      name: {
+        title: 'Name',
+        filter: false,
       }
-    };
+    },
+    attr: {
+      class: 'table table-responsive'
+    },
+    edit: {
+      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
+      confirmSave: true
+    },
+    delete: {
+      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
+      confirmDelete: true
+    },
+    add: {
+      confirmCreate: true
+    }
+  };
 
     source = [];
 

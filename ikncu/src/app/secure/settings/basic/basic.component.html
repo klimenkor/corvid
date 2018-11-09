@@ -7,11 +7,13 @@
             <form role="form">
               <div class="form-group">
                   <label>Username</label>
-                  <input class="form-control" value="{{user.name}}"/>
+                  <input class="form-control" value="{{user.name}}" disabled=true/>
                   <label>Email</label>
-                  <input class="form-control" value="{{user.email}}"/>
+                  <div class="form-group">
+                    <input class="form-control" [(ngModel)]= "user.email"/>
+                  </div>
                   <label>ID</label>
-                  <input class="form-control" value="{{user.id}}"/>
+                  <input class="form-control" value="{{user.id}}" disabled=true/>
               </div>
             </form>
           </div>

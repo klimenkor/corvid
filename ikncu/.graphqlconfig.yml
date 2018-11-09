@@ -11,3 +11,6 @@ projects:
         generatedFileName: src\graphql\types.ts
         docsFilePath: src\graphql
         graphQLApiId: 74wkfcu2krbpzd2zuwgpitwsyq
+      endpoints:
+        prod: >-
+          https://wh7aunokg5eupnhfo2c5nj66ai.appsync-api.us-east-1.amazonaws.com/graphql

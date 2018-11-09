@@ -38,14 +38,16 @@ export type DeleteTierInput = {
 export type CreateCameraInput = {
   shortid: string,
   name: string,
-  user: string,
+  active: boolean,
+  userid: string,
 };
 
 export type UpdateCameraInput = {
   id: string,
   shortid?: string | null,
   name?: string | null,
-  user?: string | null,
+  active?: boolean | null,
+  userid?: string | null,
 };
 
 export type DeleteCameraInput = {
@@ -126,10 +128,16 @@ export type ModelCameraFilterInput = {
   id?: ModelIDFilterInput | null,
   shortid?: ModelStringFilterInput | null,
   name?: ModelStringFilterInput | null,
-  user?: ModelIDFilterInput | null,
+  active?: ModelBooleanFilterInput | null,
+  userid?: ModelStringFilterInput | null,
   and?: Array< ModelCameraFilterInput | null > | null,
   or?: Array< ModelCameraFilterInput | null > | null,
   not?: ModelCameraFilterInput | null,
+};
+
+export type ModelBooleanFilterInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type ModelMotionFilterInput = {
@@ -236,7 +244,8 @@ export type CreateCameraMutation = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -250,7 +259,8 @@ export type UpdateCameraMutation = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -264,7 +274,8 @@ export type DeleteCameraMutation = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -403,7 +414,8 @@ export type GetCameraQuery = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -421,7 +433,8 @@ export type ListCamerasQuery = {
       id: string,
       shortid: string,
       name: string,
-      user: string,
+      active: boolean,
+      userid: string,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -537,7 +550,8 @@ export type OnCreateCameraSubscription = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -547,7 +561,8 @@ export type OnUpdateCameraSubscription = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 
@@ -557,7 +572,8 @@ export type OnDeleteCameraSubscription = {
     id: string,
     shortid: string,
     name: string,
-    user: string,
+    active: boolean,
+    userid: string,
   } | null,
 };
 

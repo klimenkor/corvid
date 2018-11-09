@@ -60,7 +60,8 @@ export const onCreateCamera = `subscription OnCreateCamera {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
@@ -69,7 +70,8 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
@@ -78,7 +80,8 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;

@@ -60,7 +60,8 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
@@ -69,7 +70,8 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
@@ -78,7 +80,8 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
     id
     shortid
     name
-    user
+    active
+    userid
   }
 }
 `;
