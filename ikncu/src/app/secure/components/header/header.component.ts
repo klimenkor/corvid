@@ -37,8 +37,11 @@ export class HeaderComponent implements OnInit {
     }
 
     async ngOnInit() {
-      const user = await this.currentUser.get();
-      this.email = user.email;
+      const user = this.currentUser.get();
+      user.then((value) => {
+        this.email = this.currentUser.cognitoUser.email;
+      });
+
       // this.userParams.getParameters(new GetParametersCallback(this, this.cognitoUtil));
     }
 

@@ -68,7 +68,10 @@ export class CamerasComponent implements OnInit {
   async ngOnInit() {
 
     this.spinner.show();
-    this.user = await this.currentUserService.get();
+    const currentUser = this.currentUserService.get();
+    currentUser.then((value) => {
+      this.user = this.currentUserService.cognitoUser;
+    });
 
     const result = API.graphql(graphqlOperation(queries.listCameras)) as Promise<GraphQLResult>;
 
@@ -105,7 +108,7 @@ export class CamerasComponent implements OnInit {
       active: false,
       userid: this.user.id
     };
-    console.log(this.user.id)
+    console.log(this.user.id);
     const result = API.graphql(graphqlOperation(mutations.createCamera, {input: item})) as Promise<GraphQLResult>;
     result.then((value) => {
       const v = value.data as CreateCameraMutation;

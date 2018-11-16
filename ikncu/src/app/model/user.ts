@@ -1,8 +1,8 @@
 export interface IUser {
-  userid: string;
-  firstname: string;
-  lastname: number;
+  id: string;
+  shortid: string;
   email: string;
-  password: string;
-  status: string;
+  labels?: Array< string | null > | null;
+  cameras?: Array< string | null > | null;
+  tier: string;
 }
