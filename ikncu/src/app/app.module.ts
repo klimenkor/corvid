@@ -31,6 +31,8 @@ import { DynamoDBService } from './service/auth/ddb.service';
 import { CurrentUser } from './model/_index';
 import { SettingsModule } from './secure/settings/settings.module';
 import { DashboardModule } from './secure/dashboard/dashboard.module';
+// import { CurrentUserService } from './service/common/current-user.service';
+// import { UserService } from './service/data/user.service';
 
 @NgModule({
   schemas: [
@@ -81,7 +83,8 @@ import { DashboardModule } from './secure/dashboard/dashboard.module';
     UserLoginService,
     UserParametersService,
     DynamoDBService,
-    CurrentUser
+    CurrentUser,
+    // UserService
   ],
   bootstrap: [AppComponent]
 })

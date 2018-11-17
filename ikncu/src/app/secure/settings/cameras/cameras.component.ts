@@ -66,15 +66,10 @@ export class CamerasComponent implements OnInit {
     ) {   }
 
   async ngOnInit() {
-
+    console.log('CamerasComponent.ngOnInit');
     this.spinner.show();
-    const currentUser = this.currentUserService.get();
-    currentUser.then((value) => {
-      this.user = this.currentUserService.cognitoUser;
-    });
 
     const result = API.graphql(graphqlOperation(queries.listCameras)) as Promise<GraphQLResult>;
-
     result.then((value) => {
       const v = value.data as ListCamerasQuery;
       this.source = v.listCameras.items;

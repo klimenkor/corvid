@@ -10,7 +10,8 @@
                   <input class="form-control" value="{{currentUser.name}}" disabled=true/>
                   <label>Email</label>
                   <div class="form-group">
-                    <!-- <input class="form-control" [(ngModel)]= "user.email"/> -->
+                    <input class="form-control" [(ngModel)]= "user.email" [ngModelOptions]="{standalone: true}"/>
+                    <button type="button" class="btn btn-warning btn-raised" (click)="onSave($event)">Save</button>
                   </div>
                   <label>ID</label>
                   <input class="form-control" value="{{currentUser.id}}" disabled=true/>
@@ -22,3 +23,10 @@
     </div>
   </div>
 </div>
+
+<ngx-spinner
+  bdColor = "rgba(51,51,51,0.56)"
+  size = "medium"
+  color = "#082284"
+  type = "ball-beat">
+</ngx-spinner>

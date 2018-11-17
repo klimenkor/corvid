@@ -6,8 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
-import { CurrentUserService } from 'src/app/service/common/current-user.service';
-
 import { BasicComponent } from './basic/basic.component';
 import { LabelsComponent } from './labels/labels.component';
 import { SettingsComponent } from './settings.component';
@@ -31,10 +29,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     LabelsComponent,
     CamerasComponent,
     FacesComponent,
-    TiersComponent
+    TiersComponent,
+
   ],
   providers: [
-    CurrentUserService
+
   ]
 })
 export class SettingsModule { }

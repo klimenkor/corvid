@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ISetting, CurrentUser, IUser } from 'src/app/model/_index';
-import { AmplifyService } from 'aws-amplify-angular';
-import { CognitoUtil } from 'src/app/service/auth/cognito.service';
+import { CurrentUser } from 'src/app/model/_index';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 
-import { API, graphqlOperation } from 'aws-amplify';
-import * as queries from '../../../../graphql/queries';
-import * as mutations from '../../../../graphql/mutations';
-import { UpdateUserMutation, GetUserQuery, UpdateUserInput } from '../../../../graphql/types';
-import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { UserService } from 'src/app/service/data/user.service';
+import { UpdateUserInput } from 'src/graphql/types';
 
 
 @Component({
@@ -19,46 +14,45 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class BasicComponent implements OnInit {
   emailChanged = false;
-  user: UpdateUserInput;
+  user = <UpdateUserInput> {
+    id: '',
+    shortid: '',
+    email: '',
+    labels: null,
+    cameras: null,
+    tier: '',
+  };
   currentUser: CurrentUser;
 
   constructor(
     private currentUserService: CurrentUserService,
+    private userService: UserService,
     private spinner: NgxSpinnerService) {
       this.currentUser = new CurrentUser;
-      console.log('BasicComponent.constructor')
+      console.log('BasicComponent.constructor');
     }
 
-  // getUser() {
-  //   this.spinner.show();
-  //   const result = API.graphql(graphqlOperation(queries.getUser, {id: this.currentUser.id})) as Promise<GraphQLResult>;
-
-  //   result.then((value) => {
-  //     const v = value.data as GetUserQuery;
-  //     this.user = v.getUser;
-  //     console.log(this.user);
-  //     this.spinner.hide();
-  //   });
-  // }
-
-  saveUser(event) {
+  onSave(event) {
     console.log('saveUser');
-
-    const result = API.graphql(graphqlOperation(mutations.updateUser, {input: this.user})) as Promise<GraphQLResult>;
-    result.then((value) => {
-        event.confirm.resolve(event.newData);
+    this.spinner.show();
+    this.userService.Update(
+      this.user,
+      (value) => {
+        this.spinner.hide();
     });
-
   }
 
-  ngOnInit() {
-    console.log('BasicComponent.ngOnInit')
-    const currentUser = this.currentUserService.get();
-    currentUser.then((value) => {
-      this.currentUser = this.currentUserService.cognitoUser;
-      this.user = this.currentUserService.user;
-      console.log(this.user)
+  async ngOnInit() {
+    console.log('BasicComponent.ngOnInit');
+
+    this.currentUserService.Initialize((value) => {
+      this.currentUser = this.currentUserService.User;
+      this.userService.Initialize(this.currentUser.id, (value1) => {
+        this.user = this.userService.User;
+        console.log(':::: user.email = ' + this.user.email);
+      });
     });
+
   }
 
   onEmailChange(event) {
