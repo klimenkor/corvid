@@ -7,8 +7,24 @@ export const getUser = `query GetUser($id: ID!) {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -23,8 +39,24 @@ export const listUsers = `query ListUsers(
       shortid
       email
       labels
-      cameras
       tier
+      cameras {
+        items {
+          id
+          shortid
+          name
+          active
+        }
+        nextToken
+      }
+      faces {
+        items {
+          id
+          name
+          active
+        }
+        nextToken
+      }
     }
     nextToken
   }
@@ -57,7 +89,13 @@ export const getCamera = `query GetCamera($id: ID!) {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;
@@ -72,7 +110,50 @@ export const listCameras = `query ListCameras(
       shortid
       name
       active
-      userid
+      user {
+        id
+        shortid
+        email
+        labels
+        tier
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const getFace = `query GetFace($id: ID!) {
+  getFace(id: $id) {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const listFaces = `query ListFaces(
+  $filter: ModelFaceFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFaces(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      active
+      user {
+        id
+        shortid
+        email
+        labels
+        tier
+      }
     }
     nextToken
   }

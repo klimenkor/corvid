@@ -6,9 +6,7 @@ $util.qr($context.args.input.put("__typename", "Motion"))
   "version": "2017-02-28",
   "operation": "PutItem",
   "key": {
-      "id": {
-          "S": "$util.autoId()"
-    }
+      "id":     $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
   },
   "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
   "condition": {

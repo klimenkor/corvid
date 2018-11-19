@@ -3,11 +3,13 @@ import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
 import * as shortid from 'node_modules/shortid';
-import { ListCamerasQuery, CreateCameraMutation } from '../../../../graphql/types';
+import { ListCamerasQuery, CreateCameraMutation, CreateCameraInput,
+          UpdateCameraMutation, DeleteCameraMutation } from '../../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser } from 'src/app/model/_index';
+import { CameraService } from 'src/app/service/data/camera.service';
 
 @Component({
   selector: 'app-settings-cameras',
@@ -18,11 +20,6 @@ export class CamerasComponent implements OnInit {
 
   settings = {
     columns: {
-      // id: {
-      //   title: 'ID',
-      //   filter: false,
-      //   editable: false
-      // },
       name: {
         title: 'Name',
         filter: false,
@@ -32,10 +29,6 @@ export class CamerasComponent implements OnInit {
         filter: false,
         editable: false
       },
-      // userid: {
-      //   title: 'User',
-      //   filter: false
-      // },
       active: {
         title: 'Active',
         filter: false
@@ -58,16 +51,21 @@ export class CamerasComponent implements OnInit {
   };
 
   source = [];
-  user: CurrentUser;
+  currentUser: CurrentUser;
 
   constructor(
     private spinner: NgxSpinnerService,
-    private currentUserService: CurrentUserService
+    private currentUserService: CurrentUserService,
+    private cameraService: CameraService
     ) {   }
 
   async ngOnInit() {
     console.log('CamerasComponent.ngOnInit');
     this.spinner.show();
+
+    this.currentUserService.Initialize(() => {
+      this.currentUser = this.currentUserService.User;
+    });
 
     const result = API.graphql(graphqlOperation(queries.listCameras)) as Promise<GraphQLResult>;
     result.then((value) => {
@@ -82,32 +80,33 @@ export class CamerasComponent implements OnInit {
       const item = {
           id: event.data.id
       };
-      const result = API.graphql(graphqlOperation(mutations.deleteCamera, {input: item})) as Promise<GraphQLResult>;
-      result.then((value) => {
-          event.confirm.resolve(event.newData);
+      this.cameraService.Delete(item, (value) => {
+        const v = value.data as DeleteCameraMutation;
+        event.confirm.resolve(event.newData);
       });
   }
 
   onSaveConfirm(event) {
       console.log('onSaveConfirm');
-      const result = API.graphql(graphqlOperation(mutations.updateCamera, {input: event.newData})) as Promise<GraphQLResult>;
-      result.then((value) => {
-          event.confirm.resolve(event.newData);
+      this.cameraService.Update(event.newData, (value) => {
+        const v = value.data as UpdateCameraMutation;
+        event.newData.id = v.updateCamera.id;
+        event.confirm.resolve(event.newData);
       });
   }
 
   async onCreateConfirm(event) {
-    const item = {
+    const item = <CreateCameraInput>{
       name: event.newData.name,
       shortid: shortid.generate(),
       active: false,
-      userid: this.user.id
+      userid: this.currentUser.id,
+      cameraUserId: this.currentUser.id
     };
-    console.log(this.user.id);
-    const result = API.graphql(graphqlOperation(mutations.createCamera, {input: item})) as Promise<GraphQLResult>;
-    result.then((value) => {
-      const v = value.data as CreateCameraMutation;
-      event.newData.id = v.createCamera.id;
+    this.cameraService.Create(item, (value) => {
+      event.newData.id = value.createCamera.id;
+      event.newData.shortid = value.createCamera.shortid;
+      event.newData.active = value.createCamera.active;
       event.confirm.resolve(event.newData);
     });
   }

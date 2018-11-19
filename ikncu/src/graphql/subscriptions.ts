@@ -7,8 +7,24 @@ export const onCreateUser = `subscription OnCreateUser {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -18,8 +34,24 @@ export const onUpdateUser = `subscription OnUpdateUser {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -29,8 +61,24 @@ export const onDeleteUser = `subscription OnDeleteUser {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -61,7 +109,13 @@ export const onCreateCamera = `subscription OnCreateCamera {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;
@@ -71,7 +125,13 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;
@@ -81,7 +141,58 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const onCreateFace = `subscription OnCreateFace {
+  onCreateFace {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const onUpdateFace = `subscription OnUpdateFace {
+  onUpdateFace {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const onDeleteFace = `subscription OnDeleteFace {
+  onDeleteFace {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;

@@ -7,8 +7,24 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -18,8 +34,24 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -29,8 +61,24 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     shortid
     email
     labels
-    cameras
     tier
+    cameras {
+      items {
+        id
+        shortid
+        name
+        active
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -61,7 +109,13 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;
@@ -71,7 +125,13 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;
@@ -81,7 +141,58 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
     shortid
     name
     active
-    userid
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
+  createFace(input: $input) {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
+  updateFace(input: $input) {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
+  }
+}
+`;
+export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
+  deleteFace(input: $input) {
+    id
+    name
+    active
+    user {
+      id
+      shortid
+      email
+      labels
+      tier
+    }
   }
 }
 `;

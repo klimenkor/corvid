@@ -3,8 +3,9 @@ type User {
   shortid: String!
   email: String!
   labels: [String]
-  cameras: [ID]
   tier: ID!
+  cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
+  faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
 }
 
 type Tier {
@@ -17,7 +18,14 @@ type Camera {
   shortid: String!
   name: String!
   active: Boolean!
-  userid: String!
+  user: User
+}
+
+type Face {
+  id: ID!
+  name: String!
+  active: Boolean!
+  user: User
 }
 
 type Label {
@@ -103,7 +111,6 @@ input ModelUserFilterInput {
   shortid: ModelStringFilterInput
   email: ModelStringFilterInput
   labels: ModelStringFilterInput
-  cameras: ModelIDFilterInput
   tier: ModelIDFilterInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
@@ -117,15 +124,17 @@ type Query {
   listTiers(filter: ModelTierFilterInput, limit: Int, nextToken: String): ModelTierConnection
   getCamera(id: ID!): Camera
   listCameras(filter: ModelCameraFilterInput, limit: Int, nextToken: String): ModelCameraConnection
+  getFace(id: ID!): Face
+  listFaces(filter: ModelFaceFilterInput, limit: Int, nextToken: String): ModelFaceConnection
   getMotion(id: ID!): Motion
   listMotions(filter: ModelMotionFilterInput, limit: Int, nextToken: String): ModelMotionConnection
 }
 
 input CreateUserInput {
+  id: ID
   shortid: String!
   email: String!
   labels: [String]
-  cameras: [ID]
   tier: ID!
 }
 
@@ -134,7 +143,6 @@ input UpdateUserInput {
   shortid: String
   email: String
   labels: [String]
-  cameras: [ID]
   tier: ID
 }
 
@@ -152,6 +160,9 @@ type Mutation {
   createCamera(input: CreateCameraInput!): Camera
   updateCamera(input: UpdateCameraInput!): Camera
   deleteCamera(input: DeleteCameraInput!): Camera
+  createFace(input: CreateFaceInput!): Face
+  updateFace(input: UpdateFaceInput!): Face
+  deleteFace(input: DeleteFaceInput!): Face
   createMotion(input: CreateMotionInput!): Motion
   updateMotion(input: UpdateMotionInput!): Motion
   deleteMotion(input: DeleteMotionInput!): Motion
@@ -167,6 +178,9 @@ type Subscription {
   onCreateCamera: Camera @aws_subscribe(mutations: ["createCamera"])
   onUpdateCamera: Camera @aws_subscribe(mutations: ["updateCamera"])
   onDeleteCamera: Camera @aws_subscribe(mutations: ["deleteCamera"])
+  onCreateFace: Face @aws_subscribe(mutations: ["createFace"])
+  onUpdateFace: Face @aws_subscribe(mutations: ["updateFace"])
+  onDeleteFace: Face @aws_subscribe(mutations: ["deleteFace"])
   onCreateMotion: Motion @aws_subscribe(mutations: ["createMotion"])
   onUpdateMotion: Motion @aws_subscribe(mutations: ["updateMotion"])
   onDeleteMotion: Motion @aws_subscribe(mutations: ["deleteMotion"])
@@ -186,6 +200,7 @@ input ModelTierFilterInput {
 }
 
 input CreateTierInput {
+  id: ID
   name: String!
 }
 
@@ -208,17 +223,17 @@ input ModelCameraFilterInput {
   shortid: ModelStringFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
-  userid: ModelStringFilterInput
   and: [ModelCameraFilterInput]
   or: [ModelCameraFilterInput]
   not: ModelCameraFilterInput
 }
 
 input CreateCameraInput {
+  id: ID
   shortid: String!
   name: String!
   active: Boolean!
-  userid: String!
+  cameraUserId: ID
 }
 
 input UpdateCameraInput {
@@ -226,10 +241,42 @@ input UpdateCameraInput {
   shortid: String
   name: String
   active: Boolean
-  userid: String
+  cameraUserId: ID
 }
 
 input DeleteCameraInput {
+  id: ID
+}
+
+type ModelFaceConnection {
+  items: [Face]
+  nextToken: String
+}
+
+input ModelFaceFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  active: ModelBooleanFilterInput
+  and: [ModelFaceFilterInput]
+  or: [ModelFaceFilterInput]
+  not: ModelFaceFilterInput
+}
+
+input CreateFaceInput {
+  id: ID
+  name: String!
+  active: Boolean!
+  faceUserId: ID
+}
+
+input UpdateFaceInput {
+  id: ID!
+  name: String
+  active: Boolean
+  faceUserId: ID
+}
+
+input DeleteFaceInput {
   id: ID
 }
 
@@ -254,6 +301,7 @@ input ModelMotionFilterInput {
 }
 
 input CreateMotionInput {
+  id: ID
   labels: [LabelInput]
   frame: String!
   cameraid: ID!

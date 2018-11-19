@@ -1,10 +1,11 @@
 type User @model {
-  id: ID!
+  id: ID! #@pk(expression: "$ctx.identity.sub")
   shortid: String!
   email: String!
   labels: [String],
-  cameras: [ID] #@connection (name: "UserCameras")
   tier: ID! #Tier @connection (name: "UserTier")
+  cameras: [Camera] @connection (name: "UserCameras")
+  faces: [Face] @connection (name: "UserFaces")
 }
 
 type Tier @model {
@@ -15,10 +16,17 @@ type Tier @model {
 
 type Camera @model {
   id: ID!
-  shortid: String!
+  shortid: String! #@pk
   name: String!
   active: Boolean!
-  userid: String! #User @connection (name: "UserCameras")
+  user: User @connection (name: "UserCameras")
+}
+
+type Face @model {
+  id: ID!
+  name: String!
+  active: Boolean!
+  user: User @connection (name: "UserFaces")
 }
 
 type Label {

@@ -2,6 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { IEvent } from 'src/app/model/_index';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
+import { API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../../../graphql/queries';
+import * as mutations from '../../../../graphql/mutations';
+import * as shortid from 'node_modules/shortid';
+import { ListCamerasQuery, CreateCameraMutation, CreateCameraInput,
+          UpdateCameraMutation, DeleteCameraMutation } from '../../../../graphql/types';
+import { GraphQLResult } from '@aws-amplify/api/lib/types';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { CurrentUserService } from 'src/app/service/common/current-user.service';
+import { CurrentUser } from 'src/app/model/_index';
+import { CameraService } from 'src/app/service/data/camera.service';
+import { MotionService } from 'src/app/service/data/motion.service';
+
 @Component({
   selector: 'app-dashboard-motion',
   templateUrl: './motion.component.html',
@@ -34,14 +47,67 @@ export class MotionComponent implements OnInit {
   toDate: NgbDate;
   bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
 
+  settings = {
+    columns: {
+      name: {
+        title: 'Name',
+        filter: false,
+      },
+      shortid: {
+        title: 'ShortId',
+        filter: false,
+        editable: false
+      },
+      active: {
+        title: 'Active',
+        filter: false
+      }
+    },
+    attr: {
+      class: 'table table-responsive'
+    },
+    edit: {
+      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
+      confirmSave: true
+    },
+    delete: {
+      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
+      confirmDelete: true
+    },
+    add: {
+      confirmCreate: true
+    }
+  };
+
+  source = [];
+  currentUser: CurrentUser;
+
   constructor(
+    private spinner: NgxSpinnerService,
+    private currentUserService: CurrentUserService,
+    private motionService: MotionService,
+
     private calendar: NgbCalendar) {
 
       this.selectToday();
     }
 
   ngOnInit() {
+    console.log('MotionComponent.ngOnInit');
     this.onDateSelection(this.fromDate);
+
+    this.spinner.show();
+
+    this.currentUserService.Initialize(() => {
+      this.currentUser = this.currentUserService.User;
+    });
+
+    const result = API.graphql(graphqlOperation(queries.listCameras)) as Promise<GraphQLResult>;
+    result.then((value) => {
+      const v = value.data as ListCamerasQuery;
+      this.source = v.listCameras.items;
+      this.spinner.hide();
+    });
   }
 
   onDateSelection(date: NgbDate) {

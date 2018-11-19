@@ -2,10 +2,10 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreateUserInput = {
+  id?: string | null,
   shortid: string,
   email: string,
   labels?: Array< string | null > | null,
-  cameras?: Array< string | null > | null,
   tier: string,
 };
 
@@ -14,7 +14,6 @@ export type UpdateUserInput = {
   shortid?: string | null,
   email?: string | null,
   labels?: Array< string | null > | null,
-  cameras?: Array< string | null > | null,
   tier?: string | null,
 };
 
@@ -23,6 +22,7 @@ export type DeleteUserInput = {
 };
 
 export type CreateTierInput = {
+  id?: string | null,
   name: string,
 };
 
@@ -36,10 +36,11 @@ export type DeleteTierInput = {
 };
 
 export type CreateCameraInput = {
+  id?: string | null,
   shortid: string,
   name: string,
   active: boolean,
-  userid: string,
+  cameraUserId?: string | null,
 };
 
 export type UpdateCameraInput = {
@@ -47,14 +48,33 @@ export type UpdateCameraInput = {
   shortid?: string | null,
   name?: string | null,
   active?: boolean | null,
-  userid?: string | null,
+  cameraUserId?: string | null,
 };
 
 export type DeleteCameraInput = {
   id?: string | null,
 };
 
+export type CreateFaceInput = {
+  id?: string | null,
+  name: string,
+  active: boolean,
+  faceUserId?: string | null,
+};
+
+export type UpdateFaceInput = {
+  id: string,
+  name?: string | null,
+  active?: boolean | null,
+  faceUserId?: string | null,
+};
+
+export type DeleteFaceInput = {
+  id?: string | null,
+};
+
 export type CreateMotionInput = {
+  id?: string | null,
   labels?: Array< LabelInput | null > | null,
   frame: string,
   cameraid: string,
@@ -83,7 +103,6 @@ export type ModelUserFilterInput = {
   shortid?: ModelStringFilterInput | null,
   email?: ModelStringFilterInput | null,
   labels?: ModelStringFilterInput | null,
-  cameras?: ModelIDFilterInput | null,
   tier?: ModelIDFilterInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
@@ -129,7 +148,6 @@ export type ModelCameraFilterInput = {
   shortid?: ModelStringFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
-  userid?: ModelStringFilterInput | null,
   and?: Array< ModelCameraFilterInput | null > | null,
   or?: Array< ModelCameraFilterInput | null > | null,
   not?: ModelCameraFilterInput | null,
@@ -138,6 +156,15 @@ export type ModelCameraFilterInput = {
 export type ModelBooleanFilterInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+};
+
+export type ModelFaceFilterInput = {
+  id?: ModelIDFilterInput | null,
+  name?: ModelStringFilterInput | null,
+  active?: ModelBooleanFilterInput | null,
+  and?: Array< ModelFaceFilterInput | null > | null,
+  or?: Array< ModelFaceFilterInput | null > | null,
+  not?: ModelFaceFilterInput | null,
 };
 
 export type ModelMotionFilterInput = {
@@ -161,8 +188,28 @@ export type CreateUserMutation = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -177,8 +224,28 @@ export type UpdateUserMutation = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -193,8 +260,28 @@ export type DeleteUserMutation = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -245,7 +332,14 @@ export type CreateCameraMutation = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -260,7 +354,14 @@ export type UpdateCameraMutation = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -275,7 +376,77 @@ export type DeleteCameraMutation = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type CreateFaceMutationVariables = {
+  input: CreateFaceInput,
+};
+
+export type CreateFaceMutation = {
+  createFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type UpdateFaceMutationVariables = {
+  input: UpdateFaceInput,
+};
+
+export type UpdateFaceMutation = {
+  updateFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type DeleteFaceMutationVariables = {
+  input: DeleteFaceInput,
+};
+
+export type DeleteFaceMutation = {
+  deleteFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -347,8 +518,28 @@ export type GetUserQuery = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -367,8 +558,28 @@ export type ListUsersQuery = {
       shortid: string,
       email: string,
       labels: Array< string | null > | null,
-      cameras: Array< string | null > | null,
       tier: string,
+      cameras:  {
+        __typename: "ModelCameraConnection",
+        items:  Array< {
+          __typename: "Camera",
+          id: string,
+          shortid: string,
+          name: string,
+          active: boolean,
+        } | null > | null,
+        nextToken: string | null,
+      } | null,
+      faces:  {
+        __typename: "ModelFaceConnection",
+        items:  Array< {
+          __typename: "Face",
+          id: string,
+          name: string,
+          active: boolean,
+        } | null > | null,
+        nextToken: string | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -415,7 +626,14 @@ export type GetCameraQuery = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -434,7 +652,62 @@ export type ListCamerasQuery = {
       shortid: string,
       name: string,
       active: boolean,
-      userid: string,
+      user:  {
+        __typename: "User",
+        id: string,
+        shortid: string,
+        email: string,
+        labels: Array< string | null > | null,
+        tier: string,
+      } | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type GetFaceQueryVariables = {
+  id: string,
+};
+
+export type GetFaceQuery = {
+  getFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type ListFacesQueryVariables = {
+  filter?: ModelFaceFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListFacesQuery = {
+  listFaces:  {
+    __typename: "ModelFaceConnection",
+    items:  Array< {
+      __typename: "Face",
+      id: string,
+      name: string,
+      active: boolean,
+      user:  {
+        __typename: "User",
+        id: string,
+        shortid: string,
+        email: string,
+        labels: Array< string | null > | null,
+        tier: string,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -491,8 +764,28 @@ export type OnCreateUserSubscription = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -503,8 +796,28 @@ export type OnUpdateUserSubscription = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -515,8 +828,28 @@ export type OnDeleteUserSubscription = {
     shortid: string,
     email: string,
     labels: Array< string | null > | null,
-    cameras: Array< string | null > | null,
     tier: string,
+    cameras:  {
+      __typename: "ModelCameraConnection",
+      items:  Array< {
+        __typename: "Camera",
+        id: string,
+        shortid: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -551,7 +884,14 @@ export type OnCreateCameraSubscription = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -562,7 +902,14 @@ export type OnUpdateCameraSubscription = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
@@ -573,7 +920,65 @@ export type OnDeleteCameraSubscription = {
     shortid: string,
     name: string,
     active: boolean,
-    userid: string,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type OnCreateFaceSubscription = {
+  onCreateFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type OnUpdateFaceSubscription = {
+  onUpdateFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
+  } | null,
+};
+
+export type OnDeleteFaceSubscription = {
+  onDeleteFace:  {
+    __typename: "Face",
+    id: string,
+    name: string,
+    active: boolean,
+    user:  {
+      __typename: "User",
+      id: string,
+      shortid: string,
+      email: string,
+      labels: Array< string | null > | null,
+      tier: string,
+    } | null,
   } | null,
 };
 
