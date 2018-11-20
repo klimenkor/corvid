@@ -1,14 +1,14 @@
 {
     "providers": {
         "awscloudformation": {
-            "AuthRoleName": "ikncu-20181101191634-authRole",
-            "UnauthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-authRole",
+            "AuthRoleName": "ikncu-20181119185200-authRole",
+            "UnauthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-authRole",
             "Region": "us-east-1",
-            "DeploymentBucketName": "ikncu-20181101191634-deployment",
-            "UnauthRoleName": "ikncu-20181101191634-unauthRole",
-            "StackName": "ikncu-20181101191634",
-            "StackId": "arn:aws:cloudformation:us-east-1:558796877616:stack/ikncu-20181101191634/5285a4c0-de45-11e8-8f4f-500c286014fd"
+            "DeploymentBucketName": "ikncu-20181119185200-deployment",
+            "UnauthRoleName": "ikncu-20181119185200-unauthRole",
+            "StackName": "ikncu-20181119185200",
+            "StackId": "arn:aws:cloudformation:us-east-1:558796877616:stack/ikncu-20181119185200/405753b0-ec6f-11e8-94db-50d5ca6e604a"
         }
     }
 }

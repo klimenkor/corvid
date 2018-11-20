@@ -45,7 +45,7 @@ export class RegisterComponent implements CognitoCallback {
             console.log('result: ' + this.errorMessage);
         } else {
             console.log('redirecting');
-            this.router.navigate(['/home/confirmRegistration', result.user.username]);
+            this.router.navigate(['/confirmRegistration', result.user.username]);
         }
     }
 }

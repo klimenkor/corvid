@@ -81,7 +81,7 @@
 		"authcognito": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/ikncu-20181101191634-deployment/amplify-cfn-templates/auth/cognito-cloudformation-template.yml",
+				"TemplateURL": "https://s3.amazonaws.com/ikncu-20181119185200-deployment/amplify-cfn-templates/auth/cognito-cloudformation-template.yml",
 				"Parameters": {
 					"userPoolName": "ikncu_userpool",
 					"autoVerifiedAttributes": "email",
@@ -113,17 +113,17 @@
 					"useDefault": "manual",
 					"authSelections": "userPoolOnly",
 					"resourceName": "cognito",
-					"unAuthRoleName": "ikncu-20181101191634-unauthRole",
-					"authRoleName": "ikncu-20181101191634-authRole",
-					"unAuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-unauthRole",
-					"authRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-authRole"
+					"unAuthRoleName": "ikncu-20181119185200-unauthRole",
+					"authRoleName": "ikncu-20181119185200-authRole",
+					"unAuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-unauthRole",
+					"authRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-authRole"
 				}
 			}
 		},
 		"apiikncu": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/ikncu-20181101191634-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"TemplateURL": "https://s3.amazonaws.com/ikncu-20181119185200-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
 					"AppSyncApiName": "ikncu",
 					"AuthCognitoUserPoolId": {
@@ -132,10 +132,10 @@
 							"Outputs.UserPoolId"
 						]
 					},
-					"schemaGraphql": "s3://ikncu-20181101191634-deployment/amplify-appsync-files/schema.graphql.1542604691397",
-					"ResolverBucket": "ikncu-20181101191634-deployment",
+					"schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1542684146040",
+					"ResolverBucket": "ikncu-20181119185200-deployment",
 					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1542604691397"
+					"DeploymentTimestamp": "1542684146040"
 				}
 			}
 		}

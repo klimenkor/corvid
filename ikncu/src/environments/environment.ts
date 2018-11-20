@@ -10,8 +10,8 @@ export const environment = {
 
   region: 'us-east-1',
   identityPoolId: 'us-east-1:1aaa072e-635b-43b6-90c8-ffc8985bea4d',
-  userPoolId: 'us-east-1_zPjv6WY1k',
-  clientId: '2lrjtu9odnmjocgae3ivje07sj',
+  userPoolId: 'us-east-1_nny53yFxl',
+  clientId: '4ktdllfdkhua8shk8c6v4iij6v',
   rekognitionBucket: 'corvid-frames',
   albumName: '',
   bucketRegion: 'us-east-1',

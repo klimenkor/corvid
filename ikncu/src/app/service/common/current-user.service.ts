@@ -19,10 +19,12 @@ export class CurrentUserService {
       this._cognitoUser = new CurrentUser;
       const u = this._amplifyService.auth().currentUserInfo();
       u.then((v) => {
-        this._cognitoUser.id = v.attributes.sub;
-        this._cognitoUser.email = v.attributes.email;
-        this._cognitoUser.name = v.username;
-        this._initialized = true;
+        if (v != null) {
+          this._cognitoUser.id = v.attributes.sub;
+          this._cognitoUser.email = v.attributes.email;
+          this._cognitoUser.name = v.username;
+          this._initialized = true;
+        }
         callback(this._initialized);
       });
     } else {

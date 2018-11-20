@@ -1,13 +1,37 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
+export const getTier = `query GetTier($id: ID!) {
+  getTier(id: $id) {
+    id
+    name
+  }
+}
+`;
+export const listTiers = `query ListTiers(
+  $filter: ModelTierFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTiers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+    }
+    nextToken
+  }
+}
+`;
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -36,10 +60,13 @@ export const listUsers = `query ListUsers(
   listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+      tier {
+        id
+        name
+      }
       cameras {
         items {
           id
@@ -62,27 +89,6 @@ export const listUsers = `query ListUsers(
   }
 }
 `;
-export const getTier = `query GetTier($id: ID!) {
-  getTier(id: $id) {
-    id
-    name
-  }
-}
-`;
-export const listTiers = `query ListTiers(
-  $filter: ModelTierFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listTiers(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-    }
-    nextToken
-  }
-}
-`;
 export const getCamera = `query GetCamera($id: ID!) {
   getCamera(id: $id) {
     id
@@ -91,10 +97,21 @@ export const getCamera = `query GetCamera($id: ID!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -112,10 +129,21 @@ export const listCameras = `query ListCameras(
       active
       user {
         id
-        shortid
+        cognitoid
         email
         labels
-        tier
+      }
+      motions {
+        items {
+          id
+          labels {
+            name
+            confidence
+          }
+          frame
+          occured
+        }
+        nextToken
       }
     }
     nextToken
@@ -129,10 +157,9 @@ export const getFace = `query GetFace($id: ID!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -149,10 +176,9 @@ export const listFaces = `query ListFaces(
       active
       user {
         id
-        shortid
+        cognitoid
         email
         labels
-        tier
       }
     }
     nextToken
@@ -167,8 +193,13 @@ export const getMotion = `query GetMotion($id: ID!) {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;
@@ -185,8 +216,13 @@ export const listMotions = `query ListMotions(
         confidence
       }
       frame
-      cameraid
-      userid
+      occured
+      camera {
+        id
+        shortid
+        name
+        active
+      }
     }
     nextToken
   }

@@ -26,9 +26,14 @@ export class AppComponent implements OnInit, LoggedInCallback {
         console.log('AppComponent: Checking if the user is already authenticated');
         this.userService.isAuthenticated(this);
 
-        this.currentUserService.Initialize((value) => {
-          this.currentUser = this.currentUserService.User;
-          console.log(':::: currentUser.id = ' + this.currentUser.id);
+        this.currentUserService.Initialize((initialized) => {
+          if (initialized) {
+            this.currentUser = this.currentUserService.User;
+            console.log(':::: currentUser.id = ' + this.currentUser.id);
+          } else {
+            console.log(':::: not authenticated yet');
+          }
+
         });
     }
 

@@ -42,8 +42,8 @@
     "useDefault": "manual",
     "authSelections": "userPoolOnly",
     "resourceName": "cognito",
-    "unAuthRoleName": "ikncu-20181101191634-unauthRole",
-    "authRoleName": "ikncu-20181101191634-authRole",
-    "unAuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-unauthRole",
-    "authRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181101191634-authRole"
+    "unAuthRoleName": "ikncu-20181119185200-unauthRole",
+    "authRoleName": "ikncu-20181119185200-authRole",
+    "unAuthRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-unauthRole",
+    "authRoleArn": "arn:aws:iam::558796877616:role/ikncu-20181119185200-authRole"
 }

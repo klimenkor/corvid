@@ -1,13 +1,37 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
+export const createTier = `mutation CreateTier($input: CreateTierInput!) {
+  createTier(input: $input) {
+    id
+    name
+  }
+}
+`;
+export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
+  updateTier(input: $input) {
+    id
+    name
+  }
+}
+`;
+export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
+  deleteTier(input: $input) {
+    id
+    name
+  }
+}
+`;
 export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -31,10 +55,13 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
 export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -58,10 +85,13 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
 export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   deleteUser(input: $input) {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -82,27 +112,6 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   }
 }
 `;
-export const createTier = `mutation CreateTier($input: CreateTierInput!) {
-  createTier(input: $input) {
-    id
-    name
-  }
-}
-`;
-export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
-  updateTier(input: $input) {
-    id
-    name
-  }
-}
-`;
-export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
-  deleteTier(input: $input) {
-    id
-    name
-  }
-}
-`;
 export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
   createCamera(input: $input) {
     id
@@ -111,10 +120,21 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -127,10 +147,21 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -143,10 +174,21 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -158,10 +200,9 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -173,10 +214,9 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -188,10 +228,9 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -204,8 +243,13 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;
@@ -217,8 +261,13 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;
@@ -230,8 +279,13 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;

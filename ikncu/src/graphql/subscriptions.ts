@@ -1,13 +1,37 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
+export const onCreateTier = `subscription OnCreateTier {
+  onCreateTier {
+    id
+    name
+  }
+}
+`;
+export const onUpdateTier = `subscription OnUpdateTier {
+  onUpdateTier {
+    id
+    name
+  }
+}
+`;
+export const onDeleteTier = `subscription OnDeleteTier {
+  onDeleteTier {
+    id
+    name
+  }
+}
+`;
 export const onCreateUser = `subscription OnCreateUser {
   onCreateUser {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -31,10 +55,13 @@ export const onCreateUser = `subscription OnCreateUser {
 export const onUpdateUser = `subscription OnUpdateUser {
   onUpdateUser {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -58,10 +85,13 @@ export const onUpdateUser = `subscription OnUpdateUser {
 export const onDeleteUser = `subscription OnDeleteUser {
   onDeleteUser {
     id
-    shortid
+    cognitoid
     email
     labels
-    tier
+    tier {
+      id
+      name
+    }
     cameras {
       items {
         id
@@ -82,27 +112,6 @@ export const onDeleteUser = `subscription OnDeleteUser {
   }
 }
 `;
-export const onCreateTier = `subscription OnCreateTier {
-  onCreateTier {
-    id
-    name
-  }
-}
-`;
-export const onUpdateTier = `subscription OnUpdateTier {
-  onUpdateTier {
-    id
-    name
-  }
-}
-`;
-export const onDeleteTier = `subscription OnDeleteTier {
-  onDeleteTier {
-    id
-    name
-  }
-}
-`;
 export const onCreateCamera = `subscription OnCreateCamera {
   onCreateCamera {
     id
@@ -111,10 +120,21 @@ export const onCreateCamera = `subscription OnCreateCamera {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -127,10 +147,21 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -143,10 +174,21 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
     }
   }
 }
@@ -158,10 +200,9 @@ export const onCreateFace = `subscription OnCreateFace {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -173,10 +214,9 @@ export const onUpdateFace = `subscription OnUpdateFace {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -188,10 +228,9 @@ export const onDeleteFace = `subscription OnDeleteFace {
     active
     user {
       id
-      shortid
+      cognitoid
       email
       labels
-      tier
     }
   }
 }
@@ -204,8 +243,13 @@ export const onCreateMotion = `subscription OnCreateMotion {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;
@@ -217,8 +261,13 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;
@@ -230,8 +279,13 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
       confidence
     }
     frame
-    cameraid
-    userid
+    occured
+    camera {
+      id
+      shortid
+      name
+      active
+    }
   }
 }
 `;

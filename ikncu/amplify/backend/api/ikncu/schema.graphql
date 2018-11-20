@@ -1,25 +1,25 @@
+type Tier @model {
+  id: ID!
+  name: String!
+}
+
 type User @model {
-  id: ID! #@pk(expression: "$ctx.identity.sub")
-  shortid: String!
+  id: ID!
+  cognitoid: String!
   email: String!
   labels: [String],
-  tier: ID! #Tier @connection (name: "UserTier")
+  tier: Tier @connection
   cameras: [Camera] @connection (name: "UserCameras")
   faces: [Face] @connection (name: "UserFaces")
 }
 
-type Tier @model {
-  id: ID!
-  name: String!
-#   user: User @connection (name: "UserTier")
-}
-
 type Camera @model {
   id: ID!
-  shortid: String! #@pk
+  shortid: String!
   name: String!
   active: Boolean!
   user: User @connection (name: "UserCameras")
+  motions: [Motion] @connection (name: "CameraMotions")
 }
 
 type Face @model {
@@ -38,9 +38,8 @@ type Motion @model {
   id: ID!
   labels: [Label]
   frame: String!
-  cameraid: ID!
-  userid: ID!
-  #user: Camera @connection (name: "CameraMotions")
+  occured: String!
+  camera: Camera @connection (name: "CameraMotions")
 }
 
 

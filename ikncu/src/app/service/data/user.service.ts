@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../graphql/queries';
 import * as mutations from '../../../graphql/mutations';
-import { GetUserQuery, UpdateUserInput } from '../../../graphql/types';
+import { GetUserQuery, UpdateUserInput, CreateUserInput, CreateUserMutation } from '../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 
 @Injectable({
@@ -28,6 +28,14 @@ export class UserService {
     } else {
       callback(this._initialized);
     }
+  }
+
+  public Create(item: CreateUserInput, callback) {
+    console.log('User.Create');
+    const result = API.graphql(graphqlOperation(mutations.createUser, {input: item})) as Promise<GraphQLResult>;
+    result.then((value) => {
+      callback(value.data as CreateUserMutation);
+    });
   }
 
   public get User(): UpdateUserInput {

@@ -1,16 +1,16 @@
-type User {
-  id: ID!
-  shortid: String!
-  email: String!
-  labels: [String]
-  tier: ID!
-  cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
-  faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
-}
-
 type Tier {
   id: ID!
   name: String!
+}
+
+type User {
+  id: ID!
+  cognitoid: String!
+  email: String!
+  labels: [String]
+  tier: Tier
+  cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
+  faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
 }
 
 type Camera {
@@ -19,6 +19,7 @@ type Camera {
   name: String!
   active: Boolean!
   user: User
+  motions(filter: ModelMotionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelMotionConnection
 }
 
 type Face {
@@ -37,8 +38,8 @@ type Motion {
   id: ID!
   labels: [Label]
   frame: String!
-  cameraid: ID!
-  userid: ID!
+  occured: String!
+  camera: Camera
 }
 
 enum ModelSortDirection {
@@ -46,8 +47,8 @@ enum ModelSortDirection {
   DESC
 }
 
-type ModelUserConnection {
-  items: [User]
+type ModelTierConnection {
+  items: [Tier]
   nextToken: String
 }
 
@@ -106,97 +107,25 @@ input ModelBooleanFilterInput {
   eq: Boolean
 }
 
-input ModelUserFilterInput {
-  id: ModelIDFilterInput
-  shortid: ModelStringFilterInput
-  email: ModelStringFilterInput
-  labels: ModelStringFilterInput
-  tier: ModelIDFilterInput
-  and: [ModelUserFilterInput]
-  or: [ModelUserFilterInput]
-  not: ModelUserFilterInput
-}
-
-type Query {
-  getUser(id: ID!): User
-  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
-  getTier(id: ID!): Tier
-  listTiers(filter: ModelTierFilterInput, limit: Int, nextToken: String): ModelTierConnection
-  getCamera(id: ID!): Camera
-  listCameras(filter: ModelCameraFilterInput, limit: Int, nextToken: String): ModelCameraConnection
-  getFace(id: ID!): Face
-  listFaces(filter: ModelFaceFilterInput, limit: Int, nextToken: String): ModelFaceConnection
-  getMotion(id: ID!): Motion
-  listMotions(filter: ModelMotionFilterInput, limit: Int, nextToken: String): ModelMotionConnection
-}
-
-input CreateUserInput {
-  id: ID
-  shortid: String!
-  email: String!
-  labels: [String]
-  tier: ID!
-}
-
-input UpdateUserInput {
-  id: ID!
-  shortid: String
-  email: String
-  labels: [String]
-  tier: ID
-}
-
-input DeleteUserInput {
-  id: ID
-}
-
-type Mutation {
-  createUser(input: CreateUserInput!): User
-  updateUser(input: UpdateUserInput!): User
-  deleteUser(input: DeleteUserInput!): User
-  createTier(input: CreateTierInput!): Tier
-  updateTier(input: UpdateTierInput!): Tier
-  deleteTier(input: DeleteTierInput!): Tier
-  createCamera(input: CreateCameraInput!): Camera
-  updateCamera(input: UpdateCameraInput!): Camera
-  deleteCamera(input: DeleteCameraInput!): Camera
-  createFace(input: CreateFaceInput!): Face
-  updateFace(input: UpdateFaceInput!): Face
-  deleteFace(input: DeleteFaceInput!): Face
-  createMotion(input: CreateMotionInput!): Motion
-  updateMotion(input: UpdateMotionInput!): Motion
-  deleteMotion(input: DeleteMotionInput!): Motion
-}
-
-type Subscription {
-  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
-  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
-  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
-  onCreateTier: Tier @aws_subscribe(mutations: ["createTier"])
-  onUpdateTier: Tier @aws_subscribe(mutations: ["updateTier"])
-  onDeleteTier: Tier @aws_subscribe(mutations: ["deleteTier"])
-  onCreateCamera: Camera @aws_subscribe(mutations: ["createCamera"])
-  onUpdateCamera: Camera @aws_subscribe(mutations: ["updateCamera"])
-  onDeleteCamera: Camera @aws_subscribe(mutations: ["deleteCamera"])
-  onCreateFace: Face @aws_subscribe(mutations: ["createFace"])
-  onUpdateFace: Face @aws_subscribe(mutations: ["updateFace"])
-  onDeleteFace: Face @aws_subscribe(mutations: ["deleteFace"])
-  onCreateMotion: Motion @aws_subscribe(mutations: ["createMotion"])
-  onUpdateMotion: Motion @aws_subscribe(mutations: ["updateMotion"])
-  onDeleteMotion: Motion @aws_subscribe(mutations: ["deleteMotion"])
-}
-
-type ModelTierConnection {
-  items: [Tier]
-  nextToken: String
-}
-
 input ModelTierFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
   and: [ModelTierFilterInput]
   or: [ModelTierFilterInput]
   not: ModelTierFilterInput
+}
+
+type Query {
+  getTier(id: ID!): Tier
+  listTiers(filter: ModelTierFilterInput, limit: Int, nextToken: String): ModelTierConnection
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getCamera(id: ID!): Camera
+  listCameras(filter: ModelCameraFilterInput, limit: Int, nextToken: String): ModelCameraConnection
+  getFace(id: ID!): Face
+  listFaces(filter: ModelFaceFilterInput, limit: Int, nextToken: String): ModelFaceConnection
+  getMotion(id: ID!): Motion
+  listMotions(filter: ModelMotionFilterInput, limit: Int, nextToken: String): ModelMotionConnection
 }
 
 input CreateTierInput {
@@ -210,6 +139,77 @@ input UpdateTierInput {
 }
 
 input DeleteTierInput {
+  id: ID
+}
+
+type Mutation {
+  createTier(input: CreateTierInput!): Tier
+  updateTier(input: UpdateTierInput!): Tier
+  deleteTier(input: DeleteTierInput!): Tier
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  createCamera(input: CreateCameraInput!): Camera
+  updateCamera(input: UpdateCameraInput!): Camera
+  deleteCamera(input: DeleteCameraInput!): Camera
+  createFace(input: CreateFaceInput!): Face
+  updateFace(input: UpdateFaceInput!): Face
+  deleteFace(input: DeleteFaceInput!): Face
+  createMotion(input: CreateMotionInput!): Motion
+  updateMotion(input: UpdateMotionInput!): Motion
+  deleteMotion(input: DeleteMotionInput!): Motion
+}
+
+type Subscription {
+  onCreateTier: Tier @aws_subscribe(mutations: ["createTier"])
+  onUpdateTier: Tier @aws_subscribe(mutations: ["updateTier"])
+  onDeleteTier: Tier @aws_subscribe(mutations: ["deleteTier"])
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateCamera: Camera @aws_subscribe(mutations: ["createCamera"])
+  onUpdateCamera: Camera @aws_subscribe(mutations: ["updateCamera"])
+  onDeleteCamera: Camera @aws_subscribe(mutations: ["deleteCamera"])
+  onCreateFace: Face @aws_subscribe(mutations: ["createFace"])
+  onUpdateFace: Face @aws_subscribe(mutations: ["updateFace"])
+  onDeleteFace: Face @aws_subscribe(mutations: ["deleteFace"])
+  onCreateMotion: Motion @aws_subscribe(mutations: ["createMotion"])
+  onUpdateMotion: Motion @aws_subscribe(mutations: ["updateMotion"])
+  onDeleteMotion: Motion @aws_subscribe(mutations: ["deleteMotion"])
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  cognitoid: ModelStringFilterInput
+  email: ModelStringFilterInput
+  labels: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input CreateUserInput {
+  id: ID
+  cognitoid: String!
+  email: String!
+  labels: [String]
+  userTierId: ID
+}
+
+input UpdateUserInput {
+  id: ID!
+  cognitoid: String
+  email: String
+  labels: [String]
+  userTierId: ID
+}
+
+input DeleteUserInput {
   id: ID
 }
 
@@ -293,8 +293,7 @@ type ModelMotionConnection {
 input ModelMotionFilterInput {
   id: ModelIDFilterInput
   frame: ModelStringFilterInput
-  cameraid: ModelIDFilterInput
-  userid: ModelIDFilterInput
+  occured: ModelStringFilterInput
   and: [ModelMotionFilterInput]
   or: [ModelMotionFilterInput]
   not: ModelMotionFilterInput
@@ -304,16 +303,16 @@ input CreateMotionInput {
   id: ID
   labels: [LabelInput]
   frame: String!
-  cameraid: ID!
-  userid: ID!
+  occured: String!
+  motionCameraId: ID
 }
 
 input UpdateMotionInput {
   id: ID!
   labels: [LabelInput]
   frame: String
-  cameraid: ID
-  userid: ID
+  occured: String
+  motionCameraId: ID
 }
 
 input DeleteMotionInput {

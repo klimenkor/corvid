@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+import decimal
 import json
 import boto3
 import time
@@ -73,20 +75,53 @@ def get_settings(user_id):
  
     return item
 
-def save_data(user_id, camera_id, labels,s3key):
+def get_user(camera_short_id):
     client = boto3.client('dynamodb')
-    
-    l = {}
+    api_id = "zxfoefkjhjfule64wg7mezb6ce"
+
+    resp = client.query(
+        TableName="Camera-" + api_id,
+        IndexName="shortid-index",
+        ExpressionAttributeValues={
+            ":v1": {
+                "S": camera_short_id,
+            }
+        },
+        KeyConditionExpression='shortid = :v1')
+    items = resp.get('Items')
+    return items[0].user
+
+def save_data(user_id, camera_id, labels, s3key):
+    client = boto3.client('dynamodb')
+    api_id = "zxfoefkjhjfule64wg7mezb6ce"
+
+    labels_list = []
     for label in labels:
-        l[label["Name"]] = {"N": str(label["Confidence"])}
-    
+        labels_list.append({"name": label["Name"], "confidence": label["Confidence"]})
+
     item = {
-        "userid": {"S":user_id},
-        "cameraid": {"S":camera_id},
+        "userid": {"S": user_id},
+        "cameraid": {"S": camera_id},
         "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
-        "labels": {"M":l},
-        "frame": {"S":s3key}}
-    client.put_item(TableName="events",Item=item)  
+        "labels": {"L": labels_list},
+        "frame": {"S": s3key}}
+    client.put_item(TableName="Motion-" + api_id, Item=item)
+
+# def save_data(user_id, camera_id, labels,s3key):
+#     client = boto3.client('dynamodb')
+#
+#     l = {}
+#     for label in labels:
+#         l[label["Name"]] = {"N": str(label["Confidence"])}
+#
+#     item = {
+#         "userid": {"S":user_id},
+#         "cameraid": {"S":camera_id},
+#         "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
+#         "labels": {"M":l},
+#         "frame": {"S":s3key}}
+#     client.put_item(TableName="events",Item=item)
+
 
 def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1"):
 	rekognition = boto3.client("rekognition", region)
