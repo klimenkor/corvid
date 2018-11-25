@@ -17,7 +17,6 @@ export class CheckboxViewComponent implements ViewCell, OnInit {
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
-    console.log(this.value);
     this.renderValue = this.value;
   }
 

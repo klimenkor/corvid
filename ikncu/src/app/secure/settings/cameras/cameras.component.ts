@@ -95,13 +95,10 @@ export class CamerasComponent implements OnInit {
     });
   }
 
-  onDeleteConfirm(event) {
-    console.log('onDeleteConfirm');
-    console.log(this);
-
+  confirmDelete(item, callback) {
     swal({
       title: 'Are you sure?',
-      text: 'You won\'t be able to restore [' + event.data.name + '] afrer deleting this!',
+      text: 'You won\'t be able to restore [' + item.name + '] afrer deleting this!',
       type: 'question',
       focusCancel: true,
       showCancelButton: true,
@@ -113,31 +110,31 @@ export class CamerasComponent implements OnInit {
       cancelButtonClass: 'btn btn-danger btn-raised',
       buttonsStyling: false
     }).then(function (response) {
-      console.log(this);
       if (response.value) {
-        console.log('   ::: delete');
+        callback();
+      }
+    });
+  }
+
+  onDeleteConfirm(event) {
+    console.log('onDeleteConfirm');
+    console.log(this);
+
+    this.confirmDelete(event.data, () => {
         const item = {
             id: event.data.id
         };
         this.cameraService.Delete(item, (value) => {
           const v = value.data as DeleteCameraMutation;
           event.confirm.resolve(event.newData);
-          swal(
-            'Deleted!',
-            'Your imaginary file has been deleted.',
-            'success'
-          );
         });
-      } else {
-        console.log('   ::: cancel');
-      }
-    });
+      });
   }
 
   save(item, callback) {
     console.log('save');
-    console.log(item);
     item.cameraUserId = this.currentUser.id;
+    console.log(item);
     this.cameraService.Update(item, (value) => {
       const v = value.data as UpdateCameraMutation;
       callback();
