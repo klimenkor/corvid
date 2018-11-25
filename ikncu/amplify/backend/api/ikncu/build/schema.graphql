@@ -4,8 +4,7 @@ type Tier {
 }
 
 type User {
-  id: ID!
-  cognitoid: String!
+  id: String!
   email: String!
   labels: [String]
   tier: Tier
@@ -14,8 +13,7 @@ type User {
 }
 
 type Camera {
-  id: ID!
-  shortid: String!
+  id: String!
   name: String!
   active: Boolean!
   user: User
@@ -23,7 +21,7 @@ type Camera {
 }
 
 type Face {
-  id: ID!
+  id: String!
   name: String!
   active: Boolean!
   user: User
@@ -184,8 +182,7 @@ type ModelUserConnection {
 }
 
 input ModelUserFilterInput {
-  id: ModelIDFilterInput
-  cognitoid: ModelStringFilterInput
+  id: ModelStringFilterInput
   email: ModelStringFilterInput
   labels: ModelStringFilterInput
   and: [ModelUserFilterInput]
@@ -195,15 +192,13 @@ input ModelUserFilterInput {
 
 input CreateUserInput {
   id: ID
-  cognitoid: String!
   email: String!
   labels: [String]
   userTierId: ID
 }
 
 input UpdateUserInput {
-  id: ID!
-  cognitoid: String
+  id: String!
   email: String
   labels: [String]
   userTierId: ID
@@ -219,8 +214,7 @@ type ModelCameraConnection {
 }
 
 input ModelCameraFilterInput {
-  id: ModelIDFilterInput
-  shortid: ModelStringFilterInput
+  id: ModelStringFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
   and: [ModelCameraFilterInput]
@@ -230,15 +224,13 @@ input ModelCameraFilterInput {
 
 input CreateCameraInput {
   id: ID
-  shortid: String!
   name: String!
   active: Boolean!
   cameraUserId: ID
 }
 
 input UpdateCameraInput {
-  id: ID!
-  shortid: String
+  id: String!
   name: String
   active: Boolean
   cameraUserId: ID
@@ -254,7 +246,7 @@ type ModelFaceConnection {
 }
 
 input ModelFaceFilterInput {
-  id: ModelIDFilterInput
+  id: ModelStringFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
   and: [ModelFaceFilterInput]
@@ -270,7 +262,7 @@ input CreateFaceInput {
 }
 
 input UpdateFaceInput {
-  id: ID!
+  id: String!
   name: String
   active: Boolean
   faceUserId: ID

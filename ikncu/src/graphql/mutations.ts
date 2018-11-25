@@ -25,7 +25,6 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
 export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
-    cognitoid
     email
     labels
     tier {
@@ -35,7 +34,6 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -55,7 +53,6 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
 export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     id
-    cognitoid
     email
     labels
     tier {
@@ -65,7 +62,6 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -85,7 +81,6 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
 export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   deleteUser(input: $input) {
     id
-    cognitoid
     email
     labels
     tier {
@@ -95,7 +90,6 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -115,12 +109,10 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
 export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
   createCamera(input: $input) {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -142,12 +134,10 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
 export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
   updateCamera(input: $input) {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -169,12 +159,10 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
 export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
   deleteCamera(input: $input) {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -200,7 +188,6 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -214,7 +201,6 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -228,7 +214,6 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -246,7 +231,6 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
     occured
     camera {
       id
-      shortid
       name
       active
     }
@@ -264,7 +248,6 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
     occured
     camera {
       id
-      shortid
       name
       active
     }
@@ -282,7 +265,6 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
     occured
     camera {
       id
-      shortid
       name
       active
     }

@@ -4,12 +4,15 @@ import * as queries from '../../../../graphql/queries';
 import * as mutations from '../../../../graphql/mutations';
 import * as shortid from 'node_modules/shortid';
 import { ListCamerasQuery, CreateCameraMutation, CreateCameraInput,
-          UpdateCameraMutation, DeleteCameraMutation } from '../../../../graphql/types';
+          UpdateCameraMutation, DeleteCameraMutation, UpdateCameraInput } from '../../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser } from 'src/app/model/_index';
 import { CameraService } from 'src/app/service/data/camera.service';
+import swal from 'sweetalert2';
+
+import { CheckboxViewComponent } from '../../components/common/checkbox-view/checkbox-view.component';
 
 @Component({
   selector: 'app-settings-cameras',
@@ -18,20 +21,37 @@ import { CameraService } from 'src/app/service/data/camera.service';
 })
 export class CamerasComponent implements OnInit {
 
+  testSwitch = false;
+
   settings = {
     columns: {
+      id: {
+        title: 'Id',
+        filter: false,
+        editable: false
+      },
       name: {
         title: 'Name',
         filter: false,
       },
-      shortid: {
-        title: 'ShortId',
-        filter: false,
-        editable: false
-      },
       active: {
         title: 'Active',
-        filter: false
+        filter: false,
+        type: 'custom',
+        editable: false,
+        renderComponent: CheckboxViewComponent,
+        onComponentInitFunction: (instance) => {
+          instance.save.subscribe(row => {
+            this.save(
+              <UpdateCameraInput>{
+                id: row.id,
+                name: row.name,
+                active: row.active,
+                cameraUserId: row.cameraUserId
+              },
+              () => { });
+          });
+        }
       }
     },
     attr: {
@@ -56,7 +76,7 @@ export class CamerasComponent implements OnInit {
   constructor(
     private spinner: NgxSpinnerService,
     private currentUserService: CurrentUserService,
-    private cameraService: CameraService
+    public cameraService: CameraService
     ) {   }
 
   async ngOnInit() {
@@ -76,33 +96,76 @@ export class CamerasComponent implements OnInit {
   }
 
   onDeleteConfirm(event) {
-      console.log('onDeleteConfirm');
-      const item = {
-          id: event.data.id
-      };
-      this.cameraService.Delete(item, (value) => {
-        const v = value.data as DeleteCameraMutation;
-        event.confirm.resolve(event.newData);
-      });
+    console.log('onDeleteConfirm');
+    console.log(this);
+
+    swal({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to restore [' + event.data.name + '] afrer deleting this!',
+      type: 'question',
+      focusCancel: true,
+      showCancelButton: true,
+      confirmButtonColor: '#0CC27E',
+      cancelButtonColor: '#FF586B',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      confirmButtonClass: 'btn btn-success btn-raised mr-5',
+      cancelButtonClass: 'btn btn-danger btn-raised',
+      buttonsStyling: false
+    }).then(function (response) {
+      console.log(this);
+      if (response.value) {
+        console.log('   ::: delete');
+        const item = {
+            id: event.data.id
+        };
+        this.cameraService.Delete(item, (value) => {
+          const v = value.data as DeleteCameraMutation;
+          event.confirm.resolve(event.newData);
+          swal(
+            'Deleted!',
+            'Your imaginary file has been deleted.',
+            'success'
+          );
+        });
+      } else {
+        console.log('   ::: cancel');
+      }
+    });
   }
+
+  save(item, callback) {
+    console.log('save');
+    console.log(item);
+    item.cameraUserId = this.currentUser.id;
+    this.cameraService.Update(item, (value) => {
+      const v = value.data as UpdateCameraMutation;
+      callback();
+    });
+  }
+
 
   onSaveConfirm(event) {
       console.log('onSaveConfirm');
-      this.cameraService.Update(event.newData, (value) => {
-        const v = value.data as UpdateCameraMutation;
-        event.newData.id = v.updateCamera.id;
+      const item = <UpdateCameraInput>{
+        id: event.newData.id,
+        name: event.newData.name,
+        active: event.newData.active,
+        cameraUserId: this.currentUser.id
+      };
+      this.save(item, () => {
         event.confirm.resolve(event.newData);
       });
   }
 
   async onCreateConfirm(event) {
     const item = <CreateCameraInput>{
+      id: shortid.generate(),
       name: event.newData.name,
-      shortid: shortid.generate(),
       active: false,
-      userid: this.currentUser.id,
       cameraUserId: this.currentUser.id
     };
+    console.log(item);
     this.cameraService.Create(item, (value) => {
       event.newData.id = value.createCamera.id;
       event.newData.shortid = value.createCamera.shortid;
@@ -110,5 +173,4 @@ export class CamerasComponent implements OnInit {
       event.confirm.resolve(event.newData);
     });
   }
-
 }

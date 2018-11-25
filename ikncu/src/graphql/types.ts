@@ -17,7 +17,6 @@ export type DeleteTierInput = {
 
 export type CreateUserInput = {
   id?: string | null,
-  cognitoid: string,
   email: string,
   labels?: Array< string | null > | null,
   userTierId?: string | null,
@@ -25,7 +24,6 @@ export type CreateUserInput = {
 
 export type UpdateUserInput = {
   id: string,
-  cognitoid?: string | null,
   email?: string | null,
   labels?: Array< string | null > | null,
   userTierId?: string | null,
@@ -37,7 +35,6 @@ export type DeleteUserInput = {
 
 export type CreateCameraInput = {
   id?: string | null,
-  shortid: string,
   name: string,
   active: boolean,
   cameraUserId?: string | null,
@@ -45,7 +42,6 @@ export type CreateCameraInput = {
 
 export type UpdateCameraInput = {
   id: string,
-  shortid?: string | null,
   name?: string | null,
   active?: boolean | null,
   cameraUserId?: string | null,
@@ -133,8 +129,7 @@ export type ModelStringFilterInput = {
 };
 
 export type ModelUserFilterInput = {
-  id?: ModelIDFilterInput | null,
-  cognitoid?: ModelStringFilterInput | null,
+  id?: ModelStringFilterInput | null,
   email?: ModelStringFilterInput | null,
   labels?: ModelStringFilterInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
@@ -143,8 +138,7 @@ export type ModelUserFilterInput = {
 };
 
 export type ModelCameraFilterInput = {
-  id?: ModelIDFilterInput | null,
-  shortid?: ModelStringFilterInput | null,
+  id?: ModelStringFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
   and?: Array< ModelCameraFilterInput | null > | null,
@@ -158,7 +152,7 @@ export type ModelBooleanFilterInput = {
 };
 
 export type ModelFaceFilterInput = {
-  id?: ModelIDFilterInput | null,
+  id?: ModelStringFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
   and?: Array< ModelFaceFilterInput | null > | null,
@@ -219,7 +213,6 @@ export type CreateUserMutation = {
   createUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -232,7 +225,6 @@ export type CreateUserMutation = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -259,7 +251,6 @@ export type UpdateUserMutation = {
   updateUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -272,7 +263,6 @@ export type UpdateUserMutation = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -299,7 +289,6 @@ export type DeleteUserMutation = {
   deleteUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -312,7 +301,6 @@ export type DeleteUserMutation = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -339,13 +327,11 @@ export type CreateCameraMutation = {
   createCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -375,13 +361,11 @@ export type UpdateCameraMutation = {
   updateCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -411,13 +395,11 @@ export type DeleteCameraMutation = {
   deleteCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -452,7 +434,6 @@ export type CreateFaceMutation = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -472,7 +453,6 @@ export type UpdateFaceMutation = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -492,7 +472,6 @@ export type DeleteFaceMutation = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -517,7 +496,6 @@ export type CreateMotionMutation = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -542,7 +520,6 @@ export type UpdateMotionMutation = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -567,7 +544,6 @@ export type DeleteMotionMutation = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -612,7 +588,6 @@ export type GetUserQuery = {
   getUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -625,7 +600,6 @@ export type GetUserQuery = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -656,7 +630,6 @@ export type ListUsersQuery = {
     items:  Array< {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
       tier:  {
@@ -669,7 +642,6 @@ export type ListUsersQuery = {
         items:  Array< {
           __typename: "Camera",
           id: string,
-          shortid: string,
           name: string,
           active: boolean,
         } | null > | null,
@@ -698,13 +670,11 @@ export type GetCameraQuery = {
   getCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -738,13 +708,11 @@ export type ListCamerasQuery = {
     items:  Array< {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
       user:  {
         __typename: "User",
         id: string,
-        cognitoid: string,
         email: string,
         labels: Array< string | null > | null,
       } | null,
@@ -781,7 +749,6 @@ export type GetFaceQuery = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -805,7 +772,6 @@ export type ListFacesQuery = {
       user:  {
         __typename: "User",
         id: string,
-        cognitoid: string,
         email: string,
         labels: Array< string | null > | null,
       } | null,
@@ -832,7 +798,6 @@ export type GetMotionQuery = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -861,7 +826,6 @@ export type ListMotionsQuery = {
       camera:  {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null,
@@ -898,7 +862,6 @@ export type OnCreateUserSubscription = {
   onCreateUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -911,7 +874,6 @@ export type OnCreateUserSubscription = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -934,7 +896,6 @@ export type OnUpdateUserSubscription = {
   onUpdateUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -947,7 +908,6 @@ export type OnUpdateUserSubscription = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -970,7 +930,6 @@ export type OnDeleteUserSubscription = {
   onDeleteUser:  {
     __typename: "User",
     id: string,
-    cognitoid: string,
     email: string,
     labels: Array< string | null > | null,
     tier:  {
@@ -983,7 +942,6 @@ export type OnDeleteUserSubscription = {
       items:  Array< {
         __typename: "Camera",
         id: string,
-        shortid: string,
         name: string,
         active: boolean,
       } | null > | null,
@@ -1006,13 +964,11 @@ export type OnCreateCameraSubscription = {
   onCreateCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1038,13 +994,11 @@ export type OnUpdateCameraSubscription = {
   onUpdateCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1070,13 +1024,11 @@ export type OnDeleteCameraSubscription = {
   onDeleteCamera:  {
     __typename: "Camera",
     id: string,
-    shortid: string,
     name: string,
     active: boolean,
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1107,7 +1059,6 @@ export type OnCreateFaceSubscription = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1123,7 +1074,6 @@ export type OnUpdateFaceSubscription = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1139,7 +1089,6 @@ export type OnDeleteFaceSubscription = {
     user:  {
       __typename: "User",
       id: string,
-      cognitoid: string,
       email: string,
       labels: Array< string | null > | null,
     } | null,
@@ -1160,7 +1109,6 @@ export type OnCreateMotionSubscription = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -1181,7 +1129,6 @@ export type OnUpdateMotionSubscription = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,
@@ -1202,7 +1149,6 @@ export type OnDeleteMotionSubscription = {
     camera:  {
       __typename: "Camera",
       id: string,
-      shortid: string,
       name: string,
       active: boolean,
     } | null,

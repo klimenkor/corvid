@@ -4,8 +4,8 @@ type Tier @model {
 }
 
 type User @model {
-  id: ID!
-  cognitoid: String!
+  id: String!
+  # cognitoid: String!
   email: String!
   labels: [String],
   tier: Tier @connection
@@ -14,8 +14,8 @@ type User @model {
 }
 
 type Camera @model {
-  id: ID!
-  shortid: String!
+  id: String!
+  # shortid: String!
   name: String!
   active: Boolean!
   user: User @connection (name: "UserCameras")
@@ -23,7 +23,7 @@ type Camera @model {
 }
 
 type Face @model {
-  id: ID!
+  id: String!
   name: String!
   active: Boolean!
   user: User @connection (name: "UserFaces")

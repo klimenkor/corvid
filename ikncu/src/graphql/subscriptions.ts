@@ -25,7 +25,6 @@ export const onDeleteTier = `subscription OnDeleteTier {
 export const onCreateUser = `subscription OnCreateUser {
   onCreateUser {
     id
-    cognitoid
     email
     labels
     tier {
@@ -35,7 +34,6 @@ export const onCreateUser = `subscription OnCreateUser {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -55,7 +53,6 @@ export const onCreateUser = `subscription OnCreateUser {
 export const onUpdateUser = `subscription OnUpdateUser {
   onUpdateUser {
     id
-    cognitoid
     email
     labels
     tier {
@@ -65,7 +62,6 @@ export const onUpdateUser = `subscription OnUpdateUser {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -85,7 +81,6 @@ export const onUpdateUser = `subscription OnUpdateUser {
 export const onDeleteUser = `subscription OnDeleteUser {
   onDeleteUser {
     id
-    cognitoid
     email
     labels
     tier {
@@ -95,7 +90,6 @@ export const onDeleteUser = `subscription OnDeleteUser {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -115,12 +109,10 @@ export const onDeleteUser = `subscription OnDeleteUser {
 export const onCreateCamera = `subscription OnCreateCamera {
   onCreateCamera {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -142,12 +134,10 @@ export const onCreateCamera = `subscription OnCreateCamera {
 export const onUpdateCamera = `subscription OnUpdateCamera {
   onUpdateCamera {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -169,12 +159,10 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
 export const onDeleteCamera = `subscription OnDeleteCamera {
   onDeleteCamera {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -200,7 +188,6 @@ export const onCreateFace = `subscription OnCreateFace {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -214,7 +201,6 @@ export const onUpdateFace = `subscription OnUpdateFace {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -228,7 +214,6 @@ export const onDeleteFace = `subscription OnDeleteFace {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -246,7 +231,6 @@ export const onCreateMotion = `subscription OnCreateMotion {
     occured
     camera {
       id
-      shortid
       name
       active
     }
@@ -264,7 +248,6 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
     occured
     camera {
       id
-      shortid
       name
       active
     }
@@ -282,7 +265,6 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
     occured
     camera {
       id
-      shortid
       name
       active
     }

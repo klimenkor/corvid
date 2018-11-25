@@ -5,6 +5,7 @@ import * as queries from '../../../graphql/queries';
 import * as mutations from '../../../graphql/mutations';
 import { GetUserQuery, UpdateUserInput } from '../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
+import * as shortid from 'node_modules/shortid';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,7 @@ export class CameraService {
 
   public Create(item: CreateCameraInput, callback) {
     console.log('Camera.Create');
+
     const result = API.graphql(graphqlOperation(mutations.createCamera, {input: item})) as Promise<GraphQLResult>;
     result.then((value) => {
       callback(value.data as CreateCameraMutation);

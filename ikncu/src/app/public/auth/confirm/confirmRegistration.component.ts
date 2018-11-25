@@ -4,6 +4,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserRegistrationService} from '../../../service/auth/user-registration.service';
 import {UserLoginService} from '../../../service/auth/user-login.service';
 import {LoggedInCallback} from '../../../service/auth/cognito.service';
+import { UserService } from 'src/app/service/data/user.service';
+import { CreateUserInput } from 'src/graphql/types';
+import { CurrentUserService } from 'src/app/service/common/current-user.service';
+import { CurrentUser } from 'src/app/model/_index';
 
 @Component({
     selector: 'awscognito-angular2-app',
@@ -12,13 +16,13 @@ import {LoggedInCallback} from '../../../service/auth/cognito.service';
 export class LogoutComponent implements LoggedInCallback {
 
     constructor(public router: Router,
-                public userService: UserLoginService) {
-        this.userService.isAuthenticated(this);
+                public userLoginService: UserLoginService) {
+        this.userLoginService.isAuthenticated(this);
     }
 
     isLoggedIn(message: string, isLoggedIn: boolean) {
         if (isLoggedIn) {
-            this.userService.logout();
+            this.userLoginService.logout();
             this.router.navigate(['/']);
         }
 
@@ -35,17 +39,27 @@ export class RegistrationConfirmationComponent implements OnInit, OnDestroy {
     email: string;
     errorMessage: string;
     private sub: any;
+    currentUser: CurrentUser;
 
-    constructor(public regService: UserRegistrationService, public router: Router, public route: ActivatedRoute) {
+    constructor(
+      public regService: UserRegistrationService,
+      public router: Router,
+      public route: ActivatedRoute,
+      private userService: UserService,
+      private currentUserService: CurrentUserService ) {
     }
 
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
+      this.currentUserService.Initialize(() => {
+        this.currentUser = this.currentUserService.User;
+      });
+
+      this.sub = this.route.params.subscribe(params => {
             this.email = params['username'];
 
-        });
+      });
 
-        this.errorMessage = null;
+      this.errorMessage = null;
     }
 
     ngOnDestroy() {
@@ -58,10 +72,24 @@ export class RegistrationConfirmationComponent implements OnInit, OnDestroy {
     }
 
     cognitoCallback(message: string, result: any) {
+        console.log(result);
         if (message != null) { // error
             this.errorMessage = message;
             console.log('message: ' + this.errorMessage);
         } else { // success
+          this.userService.Create(
+            <CreateUserInput>{
+              id: this.currentUser.id,
+              email: this.currentUser.email,
+              labels: null,
+              cameras: null,
+              faces: null,
+              tier: null
+            },
+            (value) => {
+               console.log('::::user created for cognitoUser');
+            });
+
             // move to the next step
             console.log('Moving to securehome');
             // this.configs.curUser = result.user;

@@ -52,7 +52,6 @@ export class BasicComponent implements OnInit {
         console.log(':::: user.email = ' + this.user.email);
       });
     });
-
   }
 
   onEmailChange(event) {

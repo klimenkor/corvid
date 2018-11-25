@@ -25,7 +25,6 @@ export const listTiers = `query ListTiers(
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
-    cognitoid
     email
     labels
     tier {
@@ -35,7 +34,6 @@ export const getUser = `query GetUser($id: ID!) {
     cameras {
       items {
         id
-        shortid
         name
         active
       }
@@ -60,7 +58,6 @@ export const listUsers = `query ListUsers(
   listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      cognitoid
       email
       labels
       tier {
@@ -70,7 +67,6 @@ export const listUsers = `query ListUsers(
       cameras {
         items {
           id
-          shortid
           name
           active
         }
@@ -92,12 +88,10 @@ export const listUsers = `query ListUsers(
 export const getCamera = `query GetCamera($id: ID!) {
   getCamera(id: $id) {
     id
-    shortid
     name
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -124,12 +118,10 @@ export const listCameras = `query ListCameras(
   listCameras(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      shortid
       name
       active
       user {
         id
-        cognitoid
         email
         labels
       }
@@ -157,7 +149,6 @@ export const getFace = `query GetFace($id: ID!) {
     active
     user {
       id
-      cognitoid
       email
       labels
     }
@@ -176,7 +167,6 @@ export const listFaces = `query ListFaces(
       active
       user {
         id
-        cognitoid
         email
         labels
       }
@@ -196,7 +186,6 @@ export const getMotion = `query GetMotion($id: ID!) {
     occured
     camera {
       id
-      shortid
       name
       active
     }
@@ -219,7 +208,6 @@ export const listMotions = `query ListMotions(
       occured
       camera {
         id
-        shortid
         name
         active
       }

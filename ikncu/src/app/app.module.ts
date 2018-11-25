@@ -31,8 +31,7 @@ import { DynamoDBService } from './service/auth/ddb.service';
 import { CurrentUser } from './model/_index';
 import { SettingsModule } from './secure/settings/settings.module';
 import { DashboardModule } from './secure/dashboard/dashboard.module';
-// import { CurrentUserService } from './service/common/current-user.service';
-// import { UserService } from './service/data/user.service';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 @NgModule({
   schemas: [
@@ -69,7 +68,8 @@ import { DashboardModule } from './secure/dashboard/dashboard.module';
     FormsModule,
     AmplifyAngularModule,
     SettingsModule,
-    DashboardModule
+    DashboardModule,
+    SweetAlert2Module.forRoot()
   ],
   providers: [
     BrowserModule,
