@@ -141,7 +141,6 @@ export class CamerasComponent implements OnInit {
     });
   }
 
-
   onSaveConfirm(event) {
       console.log('onSaveConfirm');
       const item = <UpdateCameraInput>{
