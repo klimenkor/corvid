@@ -15,6 +15,7 @@ import { FacesComponent } from './faces/faces.component';
 import { TiersComponent } from './tiers/tiers.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CheckboxViewComponent } from '../components/common/checkbox-view/checkbox-view.component';
+import { ButtonViewComponent } from '../components/common/button-view/button-view.component';
 
 
 @NgModule({
@@ -38,13 +39,15 @@ import { CheckboxViewComponent } from '../components/common/checkbox-view/checkb
     CamerasComponent,
     FacesComponent,
     TiersComponent,
-    CheckboxViewComponent
+    CheckboxViewComponent,
+    ButtonViewComponent
   ],
   providers: [
 
   ],
   entryComponents: [
-    CheckboxViewComponent
+    CheckboxViewComponent,
+    ButtonViewComponent
   ]
 })
 export class SettingsModule { }

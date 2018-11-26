@@ -13,6 +13,7 @@ import { CameraService } from 'src/app/service/data/camera.service';
 import swal from 'sweetalert2';
 
 import { CheckboxViewComponent } from '../../components/common/checkbox-view/checkbox-view.component';
+import { ButtonViewComponent } from '../../components/common/button-view/button-view.component';
 
 @Component({
   selector: 'app-settings-cameras',
@@ -25,11 +26,23 @@ export class CamerasComponent implements OnInit {
 
   settings = {
     columns: {
-      id: {
-        title: 'Id',
+      copy: {
+        title: '',
         filter: false,
-        editable: false
+        type: 'custom',
+        editable: false,
+        renderComponent: ButtonViewComponent,
+        onComponentInitFunction: (instance) => {
+          instance.save.subscribe(row => {
+            console.log('!!!');
+          });
+        }
       },
+      // id: {
+      //   title: 'Id',
+      //   filter: false,
+      //   editable: false
+      // },
       name: {
         title: 'Name',
         filter: false,
@@ -38,7 +51,10 @@ export class CamerasComponent implements OnInit {
         title: 'Active',
         filter: false,
         type: 'custom',
-        editable: false,
+        editor: {
+          type: 'checkbox'
+        },
+        // editable: false,
         renderComponent: CheckboxViewComponent,
         onComponentInitFunction: (instance) => {
           instance.save.subscribe(row => {
