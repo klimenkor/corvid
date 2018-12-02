@@ -3,20 +3,29 @@ from __future__ import print_function
 import decimal
 import json
 import boto3
-import time
 import email
-import datetime
 import re
+import pytz
+import uuid
+from datetime import datetime
 
-from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
- 
-def send_email(recipient,subject,body,html):
-    
+
+API_ID = "gpnyts5i3bhcdnwhqvoivr2mxu"
+dynamodb = boto3.resource("dynamodb")
+s3client = boto3.client('s3')
+s3resource = boto3.resource('s3')
+cameraTable = dynamodb.Table('Camera-' + API_ID)
+userTable = dynamodb.Table('User-' + API_ID)
+motionTable = dynamodb.Table('Motion-' + API_ID)
+tz = pytz.timezone('America/Los_Angeles')
+
+
+def send_email(recipient, subject, body, html):
     sender = "klimenkor@gmail.com"
     charset = "UTF-8"
-    region="us-east-1"
-    client = boto3.client('ses',region_name=region)
+    region = "us-east-1"
+    client = boto3.client('ses', region_name=region)
 
     try:
         response = client.send_email(
@@ -48,6 +57,7 @@ def send_email(recipient,subject,body,html):
     else:
         print("Email sent! Message ID: %s" % (response['MessageId']))
 
+
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
@@ -57,203 +67,191 @@ class DecimalEncoder(json.JSONEncoder):
                 return int(o)
         return super(DecimalEncoder, self).default(o)
 
-def get_settings(user_id):
+
+def get_camera(camera_id):
     item = None
-    dynamodb = boto3.resource("dynamodb")
-    table = dynamodb.Table('settings')
     try:
-        response = table.get_item(
+        response = cameraTable.get_item(
             Key={
-                'userid': user_id
+                'id': camera_id
             }
         )
+
     except ClientError as e:
         print(e.response['Error']['Message'])
+
     else:
         print(response)
         item = response['Item']
- 
+
     return item
 
-def get_user(camera_short_id):
-    client = boto3.client('dynamodb')
-    api_id = "zxfoefkjhjfule64wg7mezb6ce"
 
-    resp = client.query(
-        TableName="Camera-" + api_id,
-        IndexName="shortid-index",
-        ExpressionAttributeValues={
-            ":v1": {
-                "S": camera_short_id,
+def get_user(user_id):
+    item = None
+    try:
+        response = userTable.get_item(
+            Key={
+                'id': user_id
             }
-        },
-        KeyConditionExpression='shortid = :v1')
-    items = resp.get('Items')
-    return items[0].user
+        )
 
-def save_data(user_id, camera_id, labels, s3key):
-    client = boto3.client('dynamodb')
-    api_id = "zxfoefkjhjfule64wg7mezb6ce"
+    except ClientError as e:
+        print(e.response['Error']['Message'])
 
+    else:
+        print(response)
+        item = response['Item']
+
+    return item
+
+
+def save_motion_data(camera_id, labels, s3key):
+    response = None
     labels_list = []
     for label in labels:
-        labels_list.append({"name": label["Name"], "confidence": label["Confidence"]})
+        labels_list.append({"name": label["Name"], "confidence": int(round(label["Confidence"]))})
+    try:
+        item = {
+            "id": str(uuid.uuid4()),
+            "motionCameraId": camera_id,
+            "occured": datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S'),
+            "labels": labels_list,
+            "frame": s3key
+        }
+        print('Saving new motion...')
+        print(item)
+        response = motionTable.put_item(Item = item)
+    except ClientError as e:
+        print(e.response['Error']['Message'])
 
-    item = {
-        "userid": {"S": user_id},
-        "cameraid": {"S": camera_id},
-        "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
-        "labels": {"L": labels_list},
-        "frame": {"S": s3key}}
-    client.put_item(TableName="Motion-" + api_id, Item=item)
+    else:
+        print('...saved')
 
-# def save_data(user_id, camera_id, labels,s3key):
-#     client = boto3.client('dynamodb')
-#
-#     l = {}
-#     for label in labels:
-#         l[label["Name"]] = {"N": str(label["Confidence"])}
-#
-#     item = {
-#         "userid": {"S":user_id},
-#         "cameraid": {"S":camera_id},
-#         "happened": {"N": datetime.datetime.today().strftime('%Y%m%d%H%M%S')},
-#         "labels": {"M":l},
-#         "frame": {"S":s3key}}
-#     client.put_item(TableName="events",Item=item)
+    return response
 
 
 def detect_labels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1"):
-	rekognition = boto3.client("rekognition", region)
-	response = rekognition.detect_labels(
-		Image={
-			"S3Object": {
-				"Bucket": bucket,
-				"Name": key,
-			}
-		},
-		MaxLabels=max_labels,
-		MinConfidence=min_confidence,
-	)
-	return response['Labels']
+    rekognition = boto3.client("rekognition", region)
+    response = rekognition.detect_labels(
+        Image={
+            "S3Object": {
+                "Bucket": bucket,
+                "Name": key,
+            }
+        },
+        MaxLabels=max_labels,
+        MinConfidence=min_confidence,
+    )
+    return response['Labels']
+
 
 def detect_faces(bucket, key, attributes=['ALL'], region="us-east-1"):
-	rekognition = boto3.client("rekognition", region)
-	response = rekognition.detect_faces(
-	    Image={
-			"S3Object": {
-				"Bucket": bucket,
-				"Name": key,
-			}
-		},
-	    Attributes=attributes,
-	)
-	return response['FaceDetails']
+    rekognition = boto3.client("rekognition", region)
+    response = rekognition.detect_faces(
+        Image={
+            "S3Object": {
+                "Bucket": bucket,
+                "Name": key,
+            }
+        },
+        Attributes=attributes,
+    )
+    return response['FaceDetails']
+
 
 def parse_subject(subject):
-    userid = ''
-    cameraid = ''
-    parse = re.compile("Motion Detection from User(.*)-Camera(.*)-")
+    camera_id = ''
+    parse = re.compile('Motion Detection from Cam{(.*)}')
     found = parse.search(subject)
-    if found is not None and len(found.groups())==2:
-        userid = found.group(1)
-        cameraid = found.group(2)
+    if found is not None and len(found.groups()) > 0:
+        camera_id = found.group(1)
+    return camera_id
 
-    return [userid,cameraid]
 
-def labels_of_concern(alarm_labels,detected_labels):
+def get_alarm_labels(enabled_labels, detected_labels):
     labels = []
     for label in detected_labels:
-        if label["Name"] in alarm_labels:
+        if label["Name"] in enabled_labels:
             labels.append(label["Name"])
     return labels
 
-def catch_email(event, context):
-    
-    frameBucket = 'corvid-frames'
-    s3 = boto3.resource('s3')
-    item = event["Records"][0]["s3"]
-    mailBucket = item["bucket"]["name"]
-    messageId = item["object"]["key"]
-    bucketPath = 'https://s3.amazonaws.com/corvid-frames/'
 
-    print('...new email: %s / %s' % (mailBucket,messageId))
-    message = email.message_from_string(s3.Object(mailBucket, messageId).get()['Body'].read().decode('utf-8'))
+def catch_email(event, context):
+    frame_bucket = 'corvid-frames'
+    item = event["Records"][0]["s3"]
+    mail_bucket = item["bucket"]["name"]
+    message_id = item["object"]["key"]
+    bucket_path = 'https://s3.amazonaws.com/corvid-frames/'
+
+    print('...new email: %s / %s' % (mail_bucket, message_id))
+    message = email.message_from_string(s3resource.Object(mail_bucket, message_id).get()['Body'].read().decode('utf-8'))
     attachment = message.get_payload()[1]
     subject = message['Subject']
 
-    ids = parse_subject(subject)
-    user_id = ids[0]
-    camera_id = ids[1]
-    alarm_email=""
-    alarm_labels=[]
+    camera_id = parse_subject(subject)
+    if camera_id == '':
+        print('CameraId was not found in email Subject')
+        return
+
+    camera = get_camera(camera_id)
+    camera_name = camera['name']
+    user = get_user(camera['cameraUserId'])
+    user_id = user['id']
+    alarm_email = user['email']
+    enabled_labels = user['labels']
     if user_id is not None and camera_id is not None:
-        print('...user_id: %s camera_id: %s' % (user_id,camera_id))
-        settings = get_settings(user_id)
-        if settings is not None:
-            data = attachment.get_payload(decode=True)
-            alarm_email = settings['alarm_email']
-            alarm_labels = settings['labels']
-            s3client = boto3.client('s3')
-            s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
-            print('...image saved: %s / %s' % (frameBucket,messageId))
+        print('...user_id: %s camera_id: %s' % (user_id, camera_id))
+        data = attachment.get_payload(decode=True)
+        s3client.put_object(Bucket=frame_bucket, Key=message_id, ContentType='image/jpeg', Body=data)
+        print('...image saved: %s / %s' % (frame_bucket, message_id))
 
-            labels = detect_labels(frameBucket,messageId)
-            if len(labels)>0:
-                save_data(user_id, camera_id, labels, messageId)
-                print("...labels saved")
-                l = labels_of_concern(alarm_labels,labels)
-                # include only labels of concern
-                if len(l)>0:
+        labels = detect_labels(frame_bucket, message_id)
+        if len(labels) > 0:
+            respone = save_motion_data(camera_id, labels, message_id)
+            
+            print("...labels saved")
+            alarm_labels = get_alarm_labels(enabled_labels, labels)
 
-                    labels_string = ','.join(s for s in l)
-                    timestamp = datetime.datetime.today().strftime('%m/%d/%Y %H:%M:%S')
-                    subject = " %s: %s at %s"%(camera_id, labels_string, timestamp)
-                    html_body = "<body><ul>"
-                    # faces
-                    for face in detect_faces(frameBucket,messageId):
-                        line = "Face ({Confidence}%)".format(**face)
-                        html_body = html_body + "<li><b>%s</b><ul>"%(line) 
-                        # emotions
-                        for emotion in face['Emotions']:
-                            line = "  {Type} : {Confidence}%".format(**emotion)
-                            html_body = html_body + "<li>%s</li>"%(line) 
-                        html_body = html_body + "</ul><ul>" 
-                        
-                        # quality
-                        for quality, value in face['Quality'].items():
-                            line = "  {quality} : {value}".format(quality=quality, value=value)
-                            html_body = html_body + "<li>%s</li>"%(line) 
-                        html_body = html_body + "</ul><ul>" 
+            # include only effective labels
+            if len(alarm_labels) > 0:
 
-                        # facial features
-                        # FEATURES_BLACKLIST = ("Landmarks", "Emotions", "Pose", "Quality", "BoundingBox", "Confidence")
-                        # for feature, data in face.items():
-                        #     if feature not in FEATURES_BLACKLIST:
-                        #         line = "  {feature}({data['Value']}) : {data['Confidence']}%".format(feature=feature, data=data)  
-                        #         html_body = "<li>%s</li>"%(line)       
-                        # html_body = html_body + "</ul></ul>" 
-                        
-                        html_body = html_body + "</ul>" 
+                labels_string = ','.join(s for s in alarm_labels)
+                timestamp = datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S')
+                subject = " %s: %s at %s" % (camera_name, labels_string, timestamp)
+                html_body = "<body><ul>"
+                # faces
+                for face in detect_faces(frame_bucket, message_id):
+                    line = "Face ({Confidence}%)".format(**face)
+                    html_body = html_body + "<li><b>%s</b><ul>" % (line)
+                    # emotions
+                    for emotion in face['Emotions']:
+                        line = "  {Type} : {Confidence}%".format(**emotion)
+                        html_body = html_body + "<li>%s</li>" % (line)
+                    html_body = html_body + "</ul><ul>"
 
+                    # quality
+                    for quality, value in face['Quality'].items():
+                        line = "  {quality} : {value}".format(quality=quality, value=value)
+                        html_body = html_body + "<li>%s</li>" % (line)
+                    html_body = html_body + "</ul><ul>"
 
-                    html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p><body>"%(html_body,bucketPath,messageId) 
-                    print("...alarming %s about %s"%(alarm_email,subject))
-                    send_email(alarm_email,subject,'',html_body)
+                    html_body = html_body + "</ul>"
 
-
+                html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p><body>" % (html_body, bucket_path, message_id)
+                print("...alarming %s about %s" % (alarm_email, subject))
+                send_email(alarm_email, subject, '', html_body)
 
             else:
-                s3client.put_object(Bucket=frameBucket,Key= messageId,ContentType='image/jpeg',Body=data)
+                s3client.put_object(Bucket=frame_bucket, Key=message_id, ContentType='image/jpeg', Body=data)
 
     body = {
-        "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data),messageId,frameBucket)
+        "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data), message_id, frame_bucket)
     }
 
     response = {
         "statusCode": 200,
         "body": json.dumps(body)
     }
-    
-    return response
 
+    return response

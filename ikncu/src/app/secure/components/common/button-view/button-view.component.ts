@@ -26,7 +26,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
     selBox.style.left = '0';
     selBox.style.top = '0';
     selBox.style.opacity = '0';
-    selBox.value = 'Cam/' + this.rowData.id + '/';
+    selBox.value = 'Cam{' + this.rowData.id + '}';
     document.body.appendChild(selBox);
     selBox.focus();
     selBox.select();

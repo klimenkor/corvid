@@ -8,3 +8,8 @@ pip freeze > requirements.txt
 
 
 serverless deploy --function catch_email
+
+
+Test email:
+motion@ikncu.com
+Motion Detection from Cam{A_ap5t7go}
