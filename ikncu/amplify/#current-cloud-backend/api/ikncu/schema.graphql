@@ -3,19 +3,23 @@ type Tier @model {
   name: String!
 }
 
+type Category @model {
+  id: String!
+  name: String!
+}
+
 type User @model {
   id: String!
-  # cognitoid: String!
   email: String!
   labels: [String],
   tier: Tier @connection
   cameras: [Camera] @connection (name: "UserCameras")
+  motions: [Motion] @connection (name: "UserMotions")
   faces: [Face] @connection (name: "UserFaces")
 }
 
 type Camera @model {
   id: String!
-  # shortid: String!
   name: String!
   active: Boolean!
   user: User @connection (name: "UserCameras")
@@ -26,12 +30,13 @@ type Face @model {
   id: String!
   name: String!
   active: Boolean!
+  category: Category @connection
   user: User @connection (name: "UserFaces")
 }
 
 type Label {
   name: String,
-  confidence: Float
+  confidence:  Int
 }
 
 type Motion @model {
@@ -40,6 +45,7 @@ type Motion @model {
   frame: String!
   occured: String!
   camera: Camera @connection (name: "CameraMotions")
+  user: User @connection (name: "UserMotions")
 }
 
 

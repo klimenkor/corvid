@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IEvent } from '../../model/event';
-import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import { slideToLeft } from '../../router.animations';
 
 @Component({
   selector: 'app-dashboard',

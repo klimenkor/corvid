@@ -15,6 +15,20 @@ export type DeleteTierInput = {
   id?: string | null,
 };
 
+export type CreateCategoryInput = {
+  id?: string | null,
+  name: string,
+};
+
+export type UpdateCategoryInput = {
+  id: string,
+  name?: string | null,
+};
+
+export type DeleteCategoryInput = {
+  id?: string | null,
+};
+
 export type CreateUserInput = {
   id?: string | null,
   email: string,
@@ -55,6 +69,7 @@ export type CreateFaceInput = {
   id?: string | null,
   name: string,
   active: boolean,
+  faceCategoryId?: string | null,
   faceUserId?: string | null,
 };
 
@@ -62,6 +77,7 @@ export type UpdateFaceInput = {
   id: string,
   name?: string | null,
   active?: boolean | null,
+  faceCategoryId?: string | null,
   faceUserId?: string | null,
 };
 
@@ -75,6 +91,7 @@ export type CreateMotionInput = {
   frame: string,
   occured: string,
   motionCameraId?: string | null,
+  motionUserId?: string | null,
 };
 
 export type LabelInput = {
@@ -88,6 +105,7 @@ export type UpdateMotionInput = {
   frame?: string | null,
   occured?: string | null,
   motionCameraId?: string | null,
+  motionUserId?: string | null,
 };
 
 export type DeleteMotionInput = {
@@ -126,6 +144,14 @@ export type ModelStringFilterInput = {
   notContains?: string | null,
   between?: Array< string | null > | null,
   beginsWith?: string | null,
+};
+
+export type ModelCategoryFilterInput = {
+  id?: ModelStringFilterInput | null,
+  name?: ModelStringFilterInput | null,
+  and?: Array< ModelCategoryFilterInput | null > | null,
+  or?: Array< ModelCategoryFilterInput | null > | null,
+  not?: ModelCategoryFilterInput | null,
 };
 
 export type ModelUserFilterInput = {
@@ -205,6 +231,42 @@ export type DeleteTierMutation = {
   } | null,
 };
 
+export type CreateCategoryMutationVariables = {
+  input: CreateCategoryInput,
+};
+
+export type CreateCategoryMutation = {
+  createCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
+export type UpdateCategoryMutationVariables = {
+  input: UpdateCategoryInput,
+};
+
+export type UpdateCategoryMutation = {
+  updateCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
+export type DeleteCategoryMutationVariables = {
+  input: DeleteCategoryInput,
+};
+
+export type DeleteCategoryMutation = {
+  deleteCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
 export type CreateUserMutationVariables = {
   input: CreateUserInput,
 };
@@ -227,6 +289,21 @@ export type CreateUserMutation = {
         id: string,
         name: string,
         active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -268,6 +345,21 @@ export type UpdateUserMutation = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
     faces:  {
       __typename: "ModelFaceConnection",
       items:  Array< {
@@ -303,6 +395,21 @@ export type DeleteUserMutation = {
         id: string,
         name: string,
         active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -431,6 +538,11 @@ export type CreateFaceMutation = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -450,6 +562,11 @@ export type UpdateFaceMutation = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -469,6 +586,11 @@ export type DeleteFaceMutation = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -499,6 +621,12 @@ export type CreateMotionMutation = {
       name: string,
       active: boolean,
     } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -523,6 +651,12 @@ export type UpdateMotionMutation = {
       name: string,
       active: boolean,
     } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -546,6 +680,12 @@ export type DeleteMotionMutation = {
       id: string,
       name: string,
       active: boolean,
+    } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
     } | null,
   } | null,
 };
@@ -580,6 +720,36 @@ export type ListTiersQuery = {
   } | null,
 };
 
+export type GetCategoryQueryVariables = {
+  id: string,
+};
+
+export type GetCategoryQuery = {
+  getCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
+export type ListCategorysQueryVariables = {
+  filter?: ModelCategoryFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListCategorysQuery = {
+  listCategorys:  {
+    __typename: "ModelCategoryConnection",
+    items:  Array< {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
 export type GetUserQueryVariables = {
   id: string,
 };
@@ -602,6 +772,21 @@ export type GetUserQuery = {
         id: string,
         name: string,
         active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -644,6 +829,21 @@ export type ListUsersQuery = {
           id: string,
           name: string,
           active: boolean,
+        } | null > | null,
+        nextToken: string | null,
+      } | null,
+      motions:  {
+        __typename: "ModelMotionConnection",
+        items:  Array< {
+          __typename: "Motion",
+          id: string,
+          labels:  Array< {
+            __typename: "Label",
+            name: string | null,
+            confidence: number | null,
+          } | null > | null,
+          frame: string,
+          occured: string,
         } | null > | null,
         nextToken: string | null,
       } | null,
@@ -746,6 +946,11 @@ export type GetFaceQuery = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -769,6 +974,11 @@ export type ListFacesQuery = {
       id: string,
       name: string,
       active: boolean,
+      category:  {
+        __typename: "Category",
+        id: string,
+        name: string,
+      } | null,
       user:  {
         __typename: "User",
         id: string,
@@ -801,6 +1011,12 @@ export type GetMotionQuery = {
       name: string,
       active: boolean,
     } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -828,6 +1044,12 @@ export type ListMotionsQuery = {
         id: string,
         name: string,
         active: boolean,
+      } | null,
+      user:  {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
       } | null,
     } | null > | null,
     nextToken: string | null,
@@ -858,6 +1080,30 @@ export type OnDeleteTierSubscription = {
   } | null,
 };
 
+export type OnCreateCategorySubscription = {
+  onCreateCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
+export type OnUpdateCategorySubscription = {
+  onUpdateCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
+export type OnDeleteCategorySubscription = {
+  onDeleteCategory:  {
+    __typename: "Category",
+    id: string,
+    name: string,
+  } | null,
+};
+
 export type OnCreateUserSubscription = {
   onCreateUser:  {
     __typename: "User",
@@ -876,6 +1122,21 @@ export type OnCreateUserSubscription = {
         id: string,
         name: string,
         active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -913,6 +1174,21 @@ export type OnUpdateUserSubscription = {
       } | null > | null,
       nextToken: string | null,
     } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
     faces:  {
       __typename: "ModelFaceConnection",
       items:  Array< {
@@ -944,6 +1220,21 @@ export type OnDeleteUserSubscription = {
         id: string,
         name: string,
         active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    motions:  {
+      __typename: "ModelMotionConnection",
+      items:  Array< {
+        __typename: "Motion",
+        id: string,
+        labels:  Array< {
+          __typename: "Label",
+          name: string | null,
+          confidence: number | null,
+        } | null > | null,
+        frame: string,
+        occured: string,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1056,6 +1347,11 @@ export type OnCreateFaceSubscription = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1071,6 +1367,11 @@ export type OnUpdateFaceSubscription = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1086,6 +1387,11 @@ export type OnDeleteFaceSubscription = {
     id: string,
     name: string,
     active: boolean,
+    category:  {
+      __typename: "Category",
+      id: string,
+      name: string,
+    } | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1112,6 +1418,12 @@ export type OnCreateMotionSubscription = {
       name: string,
       active: boolean,
     } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -1132,6 +1444,12 @@ export type OnUpdateMotionSubscription = {
       name: string,
       active: boolean,
     } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
+    } | null,
   } | null,
 };
 
@@ -1151,6 +1469,12 @@ export type OnDeleteMotionSubscription = {
       id: string,
       name: string,
       active: boolean,
+    } | null,
+    user:  {
+      __typename: "User",
+      id: string,
+      email: string,
+      labels: Array< string | null > | null,
     } | null,
   } | null,
 };

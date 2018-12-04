@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UpdateMotionInput, CreateMotionInput, CreateMotionMutation, DeleteMotionInput } from 'src/graphql/types';
+import { UpdateMotionInput, CreateMotionInput, CreateMotionMutation, DeleteMotionInput, GetMotionQuery } from 'src/graphql/types';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../graphql/queries';
 import * as mutations from '../../../graphql/mutations';
@@ -20,7 +20,7 @@ export class MotionService {
     if (!this._initialized) {
       const query = API.graphql(graphqlOperation(queries.listMotions, {MotionUserId: userId})) as Promise<GraphQLResult>;
       query.then((value) => {
-        const user = value.data as GetUserQuery;
+        const user = value.data as GetMotionQuery;
         this._initialized = true;
         callback(this._initialized);
       });

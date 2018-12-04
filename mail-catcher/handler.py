@@ -106,7 +106,7 @@ def get_user(user_id):
     return item
 
 
-def save_motion_data(camera_id, labels, s3key):
+def save_motion_data(user_id, camera_id, labels, s3key):
     response = None
     labels_list = []
     for label in labels:
@@ -114,6 +114,7 @@ def save_motion_data(camera_id, labels, s3key):
     try:
         item = {
             "id": str(uuid.uuid4()),
+            "motionUserId": user_id,
             "motionCameraId": camera_id,
             "occured": datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S'),
             "labels": labels_list,
@@ -208,7 +209,7 @@ def catch_email(event, context):
 
         labels = detect_labels(frame_bucket, message_id)
         if len(labels) > 0:
-            respone = save_motion_data(camera_id, labels, message_id)
+            respone = save_motion_data(user_id, camera_id, labels, message_id)
             
             print("...labels saved")
             alarm_labels = get_alarm_labels(enabled_labels, labels)

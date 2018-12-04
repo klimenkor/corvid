@@ -22,6 +22,27 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
   }
 }
 `;
+export const createCategory = `mutation CreateCategory($input: CreateCategoryInput!) {
+  createCategory(input: $input) {
+    id
+    name
+  }
+}
+`;
+export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInput!) {
+  updateCategory(input: $input) {
+    id
+    name
+  }
+}
+`;
+export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInput!) {
+  deleteCategory(input: $input) {
+    id
+    name
+  }
+}
+`;
 export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
@@ -36,6 +57,18 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
       }
       nextToken
     }
@@ -67,6 +100,18 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
       }
       nextToken
     }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
+    }
     faces {
       items {
         id
@@ -92,6 +137,18 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         id
         name
         active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
       }
       nextToken
     }
@@ -186,6 +243,10 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -199,6 +260,10 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -212,6 +277,10 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -234,6 +303,11 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
       name
       active
     }
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -251,6 +325,11 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
       name
       active
     }
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -267,6 +346,11 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
       id
       name
       active
+    }
+    user {
+      id
+      email
+      labels
     }
   }
 }

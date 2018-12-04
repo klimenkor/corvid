@@ -1,19 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { IEvent } from 'src/app/model/_index';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
-import * as mutations from '../../../../graphql/mutations';
-import * as shortid from 'node_modules/shortid';
-import { ListCamerasQuery, CreateCameraMutation, CreateCameraInput,
-          UpdateCameraMutation, DeleteCameraMutation } from '../../../../graphql/types';
+import { ListMotionsQuery } from '../../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser } from 'src/app/model/_index';
-import { CameraService } from 'src/app/service/data/camera.service';
 import { MotionService } from 'src/app/service/data/motion.service';
+import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -41,80 +37,66 @@ import { MotionService } from 'src/app/service/data/motion.service';
 })
 export class MotionComponent implements OnInit {
 
-  events: IEvent[] = [];
-  userId: string;
-  fromDate: NgbDate;
-  toDate: NgbDate;
-  bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
-
   settings = {
     columns: {
-      name: {
-        title: 'Name',
-        filter: false,
-      },
-      shortid: {
-        title: 'ShortId',
-        filter: false,
-        editable: false
-      },
-      active: {
-        title: 'Active',
+      camera: {
+        title: 'Camera',
         filter: false
-      }
+      },
+      occured: {
+        title: 'Occured',
+        filter: false
+      },
+      frame: {
+        title: 'Frame',
+        filter: false,
+        type: 'custom',
+        renderComponent: ImageViewComponent
+      },
+    },
+    actions: {
+      add: false,
+      edit: false,
+      delete: false,
+      custom: false,
+      // custom: [{ name: 'edit', title: '<i class="nb-edit"></i>' }],
+      position:  'left',
     },
     attr: {
       class: 'table table-responsive'
-    },
-    edit: {
-      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-      confirmSave: true
-    },
-    delete: {
-      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
-      confirmDelete: true
-    },
-    add: {
-      confirmCreate: true
     }
   };
 
   source = [];
   currentUser: CurrentUser;
+  fromDate: NgbDate;
+  toDate: NgbDate;
+  bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
 
   constructor(
     private spinner: NgxSpinnerService,
     private currentUserService: CurrentUserService,
     private motionService: MotionService,
-
     private calendar: NgbCalendar) {
-
       this.selectToday();
     }
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
-    this.onDateSelection(this.fromDate);
 
     this.spinner.show();
 
     this.currentUserService.Initialize(() => {
       this.currentUser = this.currentUserService.User;
-    });
-
-    const result = API.graphql(graphqlOperation(queries.listCameras)) as Promise<GraphQLResult>;
-    result.then((value) => {
-      const v = value.data as ListCamerasQuery;
-      this.source = v.listCameras.items;
+      this.onDateSelection(this.fromDate);
       this.spinner.hide();
     });
   }
 
   onDateSelection(date: NgbDate) {
-    this.userId = '111111';
     this.fromDate = date;
     this.toDate = this.calendar.getNext(date, 'd', 1);
-    this.getEvents(this.userId, this.formatHappenedFromDate(this.fromDate), this.formatHappenedFromDate(this.toDate));
+    this.getMotions(this.currentUser.id, this.fromDate, this.toDate);
     console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
   }
 
@@ -142,11 +124,13 @@ export class MotionComponent implements OnInit {
     return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
   }
 
-  getEvents(userId, fromDay, toDay) {
-      this.events = [];
-      // this.rest.getEvents(userId, fromDay, toDay).subscribe((data: IEvent[]) => {
-      //     this.events = data;
-      // });
+  getMotions(userId, fromDate, toDate) {
+    const result = API.graphql(graphqlOperation(queries.listMotions, {'motionUserId': userId})) as Promise<GraphQLResult>;
+    result.then((value) => {
+      const v = value.data as ListMotionsQuery;
+      this.source = v.listMotions.items;
+      this.spinner.hide();
+    });
   }
 
 }

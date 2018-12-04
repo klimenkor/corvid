@@ -3,12 +3,18 @@ type Tier {
   name: String!
 }
 
+type Category {
+  id: String!
+  name: String!
+}
+
 type User {
   id: String!
   email: String!
   labels: [String]
   tier: Tier
   cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
+  motions(filter: ModelMotionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelMotionConnection
   faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
 }
 
@@ -24,12 +30,13 @@ type Face {
   id: String!
   name: String!
   active: Boolean!
+  category: Category
   user: User
 }
 
 type Label {
   name: String
-  confidence: Float
+  confidence: Int
 }
 
 type Motion {
@@ -38,6 +45,7 @@ type Motion {
   frame: String!
   occured: String!
   camera: Camera
+  user: User
 }
 
 enum ModelSortDirection {
@@ -116,6 +124,8 @@ input ModelTierFilterInput {
 type Query {
   getTier(id: ID!): Tier
   listTiers(filter: ModelTierFilterInput, limit: Int, nextToken: String): ModelTierConnection
+  getCategory(id: ID!): Category
+  listCategorys(filter: ModelCategoryFilterInput, limit: Int, nextToken: String): ModelCategoryConnection
   getUser(id: ID!): User
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
   getCamera(id: ID!): Camera
@@ -144,6 +154,9 @@ type Mutation {
   createTier(input: CreateTierInput!): Tier
   updateTier(input: UpdateTierInput!): Tier
   deleteTier(input: DeleteTierInput!): Tier
+  createCategory(input: CreateCategoryInput!): Category
+  updateCategory(input: UpdateCategoryInput!): Category
+  deleteCategory(input: DeleteCategoryInput!): Category
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): User
@@ -162,6 +175,9 @@ type Subscription {
   onCreateTier: Tier @aws_subscribe(mutations: ["createTier"])
   onUpdateTier: Tier @aws_subscribe(mutations: ["updateTier"])
   onDeleteTier: Tier @aws_subscribe(mutations: ["deleteTier"])
+  onCreateCategory: Category @aws_subscribe(mutations: ["createCategory"])
+  onUpdateCategory: Category @aws_subscribe(mutations: ["updateCategory"])
+  onDeleteCategory: Category @aws_subscribe(mutations: ["deleteCategory"])
   onCreateUser: User @aws_subscribe(mutations: ["createUser"])
   onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
   onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
@@ -174,6 +190,33 @@ type Subscription {
   onCreateMotion: Motion @aws_subscribe(mutations: ["createMotion"])
   onUpdateMotion: Motion @aws_subscribe(mutations: ["updateMotion"])
   onDeleteMotion: Motion @aws_subscribe(mutations: ["deleteMotion"])
+}
+
+type ModelCategoryConnection {
+  items: [Category]
+  nextToken: String
+}
+
+input ModelCategoryFilterInput {
+  id: ModelStringFilterInput
+  name: ModelStringFilterInput
+  and: [ModelCategoryFilterInput]
+  or: [ModelCategoryFilterInput]
+  not: ModelCategoryFilterInput
+}
+
+input CreateCategoryInput {
+  id: ID
+  name: String!
+}
+
+input UpdateCategoryInput {
+  id: String!
+  name: String
+}
+
+input DeleteCategoryInput {
+  id: ID
 }
 
 type ModelUserConnection {
@@ -258,6 +301,7 @@ input CreateFaceInput {
   id: ID
   name: String!
   active: Boolean!
+  faceCategoryId: ID
   faceUserId: ID
 }
 
@@ -265,6 +309,7 @@ input UpdateFaceInput {
   id: String!
   name: String
   active: Boolean
+  faceCategoryId: ID
   faceUserId: ID
 }
 
@@ -274,7 +319,7 @@ input DeleteFaceInput {
 
 input LabelInput {
   name: String
-  confidence: Float
+  confidence: Int
 }
 
 type ModelMotionConnection {
@@ -297,6 +342,7 @@ input CreateMotionInput {
   frame: String!
   occured: String!
   motionCameraId: ID
+  motionUserId: ID
 }
 
 input UpdateMotionInput {
@@ -305,6 +351,7 @@ input UpdateMotionInput {
   frame: String
   occured: String
   motionCameraId: ID
+  motionUserId: ID
 }
 
 input DeleteMotionInput {

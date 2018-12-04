@@ -1,9 +1,8 @@
-import { Component, OnInit, Query } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../../graphql/queries';
-import * as mutations from '../../../../graphql/mutations';
 import * as shortid from 'node_modules/shortid';
-import { ListCamerasQuery, CreateCameraMutation, CreateCameraInput,
+import { ListCamerasQuery, CreateCameraInput,
           UpdateCameraMutation, DeleteCameraMutation, UpdateCameraInput } from '../../../../graphql/types';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -22,8 +21,6 @@ import { ButtonViewComponent } from '../../components/common/button-view/button-
 })
 export class CamerasComponent implements OnInit {
 
-  testSwitch = false;
-
   settings = {
     columns: {
       copy: {
@@ -38,11 +35,6 @@ export class CamerasComponent implements OnInit {
           });
         }
       },
-      // id: {
-      //   title: 'Id',
-      //   filter: false,
-      //   editable: false
-      // },
       name: {
         title: 'Name',
         filter: false,

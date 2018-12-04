@@ -22,6 +22,27 @@ export const onDeleteTier = `subscription OnDeleteTier {
   }
 }
 `;
+export const onCreateCategory = `subscription OnCreateCategory {
+  onCreateCategory {
+    id
+    name
+  }
+}
+`;
+export const onUpdateCategory = `subscription OnUpdateCategory {
+  onUpdateCategory {
+    id
+    name
+  }
+}
+`;
+export const onDeleteCategory = `subscription OnDeleteCategory {
+  onDeleteCategory {
+    id
+    name
+  }
+}
+`;
 export const onCreateUser = `subscription OnCreateUser {
   onCreateUser {
     id
@@ -36,6 +57,18 @@ export const onCreateUser = `subscription OnCreateUser {
         id
         name
         active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
       }
       nextToken
     }
@@ -67,6 +100,18 @@ export const onUpdateUser = `subscription OnUpdateUser {
       }
       nextToken
     }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
+      }
+      nextToken
+    }
     faces {
       items {
         id
@@ -92,6 +137,18 @@ export const onDeleteUser = `subscription OnDeleteUser {
         id
         name
         active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
       }
       nextToken
     }
@@ -186,6 +243,10 @@ export const onCreateFace = `subscription OnCreateFace {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -199,6 +260,10 @@ export const onUpdateFace = `subscription OnUpdateFace {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -212,6 +277,10 @@ export const onDeleteFace = `subscription OnDeleteFace {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -234,6 +303,11 @@ export const onCreateMotion = `subscription OnCreateMotion {
       name
       active
     }
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -251,6 +325,11 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
       name
       active
     }
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -267,6 +346,11 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
       id
       name
       active
+    }
+    user {
+      id
+      email
+      labels
     }
   }
 }

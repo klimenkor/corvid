@@ -22,6 +22,27 @@ export const listTiers = `query ListTiers(
   }
 }
 `;
+export const getCategory = `query GetCategory($id: ID!) {
+  getCategory(id: $id) {
+    id
+    name
+  }
+}
+`;
+export const listCategorys = `query ListCategorys(
+  $filter: ModelCategoryFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCategorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+    }
+    nextToken
+  }
+}
+`;
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
@@ -36,6 +57,18 @@ export const getUser = `query GetUser($id: ID!) {
         id
         name
         active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occured
       }
       nextToken
     }
@@ -69,6 +102,18 @@ export const listUsers = `query ListUsers(
           id
           name
           active
+        }
+        nextToken
+      }
+      motions {
+        items {
+          id
+          labels {
+            name
+            confidence
+          }
+          frame
+          occured
         }
         nextToken
       }
@@ -147,6 +192,10 @@ export const getFace = `query GetFace($id: ID!) {
     id
     name
     active
+    category {
+      id
+      name
+    }
     user {
       id
       email
@@ -165,6 +214,10 @@ export const listFaces = `query ListFaces(
       id
       name
       active
+      category {
+        id
+        name
+      }
       user {
         id
         email
@@ -189,6 +242,11 @@ export const getMotion = `query GetMotion($id: ID!) {
       name
       active
     }
+    user {
+      id
+      email
+      labels
+    }
   }
 }
 `;
@@ -210,6 +268,11 @@ export const listMotions = `query ListMotions(
         id
         name
         active
+      }
+      user {
+        id
+        email
+        labels
       }
     }
     nextToken
