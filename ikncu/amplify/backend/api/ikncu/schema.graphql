@@ -1,51 +1,56 @@
 type Tier @model {
   id: ID!
   name: String!
+  users: [User] @connection(name: "UserTier")
 }
 
 type Category @model {
-  id: String!
+  id: ID!
   name: String!
+  faces: [Face] @connection (name: "FaceCategory")
 }
 
 type User @model {
-  id: String!
+  id: ID!
   email: String!
   labels: [String],
-  tier: Tier @connection
+  tier: Tier @connection (name: "UserTier", keyField: "tierId")
   cameras: [Camera] @connection (name: "UserCameras")
   motions: [Motion] @connection (name: "UserMotions")
   faces: [Face] @connection (name: "UserFaces")
+  tierId: ID!
 }
 
 type Camera @model {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
-  user: User @connection (name: "UserCameras")
+  user: User @connection (name: "UserCameras", keyField: "userId")
   motions: [Motion] @connection (name: "CameraMotions")
+  userId: ID!  
 }
 
 type Face @model {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
-  category: Category @connection
-  user: User @connection (name: "UserFaces")
+  category: Category @connection (name: "FaceCategory", keyField: "categoryId")
+  user: User @connection (name: "UserFaces", keyField: "userId")
+  categoryId: ID!  
 }
 
 type Label {
   name: String,
-  confidence:  Int
+  confidence:  Float
 }
 
 type Motion @model {
   id: ID!
   labels: [Label]
   frame: String!
-  occured: String!
-  camera: Camera @connection (name: "CameraMotions")
-  user: User @connection (name: "UserMotions")
+  occured: AWSDateTime! ## https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes 
+  camera: Camera @connection (name: "CameraMotions", keyField: "cameraId")
+  user: User @connection (name: "UserMotions", keyField: "userId")
+  userId: ID!
+  cameraId: ID!
 }
-
-
