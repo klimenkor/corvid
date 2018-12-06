@@ -75,13 +75,6 @@ export class MotionComponent implements OnInit {
 
   source: LocalDataSource;
 
-  //   = [
-  //   Motion{
-  //     id: '',
-  //     camera: 'camera',
-  //   }
-  // ];
-
   currentUser: CurrentUser;
   fromDate: NgbDate;
   toDate: NgbDate;
@@ -130,7 +123,6 @@ export class MotionComponent implements OnInit {
       console.log(this.source);
     });
 
-    // this.getMotions(this.currentUser.id, this.fromDate, this.toDate);
     console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
   }
 
