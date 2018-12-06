@@ -5,6 +5,14 @@ export const onCreateTier = `subscription OnCreateTier {
   onCreateTier {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -12,6 +20,14 @@ export const onUpdateTier = `subscription OnUpdateTier {
   onUpdateTier {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -19,6 +35,14 @@ export const onDeleteTier = `subscription OnDeleteTier {
   onDeleteTier {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -26,6 +50,14 @@ export const onCreateCategory = `subscription OnCreateCategory {
   onCreateCategory {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -33,6 +65,14 @@ export const onUpdateCategory = `subscription OnUpdateCategory {
   onUpdateCategory {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -40,6 +80,14 @@ export const onDeleteCategory = `subscription OnDeleteCategory {
   onDeleteCategory {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;

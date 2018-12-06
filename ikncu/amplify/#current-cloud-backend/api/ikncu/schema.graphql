@@ -1,42 +1,49 @@
 type Tier @model {
   id: ID!
   name: String!
+  users: [User] @connection (name: "UserTier" )
 }
 
 type Category @model {
-  id: String!
+  id: ID!
   name: String!
+  faces: [Face] @connection (name: "FacesCategory")
 }
 
 type User @model {
-  id: String!
+  id: ID!
   email: String!
   labels: [String],
-  tier: Tier @connection
+  tier: Tier @connection (name: "UserTier") #, keyField: "tierId" )
   cameras: [Camera] @connection (name: "UserCameras")
   motions: [Motion] @connection (name: "UserMotions")
   faces: [Face] @connection (name: "UserFaces")
+  # tests: [Test] @connection (name: "UserTest")
 }
 
 type Camera @model {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
-  user: User @connection (name: "UserCameras")
+  user: User @connection (name: "UserCameras") #, keyField: "userId")
   motions: [Motion] @connection (name: "CameraMotions")
+  # tests: [Test] @connection (name: "CameraTest")
+  #userId: ID!
 }
 
 type Face @model {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
-  category: Category @connection
-  user: User @connection (name: "UserFaces")
+  category: Category @connection (name: "FacesCategory") #, keyField: "categoryId")
+  user: User @connection (name: "UserFaces") #, keyField: "userId")
+  # userId: ID!
+  # categoryId: ID!
 }
 
 type Label {
   name: String,
-  confidence:  Int
+  confidence:  Float
 }
 
 type Motion @model {
@@ -44,8 +51,17 @@ type Motion @model {
   labels: [Label]
   frame: String!
   occured: String!
-  camera: Camera @connection (name: "CameraMotions")
-  user: User @connection (name: "UserMotions")
+  camera: Camera @connection (name: "CameraMotions")#, keyField: "cameraId")
+  user: User @connection (name: "UserMotions") #, keyField: "cameraUserId")
+  # cameraUserId: String!
+  # cameraId: ID!
 }
 
+# type Test @model {
+#   id: ID!
+#   user: User @connection (name: "UserTest", keyField: "userId")
+#   camera: Camera @connection (name: "CameraTest", keyField: "cameraId")
+#   userId: ID!
+#   cameraId: ID!
+# }
 

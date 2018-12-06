@@ -19,16 +19,16 @@ export class CameraService {
   ) {}
 
   public Initialize(userId, callback) {
-    if (!this._initialized) {
-      const query = API.graphql(graphqlOperation(queries.listCameras, {cameraUserId: userId})) as Promise<GraphQLResult>;
-      query.then((value) => {
-        const user = value.data as GetUserQuery;
-        this._initialized = true;
-        callback(this._initialized);
-      });
-    } else {
-      callback(this._initialized);
-    }
+    // if (!this._initialized) {
+    //   const query = API.graphql(graphqlOperation(queries.listCameras, {cameraUserId: userId})) as Promise<GraphQLResult>;
+    //   query.then((value) => {
+    //     const user = value.data as GetUserQuery;
+    //     this._initialized = true;
+    //     callback(this._initialized);
+    //   });
+    // } else {
+    //   callback(this._initialized);
+    // }
   }
 
   public get Cameras(): [UpdateCameraInput] {

@@ -5,6 +5,14 @@ export const getTier = `query GetTier($id: ID!) {
   getTier(id: $id) {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -17,6 +25,14 @@ export const listTiers = `query ListTiers(
     items {
       id
       name
+      users {
+        items {
+          id
+          email
+          labels
+        }
+        nextToken
+      }
     }
     nextToken
   }
@@ -26,6 +42,14 @@ export const getCategory = `query GetCategory($id: ID!) {
   getCategory(id: $id) {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -38,6 +62,14 @@ export const listCategorys = `query ListCategorys(
     items {
       id
       name
+      faces {
+        items {
+          id
+          name
+          active
+        }
+        nextToken
+      }
     }
     nextToken
   }

@@ -99,6 +99,7 @@ export class CamerasComponent implements OnInit {
     result.then((value) => {
       const v = value.data as ListCamerasQuery;
       this.source = v.listCameras.items;
+      console.log(this.source);
       this.spinner.hide();
     });
   }

@@ -1,15 +1,17 @@
 type Tier {
   id: ID!
   name: String!
+  users(filter: ModelUserFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelUserConnection
 }
 
 type Category {
-  id: String!
+  id: ID!
   name: String!
+  faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
 }
 
 type User {
-  id: String!
+  id: ID!
   email: String!
   labels: [String]
   tier: Tier
@@ -19,7 +21,7 @@ type User {
 }
 
 type Camera {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
   user: User
@@ -27,7 +29,7 @@ type Camera {
 }
 
 type Face {
-  id: String!
+  id: ID!
   name: String!
   active: Boolean!
   category: Category
@@ -36,7 +38,7 @@ type Face {
 
 type Label {
   name: String
-  confidence: Int
+  confidence: Float
 }
 
 type Motion {
@@ -198,7 +200,7 @@ type ModelCategoryConnection {
 }
 
 input ModelCategoryFilterInput {
-  id: ModelStringFilterInput
+  id: ModelIDFilterInput
   name: ModelStringFilterInput
   and: [ModelCategoryFilterInput]
   or: [ModelCategoryFilterInput]
@@ -211,7 +213,7 @@ input CreateCategoryInput {
 }
 
 input UpdateCategoryInput {
-  id: String!
+  id: ID!
   name: String
 }
 
@@ -225,7 +227,7 @@ type ModelUserConnection {
 }
 
 input ModelUserFilterInput {
-  id: ModelStringFilterInput
+  id: ModelIDFilterInput
   email: ModelStringFilterInput
   labels: ModelStringFilterInput
   and: [ModelUserFilterInput]
@@ -241,7 +243,7 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  id: String!
+  id: ID!
   email: String
   labels: [String]
   userTierId: ID
@@ -257,7 +259,7 @@ type ModelCameraConnection {
 }
 
 input ModelCameraFilterInput {
-  id: ModelStringFilterInput
+  id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
   and: [ModelCameraFilterInput]
@@ -273,7 +275,7 @@ input CreateCameraInput {
 }
 
 input UpdateCameraInput {
-  id: String!
+  id: ID!
   name: String
   active: Boolean
   cameraUserId: ID
@@ -289,7 +291,7 @@ type ModelFaceConnection {
 }
 
 input ModelFaceFilterInput {
-  id: ModelStringFilterInput
+  id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
   and: [ModelFaceFilterInput]
@@ -306,7 +308,7 @@ input CreateFaceInput {
 }
 
 input UpdateFaceInput {
-  id: String!
+  id: ID!
   name: String
   active: Boolean
   faceCategoryId: ID
@@ -319,7 +321,7 @@ input DeleteFaceInput {
 
 input LabelInput {
   name: String
-  confidence: Int
+  confidence: Float
 }
 
 type ModelMotionConnection {

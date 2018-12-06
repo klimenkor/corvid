@@ -5,6 +5,14 @@ export const createTier = `mutation CreateTier($input: CreateTierInput!) {
   createTier(input: $input) {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -12,6 +20,14 @@ export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
   updateTier(input: $input) {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -19,6 +35,14 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
   deleteTier(input: $input) {
     id
     name
+    users {
+      items {
+        id
+        email
+        labels
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -26,6 +50,14 @@ export const createCategory = `mutation CreateCategory($input: CreateCategoryInp
   createCategory(input: $input) {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -33,6 +65,14 @@ export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInp
   updateCategory(input: $input) {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -40,6 +80,14 @@ export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInp
   deleteCategory(input: $input) {
     id
     name
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;

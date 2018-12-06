@@ -17,16 +17,26 @@ export class MotionService {
   constructor() { }
 
   public Initialize(userId, callback) {
-    if (!this._initialized) {
-      const query = API.graphql(graphqlOperation(queries.listMotions, {MotionUserId: userId})) as Promise<GraphQLResult>;
-      query.then((value) => {
-        const user = value.data as GetMotionQuery;
-        this._initialized = true;
-        callback(this._initialized);
-      });
-    } else {
-      callback(this._initialized);
-    }
+    // if (!this._initialized) {
+    //   const query = API.graphql(graphqlOperation(queries.listMotions, {MotionUserId: userId})) as Promise<GraphQLResult>;
+    //   query.then((value) => {
+    //     const user = value.data as GetMotionQuery;
+    //     this._initialized = true;
+    //     callback(this._initialized);
+    //   });
+    // } else {
+    //   callback(this._initialized);
+    // }
+  }
+
+  public ListMotions(fromDate: String, toDate: String, callback) {
+    const filter = {
+      occured: { le: '2018-12-02' }
+    };
+    const query = API.graphql(graphqlOperation(queries.listMotions, {filter: filter, limit: 5})) as Promise<GraphQLResult>;
+    query.then((response) => {
+      callback(response.data);
+    });
   }
 
   public get Motions(): [UpdateMotionInput] {

@@ -147,7 +147,7 @@ export type ModelStringFilterInput = {
 };
 
 export type ModelCategoryFilterInput = {
-  id?: ModelStringFilterInput | null,
+  id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
   and?: Array< ModelCategoryFilterInput | null > | null,
   or?: Array< ModelCategoryFilterInput | null > | null,
@@ -155,7 +155,7 @@ export type ModelCategoryFilterInput = {
 };
 
 export type ModelUserFilterInput = {
-  id?: ModelStringFilterInput | null,
+  id?: ModelIDFilterInput | null,
   email?: ModelStringFilterInput | null,
   labels?: ModelStringFilterInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
@@ -164,7 +164,7 @@ export type ModelUserFilterInput = {
 };
 
 export type ModelCameraFilterInput = {
-  id?: ModelStringFilterInput | null,
+  id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
   and?: Array< ModelCameraFilterInput | null > | null,
@@ -178,7 +178,7 @@ export type ModelBooleanFilterInput = {
 };
 
 export type ModelFaceFilterInput = {
-  id?: ModelStringFilterInput | null,
+  id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
   and?: Array< ModelFaceFilterInput | null > | null,
@@ -204,6 +204,16 @@ export type CreateTierMutation = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -216,6 +226,16 @@ export type UpdateTierMutation = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -228,6 +248,16 @@ export type DeleteTierMutation = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -240,6 +270,16 @@ export type CreateCategoryMutation = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -252,6 +292,16 @@ export type UpdateCategoryMutation = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -264,6 +314,16 @@ export type DeleteCategoryMutation = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -699,6 +759,16 @@ export type GetTierQuery = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -715,6 +785,16 @@ export type ListTiersQuery = {
       __typename: "Tier",
       id: string,
       name: string,
+      users:  {
+        __typename: "ModelUserConnection",
+        items:  Array< {
+          __typename: "User",
+          id: string,
+          email: string,
+          labels: Array< string | null > | null,
+        } | null > | null,
+        nextToken: string | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -729,6 +809,16 @@ export type GetCategoryQuery = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -745,6 +835,16 @@ export type ListCategorysQuery = {
       __typename: "Category",
       id: string,
       name: string,
+      faces:  {
+        __typename: "ModelFaceConnection",
+        items:  Array< {
+          __typename: "Face",
+          id: string,
+          name: string,
+          active: boolean,
+        } | null > | null,
+        nextToken: string | null,
+      } | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -1061,6 +1161,16 @@ export type OnCreateTierSubscription = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -1069,6 +1179,16 @@ export type OnUpdateTierSubscription = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -1077,6 +1197,16 @@ export type OnDeleteTierSubscription = {
     __typename: "Tier",
     id: string,
     name: string,
+    users:  {
+      __typename: "ModelUserConnection",
+      items:  Array< {
+        __typename: "User",
+        id: string,
+        email: string,
+        labels: Array< string | null > | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -1085,6 +1215,16 @@ export type OnCreateCategorySubscription = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -1093,6 +1233,16 @@ export type OnUpdateCategorySubscription = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 
@@ -1101,6 +1251,16 @@ export type OnDeleteCategorySubscription = {
     __typename: "Category",
     id: string,
     name: string,
+    faces:  {
+      __typename: "ModelFaceConnection",
+      items:  Array< {
+        __typename: "Face",
+        id: string,
+        name: string,
+        active: boolean,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
   } | null,
 };
 

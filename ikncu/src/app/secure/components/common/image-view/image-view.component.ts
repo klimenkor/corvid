@@ -19,7 +19,7 @@ export class ImageViewComponent implements ViewCell, OnInit {
 
   ngOnInit() {
     this.renderValue = this.bucketPath + this.value;
-    console.log(this.renderValue)
+    // console.log(this.renderValue)
   }
 
 }

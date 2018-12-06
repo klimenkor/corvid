@@ -1338,6 +1338,10 @@
                     {
                         "AttributeName": "id",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "userTierId",
+                        "AttributeType": "S"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -1350,7 +1354,29 @@
                 },
                 "StreamSpecification": {
                     "StreamViewType": "NEW_AND_OLD_IMAGES"
-                }
+                },
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "gsi-UserTier",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "userTierId",
+                                "KeyType": "HASH"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": {
+                                "Ref": "DynamoDBModelTableReadIOPS"
+                            },
+                            "WriteCapacityUnits": {
+                                "Ref": "DynamoDBModelTableWriteIOPS"
+                            }
+                        }
+                    }
+                ]
             }
         },
         "UserIAMRole": {
@@ -2566,6 +2592,10 @@
                         "AttributeType": "S"
                     },
                     {
+                        "AttributeName": "faceCategoryId",
+                        "AttributeType": "S"
+                    },
+                    {
                         "AttributeName": "faceUserId",
                         "AttributeType": "S"
                     }
@@ -2582,6 +2612,26 @@
                     "StreamViewType": "NEW_AND_OLD_IMAGES"
                 },
                 "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "gsi-FacesCategory",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "faceCategoryId",
+                                "KeyType": "HASH"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": {
+                                "Ref": "DynamoDBModelTableReadIOPS"
+                            },
+                            "WriteCapacityUnits": {
+                                "Ref": "DynamoDBModelTableWriteIOPS"
+                            }
+                        }
+                    },
                     {
                         "IndexName": "gsi-UserFaces",
                         "KeySchema": [
@@ -3797,6 +3847,182 @@
                                                 [
                                                     "Mutation",
                                                     "deleteMotion",
+                                                    "response",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "TierusersResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "UserDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "users",
+                "TypeName": "Tier",
+                "RequestMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Tier",
+                                                    "users",
+                                                    "request",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Tier",
+                                                    "users",
+                                                    "response",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "CategoryfacesResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "FaceDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "faces",
+                "TypeName": "Category",
+                "RequestMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Category",
+                                                    "faces",
+                                                    "request",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Category",
+                                                    "faces",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
