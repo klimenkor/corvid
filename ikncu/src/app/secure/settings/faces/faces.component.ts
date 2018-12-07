@@ -91,11 +91,10 @@ export class FacesComponent implements OnInit {
 
   async onCreateConfirm(event) {
     const item = <CreateFaceInput>{
+      id: shortid.generate(),
       name: event.newData.name,
-      shortid: shortid.generate(),
       active: false,
-      userid: this.currentUser.id,
-      FaceUserId: this.currentUser.id
+      userId: this.currentUser.id,
     };
     this.faceService.Create(item, (value) => {
       event.newData.id = value.createFace.id;

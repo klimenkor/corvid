@@ -7,38 +7,37 @@ type Tier @model {
 type Category @model {
   id: ID!
   name: String!
-  faces: [Face] @connection (name: "FacesCategory")
+  faces: [Face] @connection (name: "FaceCategory")
 }
 
 type User @model {
   id: ID!
   email: String!
   labels: [String],
-  tier: Tier @connection (name: "UserTier") #, keyField: "tierId" )
-  cameras: [Camera] @connection (name: "UserCameras")
-  motions: [Motion] @connection (name: "UserMotions")
-  faces: [Face] @connection (name: "UserFaces")
-  # tests: [Test] @connection (name: "UserTest")
+  tier: Tier @connection (name: "UserTier", keyField: "tierId" )
+  cameras: [Camera] @connection (name: "UserCamera")
+  motions: [Motion] @connection (name: "UserMotion")
+  faces: [Face] @connection (name: "UserFace")
+  tierId: ID!
 }
 
 type Camera @model {
   id: ID!
   name: String!
   active: Boolean!
-  user: User @connection (name: "UserCameras") #, keyField: "userId")
-  motions: [Motion] @connection (name: "CameraMotions")
-  # tests: [Test] @connection (name: "CameraTest")
-  #userId: ID!
+  user: User @connection (name: "UserCamera", keyField: "userId")
+  motions: [Motion] @connection (name: "CameraMotion")
+  userId: ID!
 }
 
 type Face @model {
   id: ID!
   name: String!
   active: Boolean!
-  category: Category @connection (name: "FacesCategory") #, keyField: "categoryId")
-  user: User @connection (name: "UserFaces") #, keyField: "userId")
-  # userId: ID!
-  # categoryId: ID!
+  category: Category @connection (name: "FaceCategory", keyField: "categoryId")
+  user: User @connection (name: "UserFace", keyField: "userId")
+  userId: ID!
+  categoryId: ID!
 }
 
 type Label {
@@ -50,18 +49,9 @@ type Motion @model {
   id: ID!
   labels: [Label]
   frame: String!
-  occured: String!
-  camera: Camera @connection (name: "CameraMotions")#, keyField: "cameraId")
-  user: User @connection (name: "UserMotions") #, keyField: "cameraUserId")
-  # cameraUserId: String!
-  # cameraId: ID!
+  occurred: String!
+  camera: Camera @connection (name: "CameraMotion", keyField: "cameraId")
+  user: User @connection (name: "UserMotion", keyField: "userId")
+  userId: String!
+  cameraId: ID!
 }
-
-# type Test @model {
-#   id: ID!
-#   user: User @connection (name: "UserTest", keyField: "userId")
-#   camera: Camera @connection (name: "CameraTest", keyField: "cameraId")
-#   userId: ID!
-#   cameraId: ID!
-# }
-

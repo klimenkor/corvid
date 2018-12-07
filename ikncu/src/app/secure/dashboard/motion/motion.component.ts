@@ -49,8 +49,8 @@ export class MotionComponent implements OnInit {
         title: 'Camera',
         filter: false
       },
-      occured: {
-        title: 'Occured',
+      occurred: {
+        title: 'Occurred',
         filter: false
       },
       frame: {
@@ -65,7 +65,6 @@ export class MotionComponent implements OnInit {
       edit: false,
       delete: false,
       custom: false,
-      // custom: [{ name: 'edit', title: '<i class="nb-edit"></i>' }],
       position:  'left',
     },
     attr: {
@@ -103,27 +102,31 @@ export class MotionComponent implements OnInit {
     return date.year + '-' + date.month + '-' + date.day;
   }
 
-  onDateSelection(date: NgbDate) {
+  refreshData(userId: String, cameraId: String, fromDate: String, toDate: String) {
     this.spinner.show();
-    this.fromDate = date;
-    this.toDate = this.calendar.getNext(date, 'd', 1);
-    this.motionService.ListMotions(this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate), (response: ListMotionsQuery) => {
-      const list = [];
-      response.listMotions.items.forEach(item => {
-        list.push({
-          id: item.id,
-          camera: item.camera.name,
-          occured: item.occured,
-          frame: item.frame,
-          labels: item.labels
+    this.motionService.ListMotions(userId, cameraId, fromDate, toDate,
+      (response: ListMotionsQuery) => {
+        const list = [];
+        response.listMotions.items.forEach(item => {
+          list.push({
+            id: item.id,
+            camera: item.camera.name,
+            occurred: item.occurred,
+            frame: item.frame,
+            labels: item.labels
+          });
+          this.source = new LocalDataSource(list);
         });
-        this.source = new LocalDataSource(list);
-      });
       this.spinner.hide();
       console.log(this.source);
     });
+  }
 
-    console.log(this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
+  onDateSelection(date: NgbDate) {
+    this.fromDate = date;
+    this.toDate = this.calendar.getNext(date, 'd', 1);
+    console.log('onDateSelection: ' + this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
+    this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
   selectToday() {
@@ -149,14 +152,5 @@ export class MotionComponent implements OnInit {
 
     return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
   }
-
-  // getMotions(userId, fromDate, toDate) {
-  //   const result = API.graphql(graphqlOperation(queries.listMotions, {'motionUserId': userId})) as Promise<GraphQLResult>;
-  //   result.then((value) => {
-  //     const v = value.data as ListMotionsQuery;
-  //     this.source = v.listMotions.items;
-  //     this.spinner.hide();
-  //   });
-  // }
 
 }

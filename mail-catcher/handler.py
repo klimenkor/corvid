@@ -114,9 +114,9 @@ def save_motion_data(user_id, camera_id, labels, s3key):
     try:
         item = {
             "id": str(uuid.uuid4()),
-            "motionUserId": user_id,
-            "motionCameraId": camera_id,
-            "occured": datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S'),
+            "userId": user_id,
+            "cameraId": camera_id,
+            "occurred": datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S'),
             "labels": labels_list,
             "frame": s3key
         }
@@ -197,7 +197,7 @@ def catch_email(event, context):
 
     camera = get_camera(camera_id)
     camera_name = camera['name']
-    user = get_user(camera['cameraUserId'])
+    user = get_user(camera['userId'])
     user_id = user['id']
     alarm_email = user['email']
     enabled_labels = user['labels']

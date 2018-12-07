@@ -1340,7 +1340,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "userTierId",
+                        "AttributeName": "tierId",
                         "AttributeType": "S"
                     }
                 ],
@@ -1360,7 +1360,7 @@
                         "IndexName": "gsi-UserTier",
                         "KeySchema": [
                             {
-                                "AttributeName": "userTierId",
+                                "AttributeName": "tierId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -1966,7 +1966,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "cameraUserId",
+                        "AttributeName": "userId",
                         "AttributeType": "S"
                     }
                 ],
@@ -1983,10 +1983,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-UserCameras",
+                        "IndexName": "gsi-UserCamera",
                         "KeySchema": [
                             {
-                                "AttributeName": "cameraUserId",
+                                "AttributeName": "userId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -2592,11 +2592,11 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "faceCategoryId",
+                        "AttributeName": "categoryId",
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "faceUserId",
+                        "AttributeName": "userId",
                         "AttributeType": "S"
                     }
                 ],
@@ -2613,10 +2613,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-FacesCategory",
+                        "IndexName": "gsi-FaceCategory",
                         "KeySchema": [
                             {
-                                "AttributeName": "faceCategoryId",
+                                "AttributeName": "categoryId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -2633,10 +2633,10 @@
                         }
                     },
                     {
-                        "IndexName": "gsi-UserFaces",
+                        "IndexName": "gsi-UserFace",
                         "KeySchema": [
                             {
-                                "AttributeName": "faceUserId",
+                                "AttributeName": "userId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -3242,11 +3242,11 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "motionCameraId",
+                        "AttributeName": "cameraId",
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "motionUserId",
+                        "AttributeName": "userId",
                         "AttributeType": "S"
                     }
                 ],
@@ -3263,10 +3263,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-CameraMotions",
+                        "IndexName": "gsi-CameraMotion",
                         "KeySchema": [
                             {
-                                "AttributeName": "motionCameraId",
+                                "AttributeName": "cameraId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -3283,10 +3283,10 @@
                         }
                     },
                     {
-                        "IndexName": "gsi-UserMotions",
+                        "IndexName": "gsi-UserMotion",
                         "KeySchema": [
                             {
-                                "AttributeName": "motionUserId",
+                                "AttributeName": "userId",
                                 "KeyType": "HASH"
                             }
                         ],

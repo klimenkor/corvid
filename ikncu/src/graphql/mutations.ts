@@ -10,6 +10,7 @@ export const createTier = `mutation CreateTier($input: CreateTierInput!) {
         id
         email
         labels
+        tierId
       }
       nextToken
     }
@@ -25,6 +26,7 @@ export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
         id
         email
         labels
+        tierId
       }
       nextToken
     }
@@ -40,6 +42,7 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
         id
         email
         labels
+        tierId
       }
       nextToken
     }
@@ -55,6 +58,8 @@ export const createCategory = `mutation CreateCategory($input: CreateCategoryInp
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
@@ -70,6 +75,8 @@ export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInp
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
@@ -85,6 +92,8 @@ export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInp
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
@@ -105,6 +114,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -116,7 +126,9 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
@@ -125,9 +137,12 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
+    tierId
   }
 }
 `;
@@ -145,6 +160,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -156,7 +172,9 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
@@ -165,9 +183,12 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
+    tierId
   }
 }
 `;
@@ -185,6 +206,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -196,7 +218,9 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
@@ -205,9 +229,12 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
+    tierId
   }
 }
 `;
@@ -220,6 +247,7 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
       id
       email
       labels
+      tierId
     }
     motions {
       items {
@@ -229,10 +257,13 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
+    userId
   }
 }
 `;
@@ -245,6 +276,7 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
       id
       email
       labels
+      tierId
     }
     motions {
       items {
@@ -254,10 +286,13 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
+    userId
   }
 }
 `;
@@ -270,6 +305,7 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
       id
       email
       labels
+      tierId
     }
     motions {
       items {
@@ -279,10 +315,13 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
+    userId
   }
 }
 `;
@@ -299,7 +338,10 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
       id
       email
       labels
+      tierId
     }
+    userId
+    categoryId
   }
 }
 `;
@@ -316,7 +358,10 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
       id
       email
       labels
+      tierId
     }
+    userId
+    categoryId
   }
 }
 `;
@@ -333,7 +378,10 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
       id
       email
       labels
+      tierId
     }
+    userId
+    categoryId
   }
 }
 `;
@@ -345,17 +393,21 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
       confidence
     }
     frame
-    occured
+    occurred
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
       email
       labels
+      tierId
     }
+    userId
+    cameraId
   }
 }
 `;
@@ -367,17 +419,21 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
       confidence
     }
     frame
-    occured
+    occurred
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
       email
       labels
+      tierId
     }
+    userId
+    cameraId
   }
 }
 `;
@@ -389,17 +445,21 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
       confidence
     }
     frame
-    occured
+    occurred
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
       email
       labels
+      tierId
     }
+    userId
+    cameraId
   }
 }
 `;

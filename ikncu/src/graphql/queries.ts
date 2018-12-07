@@ -10,6 +10,7 @@ export const getTier = `query GetTier($id: ID!) {
         id
         email
         labels
+        tierId
       }
       nextToken
     }
@@ -30,6 +31,7 @@ export const listTiers = `query ListTiers(
           id
           email
           labels
+          tierId
         }
         nextToken
       }
@@ -47,6 +49,8 @@ export const getCategory = `query GetCategory($id: ID!) {
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
@@ -67,6 +71,8 @@ export const listCategorys = `query ListCategorys(
           id
           name
           active
+          userId
+          categoryId
         }
         nextToken
       }
@@ -89,6 +95,7 @@ export const getUser = `query GetUser($id: ID!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -100,7 +107,9 @@ export const getUser = `query GetUser($id: ID!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
@@ -109,9 +118,12 @@ export const getUser = `query GetUser($id: ID!) {
         id
         name
         active
+        userId
+        categoryId
       }
       nextToken
     }
+    tierId
   }
 }
 `;
@@ -134,6 +146,7 @@ export const listUsers = `query ListUsers(
           id
           name
           active
+          userId
         }
         nextToken
       }
@@ -145,7 +158,9 @@ export const listUsers = `query ListUsers(
             confidence
           }
           frame
-          occured
+          occurred
+          userId
+          cameraId
         }
         nextToken
       }
@@ -154,9 +169,12 @@ export const listUsers = `query ListUsers(
           id
           name
           active
+          userId
+          categoryId
         }
         nextToken
       }
+      tierId
     }
     nextToken
   }
@@ -171,6 +189,7 @@ export const getCamera = `query GetCamera($id: ID!) {
       id
       email
       labels
+      tierId
     }
     motions {
       items {
@@ -180,10 +199,13 @@ export const getCamera = `query GetCamera($id: ID!) {
           confidence
         }
         frame
-        occured
+        occurred
+        userId
+        cameraId
       }
       nextToken
     }
+    userId
   }
 }
 `;
@@ -201,6 +223,7 @@ export const listCameras = `query ListCameras(
         id
         email
         labels
+        tierId
       }
       motions {
         items {
@@ -210,10 +233,13 @@ export const listCameras = `query ListCameras(
             confidence
           }
           frame
-          occured
+          occurred
+          userId
+          cameraId
         }
         nextToken
       }
+      userId
     }
     nextToken
   }
@@ -232,7 +258,10 @@ export const getFace = `query GetFace($id: ID!) {
       id
       email
       labels
+      tierId
     }
+    userId
+    categoryId
   }
 }
 `;
@@ -254,7 +283,10 @@ export const listFaces = `query ListFaces(
         id
         email
         labels
+        tierId
       }
+      userId
+      categoryId
     }
     nextToken
   }
@@ -268,17 +300,21 @@ export const getMotion = `query GetMotion($id: ID!) {
       confidence
     }
     frame
-    occured
+    occurred
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
       email
       labels
+      tierId
     }
+    userId
+    cameraId
   }
 }
 `;
@@ -295,17 +331,21 @@ export const listMotions = `query ListMotions(
         confidence
       }
       frame
-      occured
+      occurred
       camera {
         id
         name
         active
+        userId
       }
       user {
         id
         email
         labels
+        tierId
       }
+      userId
+      cameraId
     }
     nextToken
   }

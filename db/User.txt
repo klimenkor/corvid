@@ -1,0 +1,8 @@
+{
+  "email": "klimenkor@gmail.com",
+  "id": "6c4afde7-ede6-478d-ab83-5cf6b96bb8cc",
+  "labels": [
+    "Human",
+    "People"
+  ]
+}

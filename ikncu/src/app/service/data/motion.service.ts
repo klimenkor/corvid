@@ -29,9 +29,10 @@ export class MotionService {
     // }
   }
 
-  public ListMotions(fromDate: String, toDate: String, callback) {
+  public ListMotions(userId: String, cameraId: String, fromDate: String, toDate: String, callback) {
     const filter = {
-      occured: { le: '2018-12-01' }
+      occurred: { le: '2018-12-01' },
+      userId: { eq: userId }
     };
     const query = API.graphql(graphqlOperation(queries.listMotions, {filter: filter, limit: 5})) as Promise<GraphQLResult>;
     query.then((response) => {

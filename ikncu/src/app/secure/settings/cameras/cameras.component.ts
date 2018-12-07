@@ -89,7 +89,7 @@ export class CamerasComponent implements OnInit {
 
   async ngOnInit() {
     console.log('CamerasComponent.ngOnInit');
-    this.spinner.show();
+    // this.spinner.show();
 
     this.currentUserService.Initialize(() => {
       this.currentUser = this.currentUserService.User;
@@ -100,7 +100,7 @@ export class CamerasComponent implements OnInit {
       const v = value.data as ListCamerasQuery;
       this.source = v.listCameras.items;
       console.log(this.source);
-      this.spinner.hide();
+      // this.spinner.hide();
     });
   }
 
@@ -156,7 +156,7 @@ export class CamerasComponent implements OnInit {
         id: event.newData.id,
         name: event.newData.name,
         active: event.newData.active,
-        cameraUserId: this.currentUser.id
+        userId: this.currentUser.id
       };
       this.save(item, () => {
         event.confirm.resolve(event.newData);
@@ -168,7 +168,7 @@ export class CamerasComponent implements OnInit {
       id: shortid.generate(),
       name: event.newData.name,
       active: false,
-      cameraUserId: this.currentUser.id
+      userId: this.currentUser.id
     };
     console.log(item);
     this.cameraService.Create(item, (value) => {

@@ -82,9 +82,7 @@ export class RegistrationConfirmationComponent implements OnInit, OnDestroy {
               id: this.currentUser.id,
               email: this.currentUser.email,
               labels: null,
-              cameras: null,
-              faces: null,
-              tier: null
+              tierId: null
             },
             (value) => {
                console.log('::::user created for cognitoUser');

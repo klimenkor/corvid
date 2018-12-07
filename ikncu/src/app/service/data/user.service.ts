@@ -18,14 +18,20 @@ export class UserService {
 
   public Initialize(userId, callback) {
     if (!this._initialized) {
-      const query = API.graphql(graphqlOperation(queries.getUser, {id: userId})) as Promise<GraphQLResult>;
+      console.log('UserService.Initialize: userId' + userId);
+      const query = API.graphql(graphqlOperation(queries.getUser, {id: userId, tierId: '1'})) as Promise<GraphQLResult>;
+      console.log('UserService.Initialize: 1');
       query.then((value) => {
+        console.log(value);
         const user = value.data as GetUserQuery;
         this._user = user.getUser;
         this._initialized = true;
+        console.log('UserService.Initialize: before callback');
         callback(this._initialized);
+        console.log('UserService.Initialize: after callback');
       });
     } else {
+      console.log('UserService.Initialize: already');
       callback(this._initialized);
     }
   }

@@ -1,0 +1,9 @@
+{
+  "__typename": "Camera",
+  "active": true,
+  "cameraUserId": "6c4afde7-ede6-478d-ab83-5cf6b96bb8cc",
+  "createdAt": "2018-12-01T19:39:17.235Z",
+  "id": "0VpLw7bxu",
+  "name": "Barbecue Camera",
+  "updatedAt": "2018-12-01T19:41:27.224Z"
+}
