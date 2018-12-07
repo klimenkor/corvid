@@ -20,7 +20,7 @@ export class CameraService {
 
   public Initialize(userId, callback) {
     if (!this._initialized) {
-      const query = API.graphql(graphqlOperation(queries.listCameras, {cameraUserId: userId})) as Promise<GraphQLResult>;
+      const query = API.graphql(graphqlOperation(queries.listCameras, {userId: userId})) as Promise<GraphQLResult>;
       query.then((value) => {
         const user = value.data as GetUserQuery;
         this._initialized = true;
@@ -40,6 +40,7 @@ export class CameraService {
 
     const result = API.graphql(graphqlOperation(mutations.createCamera, {input: item})) as Promise<GraphQLResult>;
     result.then((value) => {
+        console.log(value)
       callback(value.data as CreateCameraMutation);
     });
   }

@@ -99,7 +99,7 @@ export class MotionComponent implements OnInit {
   }
 
   public NgbDateToString(date: NgbDate) {
-    return date.year + '-' + date.month + '-' + date.day;
+    return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + '000000';
   }
 
   refreshData(userId: String, cameraId: String, fromDate: String, toDate: String) {
@@ -125,7 +125,7 @@ export class MotionComponent implements OnInit {
   onDateSelection(date: NgbDate) {
     this.fromDate = date;
     this.toDate = this.calendar.getNext(date, 'd', 1);
-    console.log('onDateSelection: ' + this.formatHappenedFromDate(this.fromDate), '-', this.formatHappenedFromDate(this.toDate));
+    console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
     this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
@@ -138,19 +138,19 @@ export class MotionComponent implements OnInit {
     return Math.round(value);
   }
 
-  formatHappenedFromDate(date: NgbDate) {
-    return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
-  }
+//   formatHappenedFromDate(date: NgbDate) {
+//     return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
+//   }
 
-  formatDateFromHappend(value: string) {
-    const year = value.substr(0, 4);
-    const month = value.substr(4, 2);
-    const day = value.substr(6, 2);
-    const hour = value.substr(8, 2);
-    const min = value.substr(10, 2);
-    const sec = value.substr(12, 2);
+//   formatDateFromHappend(value: string) {
+//     const year = value.substr(0, 4);
+//     const month = value.substr(4, 2);
+//     const day = value.substr(6, 2);
+//     const hour = value.substr(8, 2);
+//     const min = value.substr(10, 2);
+//     const sec = value.substr(12, 2);
 
-    return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
-  }
+//     return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
+//   }
 
 }

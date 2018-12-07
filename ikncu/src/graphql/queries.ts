@@ -90,39 +90,6 @@ export const getUser = `query GetUser($id: ID!) {
       id
       name
     }
-    cameras {
-      items {
-        id
-        name
-        active
-        userId
-      }
-      nextToken
-    }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
-    }
-    faces {
-      items {
-        id
-        name
-        active
-        userId
-        categoryId
-      }
-      nextToken
-    }
     tierId
   }
 }
@@ -140,39 +107,6 @@ export const listUsers = `query ListUsers(
       tier {
         id
         name
-      }
-      cameras {
-        items {
-          id
-          name
-          active
-          userId
-        }
-        nextToken
-      }
-      motions {
-        items {
-          id
-          labels {
-            name
-            confidence
-          }
-          frame
-          occurred
-          userId
-          cameraId
-        }
-        nextToken
-      }
-      faces {
-        items {
-          id
-          name
-          active
-          userId
-          categoryId
-        }
-        nextToken
       }
       tierId
     }
@@ -224,20 +158,6 @@ export const listCameras = `query ListCameras(
         email
         labels
         tierId
-      }
-      motions {
-        items {
-          id
-          labels {
-            name
-            confidence
-          }
-          frame
-          occurred
-          userId
-          cameraId
-        }
-        nextToken
       }
       userId
     }

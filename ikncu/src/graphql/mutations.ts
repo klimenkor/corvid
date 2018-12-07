@@ -155,39 +155,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
       id
       name
     }
-    cameras {
-      items {
-        id
-        name
-        active
-        userId
-      }
-      nextToken
-    }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
-    }
-    faces {
-      items {
-        id
-        name
-        active
-        userId
-        categoryId
-      }
-      nextToken
-    }
+
     tierId
   }
 }
@@ -201,39 +169,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       id
       name
     }
-    cameras {
-      items {
-        id
-        name
-        active
-        userId
-      }
-      nextToken
-    }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
-    }
-    faces {
-      items {
-        id
-        name
-        active
-        userId
-        categoryId
-      }
-      nextToken
-    }
+ 
     tierId
   }
 }
@@ -248,20 +184,6 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
       email
       labels
       tierId
-    }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
     }
     userId
   }
@@ -278,20 +200,7 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
       labels
       tierId
     }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
-    }
+ 
     userId
   }
 }
@@ -306,20 +215,6 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
       email
       labels
       tierId
-    }
-    motions {
-      items {
-        id
-        labels {
-          name
-          confidence
-        }
-        frame
-        occurred
-        userId
-        cameraId
-      }
-      nextToken
     }
     userId
   }

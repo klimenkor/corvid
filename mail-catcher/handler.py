@@ -17,6 +17,7 @@ s3client = boto3.client('s3')
 s3resource = boto3.resource('s3')
 cameraTable = dynamodb.Table('Camera-' + API_ID)
 userTable = dynamodb.Table('User-' + API_ID)
+faceTable = dynamodb.Table('Face-' + API_ID)
 motionTable = dynamodb.Table('Motion-' + API_ID)
 tz = pytz.timezone('America/Los_Angeles')
 
@@ -116,13 +117,36 @@ def save_motion_data(user_id, camera_id, labels, s3key):
             "id": str(uuid.uuid4()),
             "userId": user_id,
             "cameraId": camera_id,
-            "occurred": datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S'),
+            "occurred": datetime.now(tz).strftime('%Y%m%d%H%M%S'),
             "labels": labels_list,
             "frame": s3key
         }
         print('Saving new motion...')
         print(item)
         response = motionTable.put_item(Item = item)
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+
+    else:
+        print('...saved')
+
+    return response
+
+
+def save_face(face_id, user_id, category_id, frame, location):
+    response = None
+    try:
+        item = {
+            "id": face_id,
+            "userId": user_id,
+            "categoryId": category_id,
+            "active": False,
+            "frame": frame,
+            "location": location
+        }
+        print('Saving new face...')
+        print(item)
+        response = faceTable.put_item(Item = item)
     except ClientError as e:
         print(e.response['Error']['Message'])
 
@@ -178,6 +202,42 @@ def get_alarm_labels(enabled_labels, detected_labels):
     return labels
 
 
+def init_collection(user_id):
+    id = 'ikncu-%s' % user_id 
+    try:
+        client=boto3.client('rekognition')
+        response=client.create_collection(CollectionId=id)
+    except:
+        print ('Collection already exists')
+
+    return id
+
+def index_faces(user_id, bucket, frame):
+    photo='photo'
+    
+    collection_id = init_collection(user_id)
+    category_id = '4' #Unknown
+
+    client=boto3.client('rekognition')
+
+    response=client.index_faces(
+        CollectionId=collection_id,
+        Image={'S3Object':{'Bucket':bucket,'Name':frame}},
+        ExternalImageId=frame,
+        DetectionAttributes=['ALL'])
+
+    for faceRecord in response['FaceRecords']:
+        id = faceRecord['Face']['FaceId']
+        boundaries = faceRecord['Face']['BoundingBox'] 
+        location = {
+            'width': str(boundaries['Width']),
+            'height': str(boundaries['Height']),
+            'left': str(boundaries['Left']),
+            'top': str(boundaries['Top'])
+        }
+        save_face(id, user_id, category_id, frame, location)
+       
+
 def catch_email(event, context):
     frame_bucket = 'corvid-frames'
     item = event["Records"][0]["s3"]
@@ -222,7 +282,11 @@ def catch_email(event, context):
                 subject = " %s: %s at %s" % (camera_name, labels_string, timestamp)
                 html_body = "<body><ul>"
                 # faces
-                for face in detect_faces(frame_bucket, message_id):
+                faces = detect_faces(frame_bucket, message_id)
+                if len(faces) > 0:
+                    index_faces(user_id, frame_bucket, message_id)
+
+                for face in faces:
                     line = "Face ({Confidence}%)".format(**face)
                     html_body = html_body + "<li><b>%s</b><ul>" % (line)
                     # emotions

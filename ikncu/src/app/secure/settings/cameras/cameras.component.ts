@@ -55,7 +55,7 @@ export class CamerasComponent implements OnInit {
                 id: row.id,
                 name: row.name,
                 active: row.active,
-                cameraUserId: row.cameraUserId
+                userId: row.userId
               },
               () => { });
           });
@@ -142,7 +142,7 @@ export class CamerasComponent implements OnInit {
 
   save(item, callback) {
     console.log('save');
-    item.cameraUserId = this.currentUser.id;
+    item.userId = this.currentUser.id;
     console.log(item);
     this.cameraService.Update(item, (value) => {
       const v = value.data as UpdateCameraMutation;
@@ -170,10 +170,9 @@ export class CamerasComponent implements OnInit {
       active: false,
       userId: this.currentUser.id
     };
-    console.log(item);
     this.cameraService.Create(item, (value) => {
       event.newData.id = value.createCamera.id;
-      event.newData.shortid = value.createCamera.shortid;
+      event.newData.name = value.createCamera.name;
       event.newData.active = value.createCamera.active;
       event.confirm.resolve(event.newData);
     });

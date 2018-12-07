@@ -38,6 +38,8 @@ provider:
       Action: 
         - "rekognition:DetectLabels"
         - "rekognition:DetectFaces"
+        - "rekognition:IndexFaces"
+        - "rekognition:CreateCollection"
         - "ses:SendEmail"
       Resource: "*"
     - Effect: "Allow"
