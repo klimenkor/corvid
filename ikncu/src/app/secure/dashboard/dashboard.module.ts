@@ -9,6 +9,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { ImageViewComponent } from '../components/common/image-view/image-view.component';
+import { FaceComponent } from './face/face.component';
+import { CanvasViewComponent } from '../components/common/canvas-view/canvas-view.component';
 
 @NgModule({
   imports: [
@@ -27,7 +29,9 @@ import { ImageViewComponent } from '../components/common/image-view/image-view.c
   declarations: [
     DashboardComponent,
     MotionComponent,
-    ImageViewComponent
+    FaceComponent,
+    ImageViewComponent,
+    CanvasViewComponent
   ],
   providers: [
 
