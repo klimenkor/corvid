@@ -23,7 +23,7 @@ tz = pytz.timezone('America/Los_Angeles')
 
 
 def send_email(recipient, subject, body, html):
-    sender = "klimenkor@gmail.com"
+    sender = "roman.klimenko@gmail.com"
     charset = "UTF-8"
     region = "us-east-1"
     client = boto3.client('ses', region_name=region)
