@@ -1924,7 +1924,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "cameraUserId",
+                        "AttributeName": "userId",
                         "AttributeType": "S"
                     }
                 ],
@@ -1944,7 +1944,7 @@
                         "IndexName": "gsi-UserCamera",
                         "KeySchema": [
                             {
-                                "AttributeName": "cameraUserId",
+                                "AttributeName": "userId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -2550,11 +2550,11 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "faceCategoryId",
+                        "AttributeName": "categoryId",
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "faceUserId",
+                        "AttributeName": "userId",
                         "AttributeType": "S"
                     }
                 ],
@@ -2574,7 +2574,7 @@
                         "IndexName": "gsi-FaceCategory",
                         "KeySchema": [
                             {
-                                "AttributeName": "faceCategoryId",
+                                "AttributeName": "categoryId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -2594,7 +2594,7 @@
                         "IndexName": "gsi-UserFace",
                         "KeySchema": [
                             {
-                                "AttributeName": "faceUserId",
+                                "AttributeName": "userId",
                                 "KeyType": "HASH"
                             }
                         ],

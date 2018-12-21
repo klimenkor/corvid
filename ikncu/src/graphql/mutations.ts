@@ -55,6 +55,10 @@ export const createCategory = `mutation CreateCategory($input: CreateCategoryInp
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -70,6 +74,10 @@ export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInp
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -85,6 +93,10 @@ export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInp
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -105,6 +117,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -117,6 +130,13 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -127,6 +147,10 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -147,6 +171,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -159,6 +184,13 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -169,6 +201,10 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -189,6 +225,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -201,6 +238,13 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -211,6 +255,10 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -222,6 +270,7 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -236,6 +285,13 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -249,6 +305,7 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -263,6 +320,13 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -276,6 +340,7 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -290,6 +355,13 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -303,6 +375,10 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -320,6 +396,10 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -337,6 +417,10 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -358,12 +442,62 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
@@ -382,12 +516,62 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
@@ -406,12 +590,62 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id

@@ -24,14 +24,19 @@ type Camera {
   id: ID!
   name: String!
   active: Boolean!
+  userId: ID
   user: User
   motions(filter: ModelMotionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelMotionConnection
 }
 
 type Face {
   id: ID!
-  name: String!
+  name: String
   active: Boolean!
+  frame: String!
+  location: String!
+  userId: ID
+  categoryId: ID
   category: Category
   user: User
 }
@@ -41,11 +46,49 @@ type Label {
   confidence: Float
 }
 
+type Range {
+  high: Float
+  low: Float
+}
+
+type Feature {
+  confidence: Float
+  value: Boolean
+}
+
+type Emotion {
+  confidence: Float
+  type: String
+}
+
+type Box {
+  height: Float
+  left: Float
+  top: Float
+  width: Float
+}
+
+type DetectedFace {
+  box: Box
+  age: Range
+  beard: Feature
+  confidence: Float
+  emotions: [Emotion]
+  eyeglasses: Feature
+  eyesopen: Feature
+  gender: Feature
+  mouthopen: Feature
+  mustache: Feature
+  smile: Feature
+  sunglasses: Feature
+}
+
 type Motion {
   id: ID!
   labels: [Label]
   frame: String!
   occurred: String!
+  faces: [DetectedFace]
   userId: ID
   cameraId: ID
   camera: Camera
@@ -264,6 +307,7 @@ input ModelCameraFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
+  userId: ModelIDFilterInput
   and: [ModelCameraFilterInput]
   or: [ModelCameraFilterInput]
   not: ModelCameraFilterInput
@@ -273,14 +317,14 @@ input CreateCameraInput {
   id: ID
   name: String!
   active: Boolean!
-  cameraUserId: ID
+  userId: ID
 }
 
 input UpdateCameraInput {
   id: ID!
   name: String
   active: Boolean
-  cameraUserId: ID
+  userId: ID
 }
 
 input DeleteCameraInput {
@@ -296,6 +340,10 @@ input ModelFaceFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
+  frame: ModelStringFilterInput
+  location: ModelStringFilterInput
+  userId: ModelIDFilterInput
+  categoryId: ModelIDFilterInput
   and: [ModelFaceFilterInput]
   or: [ModelFaceFilterInput]
   not: ModelFaceFilterInput
@@ -303,18 +351,22 @@ input ModelFaceFilterInput {
 
 input CreateFaceInput {
   id: ID
-  name: String!
+  name: String
   active: Boolean!
-  faceCategoryId: ID
-  faceUserId: ID
+  frame: String!
+  location: String!
+  userId: ID
+  categoryId: ID
 }
 
 input UpdateFaceInput {
   id: ID!
   name: String
   active: Boolean
-  faceCategoryId: ID
-  faceUserId: ID
+  frame: String
+  location: String
+  userId: ID
+  categoryId: ID
 }
 
 input DeleteFaceInput {
@@ -324,6 +376,43 @@ input DeleteFaceInput {
 input LabelInput {
   name: String
   confidence: Float
+}
+
+input DetectedFaceInput {
+  box: BoxInput
+  age: RangeInput
+  beard: FeatureInput
+  confidence: Float
+  emotions: [EmotionInput]
+  eyeglasses: FeatureInput
+  eyesopen: FeatureInput
+  gender: FeatureInput
+  mouthopen: FeatureInput
+  mustache: FeatureInput
+  smile: FeatureInput
+  sunglasses: FeatureInput
+}
+
+input BoxInput {
+  height: Float
+  left: Float
+  top: Float
+  width: Float
+}
+
+input RangeInput {
+  high: Float
+  low: Float
+}
+
+input FeatureInput {
+  confidence: Float
+  value: Boolean
+}
+
+input EmotionInput {
+  confidence: Float
+  type: String
 }
 
 type ModelMotionConnection {
@@ -347,6 +436,7 @@ input CreateMotionInput {
   labels: [LabelInput]
   frame: String!
   occurred: String!
+  faces: [DetectedFaceInput]
   userId: ID
   cameraId: ID
 }
@@ -356,6 +446,7 @@ input UpdateMotionInput {
   labels: [LabelInput]
   frame: String
   occurred: String
+  faces: [DetectedFaceInput]
   userId: ID
   cameraId: ID
 }

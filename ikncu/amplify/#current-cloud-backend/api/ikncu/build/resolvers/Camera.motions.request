@@ -5,7 +5,7 @@
   "query": {
       "expression": "#connectionAttribute = :connectionAttribute",
       "expressionNames": {
-          "#connectionAttribute": "motionCameraId"
+          "#connectionAttribute": "cameraId"
     },
       "expressionValues": {
           ":connectionAttribute": {

@@ -126,10 +126,10 @@
 				"TemplateURL": "https://s3.amazonaws.com/ikncu-20181119185200-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
 					"AppSyncApiName": "ikncu",
-					"schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1545371999826",
+					"schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1545435494413",
 					"ResolverBucket": "ikncu-20181119185200-deployment",
 					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1545371999826"
+					"DeploymentTimestamp": "1545435494413"
 				}
 			}
 		}

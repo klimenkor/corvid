@@ -82,7 +82,7 @@ def get_camera(camera_id):
         print(e.response['Error']['Message'])
 
     else:
-        print(response)
+        # print(response)
         item = response['Item']
 
     return item
@@ -101,7 +101,7 @@ def get_user(user_id):
         print(e.response['Error']['Message'])
 
     else:
-        print(response)
+        # print(response)
         item = response['Item']
 
     return item
@@ -115,48 +115,49 @@ def save_motion_data(user_id, camera_id, labels, s3key, faces):
 
     faces_list = []
 
-    for face in faces:
-        emotions_list = []
-        for emotion in face['Emotions']:
-            emotions_list.append({"type": emotion["Type"], "confidence": int(round(emotion["Confidence"])) })
+    if faces != None:
+        for face in faces:
+            emotions_list = []
+            for emotion in face['Emotions']:
+                emotions_list.append({"type": emotion["Type"], "confidence": int(round(emotion["Confidence"])) })
 
-        bounding_box = face["BoundingBox"]
-        age_range = face["AgeRange"]
-        gender = face["Gender"]
-        smile = face["Smile"]
-        eyeglasses = face["Eyeglasses"]
-        sunglasses = face["Sunglasses"]
-        beard = face["Beard"]
-        mustache = face["Mustache"]
-        eyesopen = face["EyesOpen"]
-        mouthopen = face["MouthOpen"]
-        faces_list.append({
-            "confidence": int(round(face["Confidence"])),
-            "emotions": emotions_list,
-            "box": { "width":str(bounding_box["Width"]), "height":str(bounding_box["Height"]), "left":str(bounding_box["Left"]), "top":str(bounding_box["Top"])},
-            "age": { "low": int(round(age_range["Low"])), "high": int(round(age_range["High"])) },
-            "gender": { "value": gender["Value"], "confidence": int(round(gender["Confidence"]))},
-            "smile": { "value": smile["Value"], "confidence": int(round(smile["Confidence"]))},
-            "eyeglasses": { "value": eyeglasses["Value"], "confidence": int(round(eyeglasses["Confidence"]))},
-            "sunglasses": { "value": sunglasses["Value"], "confidence": int(round(sunglasses["Confidence"]))}, 
-            "beard": { "value": beard["Value"], "confidence": int(round(beard["Confidence"]))},
-            "mustache": { "value": mustache["Value"], "confidence": int(round(mustache["Confidence"]))},
-            "eyesopen": { "value": eyesopen["Value"], "confidence": int(round(eyesopen["Confidence"]))},
-            "mouthopen": { "value": mouthopen["Value"], "confidence": int(round(mouthopen["Confidence"]))}
-        })
+            bounding_box = face["BoundingBox"]
+            age_range = face["AgeRange"]
+            gender = face["Gender"]
+            smile = face["Smile"]
+            eyeglasses = face["Eyeglasses"]
+            sunglasses = face["Sunglasses"]
+            beard = face["Beard"]
+            mustache = face["Mustache"]
+            eyesopen = face["EyesOpen"]
+            mouthopen = face["MouthOpen"]
+            faces_list.append({
+                "confidence": int(round(face["Confidence"])),
+                "emotions": emotions_list,
+                "box": { "width":str(bounding_box["Width"]), "height":str(bounding_box["Height"]), "left":str(bounding_box["Left"]), "top":str(bounding_box["Top"])},
+                "age": { "low": int(round(age_range["Low"])), "high": int(round(age_range["High"])) },
+                "gender": { "value": gender["Value"], "confidence": int(round(gender["Confidence"]))},
+                "smile": { "value": smile["Value"], "confidence": int(round(smile["Confidence"]))},
+                "eyeglasses": { "value": eyeglasses["Value"], "confidence": int(round(eyeglasses["Confidence"]))},
+                "sunglasses": { "value": sunglasses["Value"], "confidence": int(round(sunglasses["Confidence"]))}, 
+                "beard": { "value": beard["Value"], "confidence": int(round(beard["Confidence"]))},
+                "mustache": { "value": mustache["Value"], "confidence": int(round(mustache["Confidence"]))},
+                "eyesopen": { "value": eyesopen["Value"], "confidence": int(round(eyesopen["Confidence"]))},
+                "mouthopen": { "value": mouthopen["Value"], "confidence": int(round(mouthopen["Confidence"]))}
+            })
 
     try:
         item = {
             "id": str(uuid.uuid4()),
             "userId": user_id,
-            "motionCameraId": camera_id,
+            "cameraId": camera_id,
             "occurred": datetime.now(tz).strftime('%Y%m%d%H%M%S'),
             "labels": labels_list,
-            "faces_list": faces_list,
+            "faces": faces_list,
             "frame": s3key
         }
         print('Saving new motion...')
-        print(item)
+        # print(item)
         response = motionTable.put_item(Item = item)
     except ClientError as e:
         print(e.response['Error']['Message'])
@@ -172,14 +173,14 @@ def save_face(face_id, user_id, category_id, frame, location):
     try:
         item = {
             "id": face_id,
-            "faceUserId": user_id,
-            "faceCategoryId": category_id,
+            "userId": user_id,
+            "categoryId": category_id,
             "active": False,
             "frame": frame,
             "location": location
         }
         print('Saving new face...')
-        print(item)
+        # print(item)
         response = faceTable.put_item(Item = item)
     except ClientError as e:
         print(e.response['Error']['Message'])

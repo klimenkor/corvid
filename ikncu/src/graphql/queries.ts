@@ -47,6 +47,10 @@ export const getCategory = `query GetCategory($id: ID!) {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -67,6 +71,10 @@ export const listCategorys = `query ListCategorys(
           id
           name
           active
+          frame
+          location
+          userId
+          categoryId
         }
         nextToken
       }
@@ -89,6 +97,7 @@ export const getUser = `query GetUser($id: ID!) {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -101,6 +110,13 @@ export const getUser = `query GetUser($id: ID!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -111,6 +127,10 @@ export const getUser = `query GetUser($id: ID!) {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -136,6 +156,7 @@ export const listUsers = `query ListUsers(
           id
           name
           active
+          userId
         }
         nextToken
       }
@@ -148,6 +169,13 @@ export const listUsers = `query ListUsers(
           }
           frame
           occurred
+          faces {
+            confidence
+            emotions {
+              confidence
+              type
+            }
+          }
           userId
           cameraId
         }
@@ -158,6 +186,10 @@ export const listUsers = `query ListUsers(
           id
           name
           active
+          frame
+          location
+          userId
+          categoryId
         }
         nextToken
       }
@@ -171,6 +203,7 @@ export const getCamera = `query GetCamera($id: ID!) {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -185,6 +218,13 @@ export const getCamera = `query GetCamera($id: ID!) {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -203,12 +243,33 @@ export const listCameras = `query ListCameras(
       id
       name
       active
+      userId
       user {
         id
         email
         labels
       }
-
+      motions {
+        items {
+          id
+          labels {
+            name
+            confidence
+          }
+          frame
+          occurred
+          faces {
+            confidence
+            emotions {
+              confidence
+              type
+            }
+          }
+          userId
+          cameraId
+        }
+        nextToken
+      }
     }
     nextToken
   }
@@ -219,6 +280,10 @@ export const getFace = `query GetFace($id: ID!) {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -241,6 +306,10 @@ export const listFaces = `query ListFaces(
       id
       name
       active
+      frame
+      location
+      userId
+      categoryId
       category {
         id
         name
@@ -264,12 +333,62 @@ export const getMotion = `query GetMotion($id: ID!) {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
@@ -293,12 +412,62 @@ export const listMotions = `query ListMotions(
       }
       frame
       occurred
+      faces {
+        box {
+          height
+          left
+          top
+          width
+        }
+        age {
+          high
+          low
+        }
+        beard {
+          confidence
+          value
+        }
+        confidence
+        emotions {
+          confidence
+          type
+        }
+        eyeglasses {
+          confidence
+          value
+        }
+        eyesopen {
+          confidence
+          value
+        }
+        gender {
+          confidence
+          value
+        }
+        mouthopen {
+          confidence
+          value
+        }
+        mustache {
+          confidence
+          value
+        }
+        smile {
+          confidence
+          value
+        }
+        sunglasses {
+          confidence
+          value
+        }
+      }
       userId
       cameraId
       camera {
         id
         name
         active
+        userId
       }
       user {
         id

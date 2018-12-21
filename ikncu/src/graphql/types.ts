@@ -51,14 +51,14 @@ export type CreateCameraInput = {
   id?: string | null,
   name: string,
   active: boolean,
-  cameraUserId?: string | null,
+  userId?: string | null,
 };
 
 export type UpdateCameraInput = {
   id: string,
   name?: string | null,
   active?: boolean | null,
-  cameraUserId?: string | null,
+  userId?: string | null,
 };
 
 export type DeleteCameraInput = {
@@ -67,18 +67,22 @@ export type DeleteCameraInput = {
 
 export type CreateFaceInput = {
   id?: string | null,
-  name: string,
+  name?: string | null,
   active: boolean,
-  faceCategoryId?: string | null,
-  faceUserId?: string | null,
+  frame: string,
+  location: string,
+  userId?: string | null,
+  categoryId?: string | null,
 };
 
 export type UpdateFaceInput = {
   id: string,
   name?: string | null,
   active?: boolean | null,
-  faceCategoryId?: string | null,
-  faceUserId?: string | null,
+  frame?: string | null,
+  location?: string | null,
+  userId?: string | null,
+  categoryId?: string | null,
 };
 
 export type DeleteFaceInput = {
@@ -90,6 +94,7 @@ export type CreateMotionInput = {
   labels?: Array< LabelInput | null > | null,
   frame: string,
   occurred: string,
+  faces?: Array< DetectedFaceInput | null > | null,
   userId?: string | null,
   cameraId?: string | null,
 };
@@ -99,11 +104,49 @@ export type LabelInput = {
   confidence?: number | null,
 };
 
+export type DetectedFaceInput = {
+  box?: BoxInput | null,
+  age?: RangeInput | null,
+  beard?: FeatureInput | null,
+  confidence?: number | null,
+  emotions?: Array< EmotionInput | null > | null,
+  eyeglasses?: FeatureInput | null,
+  eyesopen?: FeatureInput | null,
+  gender?: FeatureInput | null,
+  mouthopen?: FeatureInput | null,
+  mustache?: FeatureInput | null,
+  smile?: FeatureInput | null,
+  sunglasses?: FeatureInput | null,
+};
+
+export type BoxInput = {
+  height?: number | null,
+  left?: number | null,
+  top?: number | null,
+  width?: number | null,
+};
+
+export type RangeInput = {
+  high?: number | null,
+  low?: number | null,
+};
+
+export type FeatureInput = {
+  confidence?: number | null,
+  value?: boolean | null,
+};
+
+export type EmotionInput = {
+  confidence?: number | null,
+  type?: string | null,
+};
+
 export type UpdateMotionInput = {
   id: string,
   labels?: Array< LabelInput | null > | null,
   frame?: string | null,
   occurred?: string | null,
+  faces?: Array< DetectedFaceInput | null > | null,
   userId?: string | null,
   cameraId?: string | null,
 };
@@ -167,6 +210,7 @@ export type ModelCameraFilterInput = {
   id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
+  userId?: ModelIDFilterInput | null,
   and?: Array< ModelCameraFilterInput | null > | null,
   or?: Array< ModelCameraFilterInput | null > | null,
   not?: ModelCameraFilterInput | null,
@@ -181,6 +225,10 @@ export type ModelFaceFilterInput = {
   id?: ModelIDFilterInput | null,
   name?: ModelStringFilterInput | null,
   active?: ModelBooleanFilterInput | null,
+  frame?: ModelStringFilterInput | null,
+  location?: ModelStringFilterInput | null,
+  userId?: ModelIDFilterInput | null,
+  categoryId?: ModelIDFilterInput | null,
   and?: Array< ModelFaceFilterInput | null > | null,
   or?: Array< ModelFaceFilterInput | null > | null,
   not?: ModelFaceFilterInput | null,
@@ -277,8 +325,12 @@ export type CreateCategoryMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -299,8 +351,12 @@ export type UpdateCategoryMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -321,8 +377,12 @@ export type DeleteCategoryMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -351,6 +411,7 @@ export type CreateUserMutation = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -366,6 +427,15 @@ export type CreateUserMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -376,8 +446,12 @@ export type CreateUserMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -406,6 +480,7 @@ export type UpdateUserMutation = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -421,6 +496,15 @@ export type UpdateUserMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -431,8 +515,12 @@ export type UpdateUserMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -461,6 +549,7 @@ export type DeleteUserMutation = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -476,6 +565,15 @@ export type DeleteUserMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -486,8 +584,12 @@ export type DeleteUserMutation = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -504,6 +606,7 @@ export type CreateCameraMutation = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -522,6 +625,15 @@ export type CreateCameraMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -540,6 +652,7 @@ export type UpdateCameraMutation = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -558,6 +671,15 @@ export type UpdateCameraMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -576,6 +698,7 @@ export type DeleteCameraMutation = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -594,6 +717,15 @@ export type DeleteCameraMutation = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -610,8 +742,12 @@ export type CreateFaceMutation = {
   createFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -634,8 +770,12 @@ export type UpdateFaceMutation = {
   updateFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -658,8 +798,12 @@ export type DeleteFaceMutation = {
   deleteFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -689,6 +833,67 @@ export type CreateMotionMutation = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -696,6 +901,7 @@ export type CreateMotionMutation = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -721,6 +927,67 @@ export type UpdateMotionMutation = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -728,6 +995,7 @@ export type UpdateMotionMutation = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -753,6 +1021,67 @@ export type DeleteMotionMutation = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -760,6 +1089,7 @@ export type DeleteMotionMutation = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -834,8 +1164,12 @@ export type GetCategoryQuery = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -860,8 +1194,12 @@ export type ListCategorysQuery = {
         items:  Array< {
           __typename: "Face",
           id: string,
-          name: string,
+          name: string | null,
           active: boolean,
+          frame: string,
+          location: string,
+          userId: string | null,
+          categoryId: string | null,
         } | null > | null,
         nextToken: string | null,
       } | null,
@@ -892,6 +1230,7 @@ export type GetUserQuery = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -907,6 +1246,15 @@ export type GetUserQuery = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -917,8 +1265,12 @@ export type GetUserQuery = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -951,6 +1303,7 @@ export type ListUsersQuery = {
           id: string,
           name: string,
           active: boolean,
+          userId: string | null,
         } | null > | null,
         nextToken: string | null,
       } | null,
@@ -966,6 +1319,15 @@ export type ListUsersQuery = {
           } | null > | null,
           frame: string,
           occurred: string,
+          faces:  Array< {
+            __typename: "DetectedFace",
+            confidence: number | null,
+            emotions:  Array< {
+              __typename: "Emotion",
+              confidence: number | null,
+              type: string | null,
+            } | null > | null,
+          } | null > | null,
           userId: string | null,
           cameraId: string | null,
         } | null > | null,
@@ -976,8 +1338,12 @@ export type ListUsersQuery = {
         items:  Array< {
           __typename: "Face",
           id: string,
-          name: string,
+          name: string | null,
           active: boolean,
+          frame: string,
+          location: string,
+          userId: string | null,
+          categoryId: string | null,
         } | null > | null,
         nextToken: string | null,
       } | null,
@@ -996,6 +1362,7 @@ export type GetCameraQuery = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1014,6 +1381,15 @@ export type GetCameraQuery = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1036,6 +1412,7 @@ export type ListCamerasQuery = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
       user:  {
         __typename: "User",
         id: string,
@@ -1054,6 +1431,15 @@ export type ListCamerasQuery = {
           } | null > | null,
           frame: string,
           occurred: string,
+          faces:  Array< {
+            __typename: "DetectedFace",
+            confidence: number | null,
+            emotions:  Array< {
+              __typename: "Emotion",
+              confidence: number | null,
+              type: string | null,
+            } | null > | null,
+          } | null > | null,
           userId: string | null,
           cameraId: string | null,
         } | null > | null,
@@ -1072,8 +1458,12 @@ export type GetFaceQuery = {
   getFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -1100,8 +1490,12 @@ export type ListFacesQuery = {
     items:  Array< {
       __typename: "Face",
       id: string,
-      name: string,
+      name: string | null,
       active: boolean,
+      frame: string,
+      location: string,
+      userId: string | null,
+      categoryId: string | null,
       category:  {
         __typename: "Category",
         id: string,
@@ -1133,6 +1527,67 @@ export type GetMotionQuery = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -1140,6 +1595,7 @@ export type GetMotionQuery = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -1169,6 +1625,67 @@ export type ListMotionsQuery = {
       } | null > | null,
       frame: string,
       occurred: string,
+      faces:  Array< {
+        __typename: "DetectedFace",
+        box:  {
+          __typename: "Box",
+          height: number | null,
+          left: number | null,
+          top: number | null,
+          width: number | null,
+        } | null,
+        age:  {
+          __typename: "Range",
+          high: number | null,
+          low: number | null,
+        } | null,
+        beard:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        confidence: number | null,
+        emotions:  Array< {
+          __typename: "Emotion",
+          confidence: number | null,
+          type: string | null,
+        } | null > | null,
+        eyeglasses:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        eyesopen:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        gender:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        mouthopen:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        mustache:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        smile:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+        sunglasses:  {
+          __typename: "Feature",
+          confidence: number | null,
+          value: boolean | null,
+        } | null,
+      } | null > | null,
       userId: string | null,
       cameraId: string | null,
       camera:  {
@@ -1176,6 +1693,7 @@ export type ListMotionsQuery = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null,
       user:  {
         __typename: "User",
@@ -1252,8 +1770,12 @@ export type OnCreateCategorySubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1270,8 +1792,12 @@ export type OnUpdateCategorySubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1288,8 +1814,12 @@ export type OnDeleteCategorySubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1314,6 +1844,7 @@ export type OnCreateUserSubscription = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1329,6 +1860,15 @@ export type OnCreateUserSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1339,8 +1879,12 @@ export type OnCreateUserSubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1365,6 +1909,7 @@ export type OnUpdateUserSubscription = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1380,6 +1925,15 @@ export type OnUpdateUserSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1390,8 +1944,12 @@ export type OnUpdateUserSubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1416,6 +1974,7 @@ export type OnDeleteUserSubscription = {
         id: string,
         name: string,
         active: boolean,
+        userId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1431,6 +1990,15 @@ export type OnDeleteUserSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1441,8 +2009,12 @@ export type OnDeleteUserSubscription = {
       items:  Array< {
         __typename: "Face",
         id: string,
-        name: string,
+        name: string | null,
         active: boolean,
+        frame: string,
+        location: string,
+        userId: string | null,
+        categoryId: string | null,
       } | null > | null,
       nextToken: string | null,
     } | null,
@@ -1455,6 +2027,7 @@ export type OnCreateCameraSubscription = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1473,6 +2046,15 @@ export type OnCreateCameraSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1487,6 +2069,7 @@ export type OnUpdateCameraSubscription = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1505,6 +2088,15 @@ export type OnUpdateCameraSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1519,6 +2111,7 @@ export type OnDeleteCameraSubscription = {
     id: string,
     name: string,
     active: boolean,
+    userId: string | null,
     user:  {
       __typename: "User",
       id: string,
@@ -1537,6 +2130,15 @@ export type OnDeleteCameraSubscription = {
         } | null > | null,
         frame: string,
         occurred: string,
+        faces:  Array< {
+          __typename: "DetectedFace",
+          confidence: number | null,
+          emotions:  Array< {
+            __typename: "Emotion",
+            confidence: number | null,
+            type: string | null,
+          } | null > | null,
+        } | null > | null,
         userId: string | null,
         cameraId: string | null,
       } | null > | null,
@@ -1549,8 +2151,12 @@ export type OnCreateFaceSubscription = {
   onCreateFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -1569,8 +2175,12 @@ export type OnUpdateFaceSubscription = {
   onUpdateFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -1589,8 +2199,12 @@ export type OnDeleteFaceSubscription = {
   onDeleteFace:  {
     __typename: "Face",
     id: string,
-    name: string,
+    name: string | null,
     active: boolean,
+    frame: string,
+    location: string,
+    userId: string | null,
+    categoryId: string | null,
     category:  {
       __typename: "Category",
       id: string,
@@ -1616,6 +2230,67 @@ export type OnCreateMotionSubscription = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -1623,6 +2298,7 @@ export type OnCreateMotionSubscription = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -1644,6 +2320,67 @@ export type OnUpdateMotionSubscription = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -1651,6 +2388,7 @@ export type OnUpdateMotionSubscription = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",
@@ -1672,6 +2410,67 @@ export type OnDeleteMotionSubscription = {
     } | null > | null,
     frame: string,
     occurred: string,
+    faces:  Array< {
+      __typename: "DetectedFace",
+      box:  {
+        __typename: "Box",
+        height: number | null,
+        left: number | null,
+        top: number | null,
+        width: number | null,
+      } | null,
+      age:  {
+        __typename: "Range",
+        high: number | null,
+        low: number | null,
+      } | null,
+      beard:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      confidence: number | null,
+      emotions:  Array< {
+        __typename: "Emotion",
+        confidence: number | null,
+        type: string | null,
+      } | null > | null,
+      eyeglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      eyesopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      gender:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mouthopen:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      mustache:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      smile:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+      sunglasses:  {
+        __typename: "Feature",
+        confidence: number | null,
+        value: boolean | null,
+      } | null,
+    } | null > | null,
     userId: string | null,
     cameraId: string | null,
     camera:  {
@@ -1679,6 +2478,7 @@ export type OnDeleteMotionSubscription = {
       id: string,
       name: string,
       active: boolean,
+      userId: string | null,
     } | null,
     user:  {
       __typename: "User",

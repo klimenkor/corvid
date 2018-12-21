@@ -5,8 +5,8 @@ import { ViewCell } from 'ng2-smart-table';
 @Component({
   selector: 'app-button-view',
   template: `
-  <button type="button" class="btn btn-warning btn-raised" (click)="onClick($event)">
-    <i class="ft-copy"></i> Copy camera ID to clipboard
+  <button type="button" class="btn btn-outline-warning btn-raised btn-sm" (click)="onClick($event)">
+    <i class="ft-copy"></i>
   </button>
   `,
 })

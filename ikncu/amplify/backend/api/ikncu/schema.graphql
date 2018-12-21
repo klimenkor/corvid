@@ -15,25 +15,30 @@ type User @model {
   email: String!
   labels: [String],
   tier: Tier @connection (name: "UserTier")
-  cameras: [Camera] @connection (name: "UserCamera")
+  cameras: [Camera] @connection (name: "UserCamera", keyField: "userId")
   motions: [Motion] @connection (name: "UserMotion", keyField: "userId", sortField: "occurred")
-  faces: [Face] @connection (name: "UserFace")
+  faces: [Face] @connection (name: "UserFace", keyField: "userId")
 }
 
 type Camera @model {
   id: ID!
   name: String!
   active: Boolean!
-  user: User @connection (name: "UserCamera")
-  motions: [Motion] @connection (name: "CameraMotion", sortField: "occurred")
+  userId: ID
+  user: User @connection (name: "UserCamera", keyField: "userId")
+  motions: [Motion] @connection (name: "CameraMotion", keyField: "cameraId", sortField: "occurred")
 }
 
 type Face @model {
   id: ID!
-  name: String!
+  name: String
   active: Boolean!
-  category: Category @connection (name: "FaceCategory")
-  user: User @connection (name: "UserFace")
+  frame: String!
+  location: String!
+  userId: ID
+  categoryId: ID
+  category: Category @connection (name: "FaceCategory", keyField: "categoryId")
+  user: User @connection (name: "UserFace", keyField: "userId")
 }
 
 type Label {
@@ -41,11 +46,49 @@ type Label {
   confidence:  Float
 }
 
+type Range {
+  high: Float,
+  low: Float
+}
+
+type Feature {
+  confidence: Float,
+  value: Boolean
+}
+
+type Emotion {
+  confidence: Float,
+  type: String
+}
+
+type Box {
+  height: Float,
+  left: Float,
+  top: Float,
+  width: Float
+}
+
+type DetectedFace {
+  box: Box,
+  age: Range,
+  beard: Feature,
+  confidence: Float,
+  emotions: [Emotion],
+  eyeglasses: Feature,
+  eyesopen: Feature,
+  gender: Feature,
+  mouthopen: Feature,
+  mustache: Feature,
+  smile: Feature,
+  sunglasses: Feature
+}
+
 type Motion @model {
   id: ID!
   labels: [Label]
   frame: String!
   occurred: String! #AWSDateTime
+  faces: [DetectedFace]
   userId: ID
   cameraId: ID
   camera: Camera @connection (name: "CameraMotion", keyField: "cameraId")

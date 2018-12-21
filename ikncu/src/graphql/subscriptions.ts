@@ -55,6 +55,10 @@ export const onCreateCategory = `subscription OnCreateCategory {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -70,6 +74,10 @@ export const onUpdateCategory = `subscription OnUpdateCategory {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -85,6 +93,10 @@ export const onDeleteCategory = `subscription OnDeleteCategory {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -105,6 +117,7 @@ export const onCreateUser = `subscription OnCreateUser {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -117,6 +130,13 @@ export const onCreateUser = `subscription OnCreateUser {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -127,6 +147,10 @@ export const onCreateUser = `subscription OnCreateUser {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -147,6 +171,7 @@ export const onUpdateUser = `subscription OnUpdateUser {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -159,6 +184,13 @@ export const onUpdateUser = `subscription OnUpdateUser {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -169,6 +201,10 @@ export const onUpdateUser = `subscription OnUpdateUser {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -189,6 +225,7 @@ export const onDeleteUser = `subscription OnDeleteUser {
         id
         name
         active
+        userId
       }
       nextToken
     }
@@ -201,6 +238,13 @@ export const onDeleteUser = `subscription OnDeleteUser {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -211,6 +255,10 @@ export const onDeleteUser = `subscription OnDeleteUser {
         id
         name
         active
+        frame
+        location
+        userId
+        categoryId
       }
       nextToken
     }
@@ -222,6 +270,7 @@ export const onCreateCamera = `subscription OnCreateCamera {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -236,6 +285,13 @@ export const onCreateCamera = `subscription OnCreateCamera {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -249,6 +305,7 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -263,6 +320,13 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -276,6 +340,7 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
     id
     name
     active
+    userId
     user {
       id
       email
@@ -290,6 +355,13 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
         }
         frame
         occurred
+        faces {
+          confidence
+          emotions {
+            confidence
+            type
+          }
+        }
         userId
         cameraId
       }
@@ -303,6 +375,10 @@ export const onCreateFace = `subscription OnCreateFace {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -320,6 +396,10 @@ export const onUpdateFace = `subscription OnUpdateFace {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -337,6 +417,10 @@ export const onDeleteFace = `subscription OnDeleteFace {
     id
     name
     active
+    frame
+    location
+    userId
+    categoryId
     category {
       id
       name
@@ -358,12 +442,62 @@ export const onCreateMotion = `subscription OnCreateMotion {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
@@ -382,12 +516,62 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id
@@ -406,12 +590,62 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
     }
     frame
     occurred
+    faces {
+      box {
+        height
+        left
+        top
+        width
+      }
+      age {
+        high
+        low
+      }
+      beard {
+        confidence
+        value
+      }
+      confidence
+      emotions {
+        confidence
+        type
+      }
+      eyeglasses {
+        confidence
+        value
+      }
+      eyesopen {
+        confidence
+        value
+      }
+      gender {
+        confidence
+        value
+      }
+      mouthopen {
+        confidence
+        value
+      }
+      mustache {
+        confidence
+        value
+      }
+      smile {
+        confidence
+        value
+      }
+      sunglasses {
+        confidence
+        value
+      }
+    }
     userId
     cameraId
     camera {
       id
       name
       active
+      userId
     }
     user {
       id

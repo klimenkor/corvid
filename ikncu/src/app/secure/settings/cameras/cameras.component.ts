@@ -22,10 +22,27 @@ import { ButtonViewComponent } from '../../components/common/button-view/button-
 export class CamerasComponent implements OnInit {
 
   settings = {
+    add: {
+      addButtonContent: '<div class="btn btn-outline-primary"><i class="ft-plus"></i> Add new camera</div>',
+      createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
+      confirmCreate: true
+    },
+    edit: {
+      editButtonContent: '<i class="ft-edit-3"></i>',
+      saveButtonContent: '<div class="btn btn-outline-success btn-sm"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger btn-sm"><i class="ft-x"></i></div>',
+      confirmCreate: false
+    },
+    delete: {
+      deleteButtonContent: '<i class="ft-trash-2"></i>',
+      confirmDelete: true
+    },
     columns: {
       copy: {
-        title: '',
+        title: 'Camera token',
         filter: false,
+        sort: false,
         type: 'custom',
         editable: false,
         renderComponent: ButtonViewComponent,
@@ -46,7 +63,6 @@ export class CamerasComponent implements OnInit {
         editor: {
           type: 'checkbox'
         },
-        // editable: false,
         renderComponent: CheckboxViewComponent,
         onComponentInitFunction: (instance) => {
           instance.save.subscribe(row => {
@@ -64,17 +80,6 @@ export class CamerasComponent implements OnInit {
     },
     attr: {
       class: 'table table-responsive'
-    },
-    edit: {
-      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-      confirmSave: true
-    },
-    delete: {
-      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
-      confirmDelete: true
-    },
-    add: {
-      confirmCreate: true
     }
   };
 
