@@ -1,13 +1,7 @@
 {
     "AppSyncApiName": "ikncu",
-    "AuthCognitoUserPoolId": {
-        "Fn::GetAtt": [
-            "authcognito",
-            "Outputs.UserPoolId"
-        ]
-    },
-    "schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1544156494882",
+    "schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1545371999826",
     "ResolverBucket": "ikncu-20181119185200-deployment",
     "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1544156494882"
+    "DeploymentTimestamp": "1545371999826"
 }

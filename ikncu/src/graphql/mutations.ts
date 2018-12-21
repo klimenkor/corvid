@@ -10,7 +10,6 @@ export const createTier = `mutation CreateTier($input: CreateTierInput!) {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -26,7 +25,6 @@ export const updateTier = `mutation UpdateTier($input: UpdateTierInput!) {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -42,7 +40,6 @@ export const deleteTier = `mutation DeleteTier($input: DeleteTierInput!) {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -58,8 +55,6 @@ export const createCategory = `mutation CreateCategory($input: CreateCategoryInp
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -75,8 +70,6 @@ export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInp
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -92,8 +85,6 @@ export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInp
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -114,7 +105,6 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
-        userId
       }
       nextToken
     }
@@ -137,12 +127,9 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
-    tierId
   }
 }
 `;
@@ -155,8 +142,36 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
       id
       name
     }
-
-    tierId
+    cameras {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -169,8 +184,36 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       id
       name
     }
- 
-    tierId
+    cameras {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -183,9 +226,21 @@ export const createCamera = `mutation CreateCamera($input: CreateCameraInput!) {
       id
       email
       labels
-      tierId
     }
-    userId
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -198,10 +253,21 @@ export const updateCamera = `mutation UpdateCamera($input: UpdateCameraInput!) {
       id
       email
       labels
-      tierId
     }
- 
-    userId
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -214,9 +280,21 @@ export const deleteCamera = `mutation DeleteCamera($input: DeleteCameraInput!) {
       id
       email
       labels
-      tierId
     }
-    userId
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -233,10 +311,7 @@ export const createFace = `mutation CreateFace($input: CreateFaceInput!) {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -253,10 +328,7 @@ export const updateFace = `mutation UpdateFace($input: UpdateFaceInput!) {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -273,10 +345,7 @@ export const deleteFace = `mutation DeleteFace($input: DeleteFaceInput!) {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -289,20 +358,18 @@ export const createMotion = `mutation CreateMotion($input: CreateMotionInput!) {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;
@@ -315,20 +382,18 @@ export const updateMotion = `mutation UpdateMotion($input: UpdateMotionInput!) {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;
@@ -341,20 +406,18 @@ export const deleteMotion = `mutation DeleteMotion($input: DeleteMotionInput!) {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;

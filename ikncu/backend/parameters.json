@@ -1,0 +1,9 @@
+[
+    { "ParameterKey":"AppSyncApiName", "ParameterValue": "ikncu" },
+    { "ParameterKey":"AuthCognitoUserPoolId", "ParameterValue": "us-east-1_nny53yFxl" },
+    { "ParameterKey":"schemaGraphql", "ParameterValue": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1545099868957"},
+    { "ParameterKey":"ResolverBucket", "ParameterValue": "ikncu-20181119185200-deployment"},
+    { "ParameterKey":"ResolverRootKey", "ParameterValue": "amplify-appsync-files"},
+    { "ParameterKey":"DeploymentTimestamp", "ParameterValue": "1545099868957"},
+    { "ParameterKey":"AccountId", "ParameterValue": "558796877616"}
+]

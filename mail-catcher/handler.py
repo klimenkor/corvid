@@ -107,18 +107,52 @@ def get_user(user_id):
     return item
 
 
-def save_motion_data(user_id, camera_id, labels, s3key):
+def save_motion_data(user_id, camera_id, labels, s3key, faces):
     response = None
     labels_list = []
     for label in labels:
         labels_list.append({"name": label["Name"], "confidence": int(round(label["Confidence"]))})
+
+    faces_list = []
+
+    for face in faces:
+        emotions_list = []
+        for emotion in face['Emotions']:
+            emotions_list.append({"type": emotion["Type"], "confidence": int(round(emotion["Confidence"])) })
+
+        bounding_box = face["BoundingBox"]
+        age_range = face["AgeRange"]
+        gender = face["Gender"]
+        smile = face["Smile"]
+        eyeglasses = face["Eyeglasses"]
+        sunglasses = face["Sunglasses"]
+        beard = face["Beard"]
+        mustache = face["Mustache"]
+        eyesopen = face["EyesOpen"]
+        mouthopen = face["MouthOpen"]
+        faces_list.append({
+            "confidence": int(round(face["Confidence"])),
+            "emotions": emotions_list,
+            "box": { "width":str(bounding_box["Width"]), "height":str(bounding_box["Height"]), "left":str(bounding_box["Left"]), "top":str(bounding_box["Top"])},
+            "age": { "low": int(round(age_range["Low"])), "high": int(round(age_range["High"])) },
+            "gender": { "value": gender["Value"], "confidence": int(round(gender["Confidence"]))},
+            "smile": { "value": smile["Value"], "confidence": int(round(smile["Confidence"]))},
+            "eyeglasses": { "value": eyeglasses["Value"], "confidence": int(round(eyeglasses["Confidence"]))},
+            "sunglasses": { "value": sunglasses["Value"], "confidence": int(round(sunglasses["Confidence"]))}, 
+            "beard": { "value": beard["Value"], "confidence": int(round(beard["Confidence"]))},
+            "mustache": { "value": mustache["Value"], "confidence": int(round(mustache["Confidence"]))},
+            "eyesopen": { "value": eyesopen["Value"], "confidence": int(round(eyesopen["Confidence"]))},
+            "mouthopen": { "value": mouthopen["Value"], "confidence": int(round(mouthopen["Confidence"]))}
+        })
+
     try:
         item = {
             "id": str(uuid.uuid4()),
             "userId": user_id,
-            "cameraId": camera_id,
+            "motionCameraId": camera_id,
             "occurred": datetime.now(tz).strftime('%Y%m%d%H%M%S'),
             "labels": labels_list,
+            "faces_list": faces_list,
             "frame": s3key
         }
         print('Saving new motion...')
@@ -138,8 +172,8 @@ def save_face(face_id, user_id, category_id, frame, location):
     try:
         item = {
             "id": face_id,
-            "userId": user_id,
-            "categoryId": category_id,
+            "faceUserId": user_id,
+            "faceCategoryId": category_id,
             "active": False,
             "frame": frame,
             "location": location
@@ -236,7 +270,27 @@ def index_faces(user_id, bucket, frame):
             'top': str(boundaries['Top'])
         }
         save_face(id, user_id, category_id, frame, location)
-       
+
+def get_faces_info(faces):
+    html_body = "<ul>"
+    for face in faces:
+        line = "Face ({Confidence}%)".format(**face)
+        html_body = html_body + "<li><b>%s</b><ul>" % (line)
+        # emotions
+        for emotion in face['Emotions']:
+            line = "  {Type} : {Confidence}%".format(**emotion)
+            html_body = html_body + "<li>%s</li>" % (line)
+        html_body = html_body + "</ul><ul>"
+
+        # quality
+        for quality, value in face['Quality'].items():
+            line = "  {quality} : {value}".format(quality=quality, value=value)
+            html_body = html_body + "<li>%s</li>" % (line)
+        html_body = html_body + "</ul><ul>"
+
+        html_body = html_body + "</ul>"
+    return html_body
+
 
 def catch_email(event, context):
     frame_bucket = 'corvid-frames'
@@ -269,10 +323,12 @@ def catch_email(event, context):
 
         labels = detect_labels(frame_bucket, message_id)
         if len(labels) > 0:
-            respone = save_motion_data(user_id, camera_id, labels, message_id)
-            
+            # respone = save_motion_data(user_id, camera_id, labels, message_id)
+            print(labels)
             print("...labels saved")
             alarm_labels = get_alarm_labels(enabled_labels, labels)
+
+            faces = None
 
             # include only effective labels
             if len(alarm_labels) > 0:
@@ -280,35 +336,23 @@ def catch_email(event, context):
                 labels_string = ','.join(s for s in alarm_labels)
                 timestamp = datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S')
                 subject = " %s: %s at %s" % (camera_name, labels_string, timestamp)
-                html_body = "<body><ul>"
+                html_body = "<body>"
+
                 # faces
                 faces = detect_faces(frame_bucket, message_id)
                 if len(faces) > 0:
                     index_faces(user_id, frame_bucket, message_id)
+                    html_body = html_body + get_faces_info(faces)                
 
-                for face in faces:
-                    line = "Face ({Confidence}%)".format(**face)
-                    html_body = html_body + "<li><b>%s</b><ul>" % (line)
-                    # emotions
-                    for emotion in face['Emotions']:
-                        line = "  {Type} : {Confidence}%".format(**emotion)
-                        html_body = html_body + "<li>%s</li>" % (line)
-                    html_body = html_body + "</ul><ul>"
-
-                    # quality
-                    for quality, value in face['Quality'].items():
-                        line = "  {quality} : {value}".format(quality=quality, value=value)
-                        html_body = html_body + "<li>%s</li>" % (line)
-                    html_body = html_body + "</ul><ul>"
-
-                    html_body = html_body + "</ul>"
-
-                html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p><body>" % (html_body, bucket_path, message_id)
+                html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p></body>" % (html_body, bucket_path, message_id)
                 print("...alarming %s about %s" % (alarm_email, subject))
                 send_email(alarm_email, subject, '', html_body)
 
             else:
                 s3client.put_object(Bucket=frame_bucket, Key=message_id, ContentType='image/jpeg', Body=data)
+
+            respone = save_motion_data(user_id, camera_id, labels, message_id, faces)
+
 
     body = {
         "message": "Attachment (%dbytes) saved as %s in bucket [%s]" % (len(data), message_id, frame_bucket)

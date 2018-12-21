@@ -35,7 +35,8 @@ export class MotionService {
       userId: { eq: userId }
     };
     console.log(filter);
-    const query = API.graphql(graphqlOperation(queries.listMotions, {filter: filter, limit: 5})) as Promise<GraphQLResult>;
+    const query = API.graphql(graphqlOperation(queries.listMotions, {filter: filter, limit: 100})) as Promise<GraphQLResult>;
+    console.log(query);
     query.then((response) => {
       callback(response.data);
     });

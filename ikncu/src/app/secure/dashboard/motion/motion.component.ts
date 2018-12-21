@@ -41,17 +41,19 @@ export class MotionComponent implements OnInit {
 
   settings = {
     columns: {
-      id: {
-        title: 'Id',
-        filter: false
-      },
+      // id: {
+      //   title: 'Id',
+      //   filter: false
+      // },
       camera: {
         title: 'Camera',
-        filter: false
+        filter: false,
+        width: '30%'
       },
       occurred: {
         title: 'Occurred',
-        filter: false
+        filter: false,
+        width: '30%'
       },
       frame: {
         title: 'Frame',

@@ -10,7 +10,6 @@ export const onCreateTier = `subscription OnCreateTier {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -26,7 +25,6 @@ export const onUpdateTier = `subscription OnUpdateTier {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -42,7 +40,6 @@ export const onDeleteTier = `subscription OnDeleteTier {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -58,8 +55,6 @@ export const onCreateCategory = `subscription OnCreateCategory {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -75,8 +70,6 @@ export const onUpdateCategory = `subscription OnUpdateCategory {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -92,8 +85,6 @@ export const onDeleteCategory = `subscription OnDeleteCategory {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -114,7 +105,6 @@ export const onCreateUser = `subscription OnCreateUser {
         id
         name
         active
-        userId
       }
       nextToken
     }
@@ -137,12 +127,9 @@ export const onCreateUser = `subscription OnCreateUser {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
-    tierId
   }
 }
 `;
@@ -160,7 +147,6 @@ export const onUpdateUser = `subscription OnUpdateUser {
         id
         name
         active
-        userId
       }
       nextToken
     }
@@ -183,12 +169,9 @@ export const onUpdateUser = `subscription OnUpdateUser {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
-    tierId
   }
 }
 `;
@@ -206,7 +189,6 @@ export const onDeleteUser = `subscription OnDeleteUser {
         id
         name
         active
-        userId
       }
       nextToken
     }
@@ -229,12 +211,9 @@ export const onDeleteUser = `subscription OnDeleteUser {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
-    tierId
   }
 }
 `;
@@ -247,7 +226,6 @@ export const onCreateCamera = `subscription OnCreateCamera {
       id
       email
       labels
-      tierId
     }
     motions {
       items {
@@ -263,7 +241,6 @@ export const onCreateCamera = `subscription OnCreateCamera {
       }
       nextToken
     }
-    userId
   }
 }
 `;
@@ -276,7 +253,6 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
       id
       email
       labels
-      tierId
     }
     motions {
       items {
@@ -292,7 +268,6 @@ export const onUpdateCamera = `subscription OnUpdateCamera {
       }
       nextToken
     }
-    userId
   }
 }
 `;
@@ -305,7 +280,6 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
       id
       email
       labels
-      tierId
     }
     motions {
       items {
@@ -321,7 +295,6 @@ export const onDeleteCamera = `subscription OnDeleteCamera {
       }
       nextToken
     }
-    userId
   }
 }
 `;
@@ -338,10 +311,7 @@ export const onCreateFace = `subscription OnCreateFace {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -358,10 +328,7 @@ export const onUpdateFace = `subscription OnUpdateFace {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -378,10 +345,7 @@ export const onDeleteFace = `subscription OnDeleteFace {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -394,20 +358,18 @@ export const onCreateMotion = `subscription OnCreateMotion {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;
@@ -420,20 +382,18 @@ export const onUpdateMotion = `subscription OnUpdateMotion {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;
@@ -446,20 +406,18 @@ export const onDeleteMotion = `subscription OnDeleteMotion {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;

@@ -10,7 +10,6 @@ export const getTier = `query GetTier($id: ID!) {
         id
         email
         labels
-        tierId
       }
       nextToken
     }
@@ -31,7 +30,6 @@ export const listTiers = `query ListTiers(
           id
           email
           labels
-          tierId
         }
         nextToken
       }
@@ -49,8 +47,6 @@ export const getCategory = `query GetCategory($id: ID!) {
         id
         name
         active
-        userId
-        categoryId
       }
       nextToken
     }
@@ -71,8 +67,6 @@ export const listCategorys = `query ListCategorys(
           id
           name
           active
-          userId
-          categoryId
         }
         nextToken
       }
@@ -90,7 +84,36 @@ export const getUser = `query GetUser($id: ID!) {
       id
       name
     }
-    tierId
+    cameras {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
+    motions {
+      items {
+        id
+        labels {
+          name
+          confidence
+        }
+        frame
+        occurred
+        userId
+        cameraId
+      }
+      nextToken
+    }
+    faces {
+      items {
+        id
+        name
+        active
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -108,7 +131,36 @@ export const listUsers = `query ListUsers(
         id
         name
       }
-      tierId
+      cameras {
+        items {
+          id
+          name
+          active
+        }
+        nextToken
+      }
+      motions {
+        items {
+          id
+          labels {
+            name
+            confidence
+          }
+          frame
+          occurred
+          userId
+          cameraId
+        }
+        nextToken
+      }
+      faces {
+        items {
+          id
+          name
+          active
+        }
+        nextToken
+      }
     }
     nextToken
   }
@@ -123,7 +175,6 @@ export const getCamera = `query GetCamera($id: ID!) {
       id
       email
       labels
-      tierId
     }
     motions {
       items {
@@ -139,7 +190,6 @@ export const getCamera = `query GetCamera($id: ID!) {
       }
       nextToken
     }
-    userId
   }
 }
 `;
@@ -157,9 +207,8 @@ export const listCameras = `query ListCameras(
         id
         email
         labels
-        tierId
       }
-      userId
+
     }
     nextToken
   }
@@ -178,10 +227,7 @@ export const getFace = `query GetFace($id: ID!) {
       id
       email
       labels
-      tierId
     }
-    userId
-    categoryId
   }
 }
 `;
@@ -203,10 +249,7 @@ export const listFaces = `query ListFaces(
         id
         email
         labels
-        tierId
       }
-      userId
-      categoryId
     }
     nextToken
   }
@@ -221,20 +264,18 @@ export const getMotion = `query GetMotion($id: ID!) {
     }
     frame
     occurred
+    userId
+    cameraId
     camera {
       id
       name
       active
-      userId
     }
     user {
       id
       email
       labels
-      tierId
     }
-    userId
-    cameraId
   }
 }
 `;
@@ -252,20 +293,18 @@ export const listMotions = `query ListMotions(
       }
       frame
       occurred
+      userId
+      cameraId
       camera {
         id
         name
         active
-        userId
       }
       user {
         id
         email
         labels
-        tierId
       }
-      userId
-      cameraId
     }
     nextToken
   }

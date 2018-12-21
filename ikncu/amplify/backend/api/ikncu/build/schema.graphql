@@ -18,7 +18,6 @@ type User {
   cameras(filter: ModelCameraFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCameraConnection
   motions(filter: ModelMotionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelMotionConnection
   faces(filter: ModelFaceFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFaceConnection
-  tierId: ID!
 }
 
 type Camera {
@@ -27,7 +26,6 @@ type Camera {
   active: Boolean!
   user: User
   motions(filter: ModelMotionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelMotionConnection
-  userId: ID!
 }
 
 type Face {
@@ -36,8 +34,6 @@ type Face {
   active: Boolean!
   category: Category
   user: User
-  userId: ID!
-  categoryId: ID!
 }
 
 type Label {
@@ -50,10 +46,10 @@ type Motion {
   labels: [Label]
   frame: String!
   occurred: String!
+  userId: ID
+  cameraId: ID
   camera: Camera
   user: User
-  userId: String!
-  cameraId: ID!
 }
 
 enum ModelSortDirection {
@@ -236,7 +232,6 @@ input ModelUserFilterInput {
   id: ModelIDFilterInput
   email: ModelStringFilterInput
   labels: ModelStringFilterInput
-  tierId: ModelIDFilterInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
   not: ModelUserFilterInput
@@ -246,14 +241,14 @@ input CreateUserInput {
   id: ID
   email: String!
   labels: [String]
-  tierId: ID!
+  userTierId: ID
 }
 
 input UpdateUserInput {
   id: ID!
   email: String
   labels: [String]
-  tierId: ID
+  userTierId: ID
 }
 
 input DeleteUserInput {
@@ -269,7 +264,6 @@ input ModelCameraFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
-  userId: ModelIDFilterInput
   and: [ModelCameraFilterInput]
   or: [ModelCameraFilterInput]
   not: ModelCameraFilterInput
@@ -279,14 +273,14 @@ input CreateCameraInput {
   id: ID
   name: String!
   active: Boolean!
-  userId: ID!
+  cameraUserId: ID
 }
 
 input UpdateCameraInput {
   id: ID!
   name: String
   active: Boolean
-  userId: ID
+  cameraUserId: ID
 }
 
 input DeleteCameraInput {
@@ -302,8 +296,6 @@ input ModelFaceFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
   active: ModelBooleanFilterInput
-  userId: ModelIDFilterInput
-  categoryId: ModelIDFilterInput
   and: [ModelFaceFilterInput]
   or: [ModelFaceFilterInput]
   not: ModelFaceFilterInput
@@ -313,16 +305,16 @@ input CreateFaceInput {
   id: ID
   name: String!
   active: Boolean!
-  userId: ID!
-  categoryId: ID!
+  faceCategoryId: ID
+  faceUserId: ID
 }
 
 input UpdateFaceInput {
   id: ID!
   name: String
   active: Boolean
-  userId: ID
-  categoryId: ID
+  faceCategoryId: ID
+  faceUserId: ID
 }
 
 input DeleteFaceInput {
@@ -343,7 +335,7 @@ input ModelMotionFilterInput {
   id: ModelIDFilterInput
   frame: ModelStringFilterInput
   occurred: ModelStringFilterInput
-  userId: ModelStringFilterInput
+  userId: ModelIDFilterInput
   cameraId: ModelIDFilterInput
   and: [ModelMotionFilterInput]
   or: [ModelMotionFilterInput]
@@ -355,8 +347,8 @@ input CreateMotionInput {
   labels: [LabelInput]
   frame: String!
   occurred: String!
-  userId: String!
-  cameraId: ID!
+  userId: ID
+  cameraId: ID
 }
 
 input UpdateMotionInput {
@@ -364,7 +356,7 @@ input UpdateMotionInput {
   labels: [LabelInput]
   frame: String
   occurred: String
-  userId: String
+  userId: ID
   cameraId: ID
 }
 

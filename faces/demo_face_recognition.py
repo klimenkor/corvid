@@ -14,8 +14,8 @@ print('Start Recognition!')
 prevTime = 0
 while True:
     ret, frame = video_capture.read()
-    frame = cv2.resize(frame, (0, 0), fx=2, fy=2)  # resize frame (optional)
-    time.sleep(1)
+    frame = cv2.resize(frame, (0, 0), fx=1, fy=1)  # resize frame (optional)
+    #time.sleep(1)
     curTime = time.time()  # calc fps
     find_results = []
 
@@ -50,7 +50,7 @@ while True:
     text_fps_x = len(frame[0]) - 150
     text_fps_y = 20
     cv2.putText(frame, str, (text_fps_x, text_fps_y),
-                cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), thickness=1, lineType=2)
+                cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 0), thickness=1, lineType=2)
 
     cv2.imshow('Video', frame)
 
