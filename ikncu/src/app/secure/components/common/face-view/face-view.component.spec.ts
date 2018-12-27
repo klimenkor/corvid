@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CanvasViewComponent } from './canvas-view.component';
+import { FaceViewComponent } from './face-view.component';
 
-describe('CanvasViewComponent', () => {
-  let component: CanvasViewComponent;
-  let fixture: ComponentFixture<CanvasViewComponent>;
+describe('CloudViewComponent', () => {
+  let component: FaceViewComponent;
+  let fixture: ComponentFixture<FaceViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CanvasViewComponent ]
+      declarations: [ FaceViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CanvasViewComponent);
+    fixture = TestBed.createComponent(FaceViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

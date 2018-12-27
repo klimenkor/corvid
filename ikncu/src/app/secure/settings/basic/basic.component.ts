@@ -49,7 +49,7 @@ export class BasicComponent implements OnInit {
       this.currentUser = this.currentUserService.User;
       this.userService.Initialize(this.currentUser.id, (value1) => {
         this.user = this.userService.User;
-        console.log(':::: user.email = ' + this.user.email);
+        // console.log(':::: user.email = ' + this.user.email);
       });
     });
   }

@@ -1,17 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
-import { API, graphqlOperation } from 'aws-amplify';
-import * as queries from '../../../../graphql/queries';
 import { ListMotionsQuery } from '../../../../graphql/types';
-import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
 import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
-import { Motion } from 'src/app/model/motion';
-import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
+import { LocalDataSource } from 'ng2-smart-table';
+import { CloudViewComponent } from '../../components/common/cloud-view/cloud-view.component';
+import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -37,21 +35,18 @@ import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
     }
   `]
 })
-export class MotionComponent implements OnInit {
+export class MotionComponent implements AfterViewInit {
 
   settings = {
     columns: {
-      // id: {
-      //   title: 'Id',
-      //   filter: false
-      // },
-      camera: {
-        title: 'Camera',
+      occurred: {
+        title: 'Time',
         filter: false,
+        sortDirection: 'desc',
         width: '30%'
       },
-      occurred: {
-        title: 'Occurred',
+      camera: {
+        title: 'Camera',
         filter: false,
         width: '30%'
       },
@@ -61,6 +56,18 @@ export class MotionComponent implements OnInit {
         type: 'custom',
         renderComponent: ImageViewComponent
       },
+      labels: {
+        title: '',
+        filter: false,
+        type: 'custom',
+        renderComponent: CloudViewComponent
+      },
+      faces: {
+        title: '',
+        filter: false,
+        type: 'custom',
+        renderComponent: FaceViewComponent
+      }
     },
     actions: {
       add: false,
@@ -89,19 +96,34 @@ export class MotionComponent implements OnInit {
       this.selectToday();
     }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     console.log('MotionComponent.ngOnInit');
 
     this.spinner.show();
     this.currentUserService.Initialize(() => {
       this.currentUser = this.currentUserService.User;
       this.onDateSelection(this.fromDate);
-      this.spinner.hide();
     });
   }
 
+  // ngOnInit() {
+  //   console.log('MotionComponent.ngOnInit');
+
+  //   this.spinner.show();
+  //   this.currentUserService.Initialize(() => {
+  //     this.currentUser = this.currentUserService.User;
+  //     this.onDateSelection(this.fromDate);
+  //   });
+
+
+  // }
+
   public NgbDateToString(date: NgbDate) {
     return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + '000000';
+  }
+
+  timeOfTheDay(timestamp: String) {
+    return timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':' + timestamp.slice(12, 14)
   }
 
   refreshData(userId: String, cameraId: String, fromDate: String, toDate: String) {
@@ -113,14 +135,19 @@ export class MotionComponent implements OnInit {
           list.push({
             id: item.id,
             camera: item.camera.name,
-            occurred: item.occurred,
-            frame: item.frame,
-            labels: item.labels
+            occurred: this.timeOfTheDay(item.occurred),
+            frame: JSON.stringify({
+              url: item.frame,
+              faces: item.faces
+            }),
+            labels: JSON.stringify(item.labels),
+            faces: JSON.stringify(item.faces)
           });
-          this.source = new LocalDataSource(list);
         });
-      this.spinner.hide();
-      console.log(this.source);
+        // console.log(list.length);
+        this.source = new LocalDataSource(list);
+        this.spinner.hide();
+      // console.log(this.source);
     });
   }
 
@@ -134,7 +161,10 @@ export class MotionComponent implements OnInit {
   selectToday() {
     this.fromDate = this.calendar.getToday();
     this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 1);
+    // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
+    // this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
+
 
   formatConfidence(value: number) {
     return Math.round(value);
@@ -154,5 +184,6 @@ export class MotionComponent implements OnInit {
 
 //     return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
 //   }
+
 
 }

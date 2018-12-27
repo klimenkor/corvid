@@ -5,12 +5,13 @@ import { ViewCell } from 'ng2-smart-table';
 @Component({
   selector: 'app-button-view',
   template: `
-  <button type="button" class="btn btn-outline-warning btn-raised btn-sm" (click)="onClick($event)">
+  <button type="button" class="btn btn-outline-warning btn-raised btn-sm" (click)="onClick($event)" [ngbTooltip]="cameraToken" >
     <i class="ft-copy"></i>
   </button>
   `,
 })
 export class ButtonViewComponent implements ViewCell, OnInit {
+  cameraToken = '';
 
   @Input() value: string;
   @Input() rowData: any;
@@ -18,6 +19,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
+    this.cameraToken = 'Cam{' + this.rowData.id + '}';
   }
 
   onClick(event) {
@@ -26,7 +28,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
     selBox.style.left = '0';
     selBox.style.top = '0';
     selBox.style.opacity = '0';
-    selBox.value = 'Cam{' + this.rowData.id + '}';
+    selBox.value = this.cameraToken;
     document.body.appendChild(selBox);
     selBox.focus();
     selBox.select();

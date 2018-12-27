@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-// import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule } from '@angular/forms';
 import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
 import { AppComponent } from './app.component';
@@ -32,6 +31,8 @@ import { CurrentUser } from './model/_index';
 import { SettingsModule } from './secure/settings/settings.module';
 import { DashboardModule } from './secure/dashboard/dashboard.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+import { TagCloudModule } from 'angular-tag-cloud-module';
+import { MatDialogModule, MatDialogRef } from '@angular/material';
 
 @NgModule({
   schemas: [
@@ -60,7 +61,7 @@ import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
   ],
   imports: [
     BrowserModule,
-    // NgxSpinnerModule,
+    TagCloudModule,
     NgbModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,
@@ -69,7 +70,8 @@ import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
     AmplifyAngularModule,
     SettingsModule,
     DashboardModule,
-    SweetAlert2Module.forRoot()
+    SweetAlert2Module.forRoot(),
+    MatDialogModule
   ],
   providers: [
     BrowserModule,
@@ -83,8 +85,7 @@ import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
     UserLoginService,
     UserParametersService,
     DynamoDBService,
-    CurrentUser,
-    // UserService
+    CurrentUser
   ],
   bootstrap: [AppComponent]
 })

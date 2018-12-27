@@ -92,5 +92,5 @@ type Motion @model {
   userId: ID
   cameraId: ID
   camera: Camera @connection (name: "CameraMotion", keyField: "cameraId")
-  user: User @connection (name: "UserMotion", keyField: "userId")
+  user: User @connection (name: "UserMotion", keyField: "userId", sortField: "occurred")
 }

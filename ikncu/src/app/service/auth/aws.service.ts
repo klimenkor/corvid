@@ -47,7 +47,7 @@ export class AwsUtil {
         }
 
 
-        console.log('AwsUtil: Running initAwsService()');
+        // console.log('AwsUtil: Running initAwsService()');
         AwsUtil.runningInit = true;
 
 
@@ -65,7 +65,7 @@ export class AwsUtil {
      *
      */
     setupAWS(isLoggedIn: boolean, callback: Callback, idToken: string): void {
-        console.log('AwsUtil: in setupAWS()');
+        // console.log('AwsUtil: in setupAWS()');
         if (isLoggedIn) {
             console.log('AwsUtil: User is logged in');
             // Setup mobile analytics
@@ -80,7 +80,7 @@ export class AwsUtil {
 
             this.addCognitoCredentials(idToken);
 
-            console.log('AwsUtil: Retrieving the id token');
+            // console.log('AwsUtil: Retrieving the id token');
 
         } else {
             console.log('AwsUtil: User is not logged in');

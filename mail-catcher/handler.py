@@ -115,6 +115,7 @@ def save_motion_data(user_id, camera_id, labels, s3key, faces):
 
     faces_list = []
 
+    print('   saving ' + str(len(faces)) + ' faces')
     if faces != None:
         for face in faces:
             emotions_list = []

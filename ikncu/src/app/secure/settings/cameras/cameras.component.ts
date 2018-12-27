@@ -94,7 +94,7 @@ export class CamerasComponent implements OnInit {
 
   async ngOnInit() {
     console.log('CamerasComponent.ngOnInit');
-    // this.spinner.show();
+    this.spinner.show();
 
     this.currentUserService.Initialize(() => {
       this.currentUser = this.currentUserService.User;
@@ -104,8 +104,8 @@ export class CamerasComponent implements OnInit {
     result.then((value) => {
       const v = value.data as ListCamerasQuery;
       this.source = v.listCameras.items;
-      console.log(this.source);
-      // this.spinner.hide();
+      // console.log(this.source);
+      this.spinner.hide();
     });
   }
 
