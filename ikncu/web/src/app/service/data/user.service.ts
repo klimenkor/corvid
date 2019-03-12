@@ -1,83 +1,79 @@
 import { Injectable } from '@angular/core';
-import { IUser, IUserResult } from 'src/app/model/_index';
+import { IUser, IUserResult, ICreateUserResult } from 'src/app/model/_index';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class UserService {
 
-  public User = null;
-  private _initialized = false;
-  // private _user: UpdateUserInput;
-
-  constructor(
-    private authService: AuthService,
-    private http: HttpClient ) {
-  }
-
-  public Initialize(callback) {
-    if (!this._initialized) {
-      const userId = this.authService.CognitoUser.id;
-      console.log('UserService.Initialize: userId=' + userId);
-
-      const httpOptions = {
+    private user: IUser;
+    private initialized = false;
+    private httpOptions = {
         headers: new HttpHeaders({
-          Authorization: this.authService.CognitoUser.jwtToken
-        })};
+        Authorization: this.authService.CognitoUser.jwtToken
+    })};
 
-      this.http.get('https://1hlgfthw33.execute-api.us-east-1.amazonaws.com/Stage/user?id=' + userId, httpOptions)
+    constructor(
+        private authService: AuthService,
+        private http: HttpClient ) {
+    }
+
+    public Initialize(callback) {
+        if (this.initialized) {
+            return;
+        }
+        const userId = this.authService.CognitoUser.id;
+        console.log('UserService.Initialize: userId=' + userId);
+
+        this.http.get(environment.apiHost + '/user?id=' + userId, this.httpOptions)
         .subscribe(
-          (result: IUserResult) => {
-            this.User = result.Item;
-            this._initialized = true;
-            if(callback !== undefined) { callback(this._initialized); }
+        (result: IUserResult) => {
+            this.user = result.Item;
+            this.initialized = true;
+            if (callback !== undefined) { callback(this.initialized); }
             console.log('UserService.Initialize: after callback');
-          },
-          (error) => {
+        },
+        (error) => {
             console.log('Failed to retrieve user');
-          }
+            console.log(error);
+        }
         );
     }
-  }
 
-  public Create(data: IUser) {
-    // this.authService.getAuthenticatedUser().getSession((err, session) => {
-    //   if (err) {
-    //     return;
-    //   }
-    //   this.http.post('https://1hlgfthw33.execute-api.us-east-1.amazonaws.com/Stage/user', data, {
-    //     headers: new Headers({'Authorization': session.getIdToken().getJwtToken()})
-    //   })
-    //     .subscribe(
-    //       (result) => {
-    //           console.log('Create succeed');
-    //       },
-    //       (error) => {
-    //         console.log('Create succeed');
-    //       }
-    //     );
-    // });
-  }
+    public Create(data: IUser, callback) {
+        console.log('UserService.Create');
 
+        this.http.put(environment.apiHost + '/user', data, this.httpOptions)
+        .subscribe(
+            (result: ICreateUserResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
+
+    public get User(): IUser {
+        return this.initialized ? this.user : null;
+    }
+
+    public Update(data: IUser, callback) {
+        console.log('UserService.Update');
+
+        this.http.post(environment.apiHost + '/user', data, this.httpOptions)
+        .subscribe(
+            (result: ICreateUserResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
 }
-
-  // public Create(item: CreateUserInput, callback) {
-  //   console.log('User.Create');
-  //   const result = API.graphql(graphqlOperation(mutations.createUser, {input: item})) as Promise<GraphQLResult>;
-  //   result.then((value) => {
-  //     callback(value.data as CreateUserMutation);
-  //   });
-  // }
-
-  // public get User(): UpdateUserInput {
-  //   return this._initialized ? this._user : null;
-  // }
-
-  // public Update(item: UpdateUserInput, callback) {
-  //   console.log('User.Update');
-  //   const result = API.graphql(graphqlOperation(mutations.updateUser, {input: item})) as Promise<GraphQLResult>;
-  //   result.then((value) => {
-  //     callback(value);
-  //   });
-  // }
-

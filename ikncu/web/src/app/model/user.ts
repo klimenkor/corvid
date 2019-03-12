@@ -10,3 +10,7 @@ export interface IUser {
 export interface IUserResult {
   Item: IUser;
 }
+
+export interface ICreateUserResult {
+    Item: IUser;
+}
