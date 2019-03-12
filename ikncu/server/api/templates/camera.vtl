@@ -1,0 +1,48 @@
+#set($inputRoot = $input.path('$')){ 
+    "operation": "create",
+    "table": "CameraDynamoDbARN",
+    "payload": {      
+        "Item" : {          
+            "Id" : "$input.params('id')",
+            "UserId" : "$input.params('userId')",
+            "Name" : "$input.params('name')",
+            "Active" : "$input.params('active')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+ "table": "CameraDynamoDbARN",
+ "operation": "read",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+ "table": "CameraDynamoDbARN",
+ "operation": "delete",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "CameraDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiCameryByUserActive",
+        "KeyConditionExpression": "UserId = :hkey and Active = :rkey",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey'",
+            ":rkey": "$input.params('rkey')"
+        }
+    }
+}

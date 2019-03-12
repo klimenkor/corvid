@@ -1,7 +1,0 @@
-{
-    "AppSyncApiName": "ikncu",
-    "schemaGraphql": "s3://ikncu-20181119185200-deployment/amplify-appsync-files/schema.graphql.1545439663395",
-    "ResolverBucket": "ikncu-20181119185200-deployment",
-    "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1545439663395"
-}

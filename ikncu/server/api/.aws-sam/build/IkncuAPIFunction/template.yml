@@ -1,0 +1,324 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: IKNCU
+Resources:
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: Ikncu
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: IkncuWebApp
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      UserPoolId: !Ref CognitoUserPool
+        
+  CognitoIdPool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: !Ref AWS::StackName
+      CognitoIdentityProviders:
+        -
+          ClientId: !Ref CognitoUserPoolClient
+          ProviderName: !GetAtt CognitoUserPool.ProviderName
+      AllowUnauthenticatedIdentities: false          
+
+  IkncuLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - 
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: DynamoDBWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
+              - 
+                Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:DeleteItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource: 
+                  - !Join [ ":", ["arn:aws:dynamodb",!Ref "AWS::Region",!Ref "AWS::AccountId","table/*"]]
+
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+        - AttributeName: TierId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+      GlobalSecondaryIndexes:
+      - IndexName: gsiTier
+        KeySchema:
+        - AttributeName: TierId
+          KeyType: HASH
+        Projection:
+          ProjectionType: KEYS_ONLY
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'
+
+  TierTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  CameraTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  MotionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  FaceTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  CategoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  IkncuApi:
+    Type: AWS::Serverless::Api
+    Properties:
+        StageName: live
+        DefinitionBody:
+            swagger: "2.0"
+            info:
+              version: "2017-04-26T03:23:48Z"
+              title: "Ikncu"
+            basePath: "/"
+            schemes:
+            - "https"
+            paths:
+              ######################################### USER
+              /user:
+                get:                 ################## GET
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"table\": \"UserDynamoDbARN\",\r\n \"operation\": \"read\",\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\": \"$input.params('Id')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+                post:           ################## POST
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"UserDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : \"$inputRoot.id\",\r\n            \"TierId\" : \"$inputRoot.tierId\",\r\n            \"Name\" : \"$inputRoot.name\",\r\n            \"Email\" : \"$inputRoot.email\",\r\n            \"Labels\": $inputRoot.labels\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"
+
+  IkncuAPIFunction:
+    Type: AWS::Serverless::Function
+    Name: 'IkncuAPILambda'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      # CodeUri: s3://ecorvid/lambda.zip
+      #CodeUri: ./
+      Role: !GetAtt IkncuLambdaRole.Arn
+      # Policies: AmazonDynamoDBFullAccess
+      # Events:
+      #   UserGet:
+      #     Type: Api
+      #     Properties:
+      #       Path: /user
+      #       Method: GET
+      #       RestApiId:
+      #           Ref: IkncuApi
+      #     UserPost:
+      #       Type: Api
+      #       Properties:
+      #         Path: /user
+      #         Method: POST
+      #         RestApiId:
+      #             Ref: IkncuApi                
+
+Outputs:
+
+  UserDynamoDbARN:
+    Description: "User DynamoDB ARN"
+    Value: 
+      !GetAtt UserTable.Arn
+
+  TierDynamoDbARN:
+    Description: "Tier DynamoDB ARN"
+    Value: 
+      !GetAtt TierTable.Arn
+
+  CameraDynamoDbARN:
+    Description: "Camera DynamoDB ARN"
+    Value: 
+      !GetAtt CameraTable.Arn
+
+  MotionDynamoDbARN:
+    Description: "Motion DynamoDB ARN"
+    Value: 
+      !GetAtt MotionTable.Arn 
+
+  CategoryDynamoDbARN:
+    Description: "Category DynamoDB ARN"
+    Value: 
+      !GetAtt CategoryTable.Arn
+
+  FaceDynamoDbARN:
+    Description: "Face DynamoDB ARN"
+    Value: 
+      !GetAtt FaceTable.Arn

@@ -45,12 +45,14 @@ provider:
     - Effect: "Allow"
       Action: 
         - "dynamodb:PutItem"
-        - "dynamodb:GetItem"   
+        - "dynamodb:GetItem"  
+        - "dynamodb:Scan"  
       Resource: "arn:aws:dynamodb:us-east-1:*:table/*"
           
 functions:
   catch_email:
-    handler: handler.catch_email
+    handler: index.handler
+    
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

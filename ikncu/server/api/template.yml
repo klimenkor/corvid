@@ -1,0 +1,846 @@
+StackName: ikncu-mail
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: IKNCU
+Resources:
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: Ikncu
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: IkncuWebApp
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      UserPoolId: !Ref CognitoUserPool
+        
+  CognitoIdPool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: !Ref AWS::StackName
+      CognitoIdentityProviders:
+        -
+          ClientId: !Ref CognitoUserPoolClient
+          ProviderName: !GetAtt CognitoUserPool.ProviderName
+      AllowUnauthenticatedIdentities: false          
+
+  IkncuLambdaApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - 
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: DynamoDBWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
+              - 
+                Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:DeleteItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource: 
+                  - !Join [ ":", ["arn:aws:dynamodb",!Ref "AWS::Region",!Ref "AWS::AccountId","table/*"]]
+
+  IkncuLamdaMailRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: S3BucketWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - "s3:PutObject"
+                  - "s3:GetObject"
+                Resource: "arn:aws:s3:::corvid-frames/*"
+              - Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource: "arn:aws:s3:::corvid-mailbox/*"
+        - 
+          PolicyName: RekognitionAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "rekognition:DetectLabels"
+                  - "rekognition:DetectFaces"
+                  - "rekognition:IndexFaces"
+                  - "rekognition:CreateCollection"
+                  - "ses:SendEmail"
+                Resource: "*"
+        - 
+          PolicyName: DynamoDBRekognitionWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "dynamodb:PutItem"
+                  - "dynamodb:GetItem"  
+                  - "dynamodb:Scan"  
+                Resource: 
+                  - !Join [ ":", ["arn:aws:dynamodb",!Ref "AWS::Region",!Ref "AWS::AccountId","table/*"]]
+        - 
+          PolicyName: CloudWatchWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
+
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+        - AttributeName: TierId
+          AttributeType: S
+        - AttributeName: Created
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+      GlobalSecondaryIndexes:
+      - IndexName: gsiUserByTierCreated
+        KeySchema:
+        - AttributeName: TierId
+          KeyType: HASH
+        - AttributeName: Created
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'
+
+  TierTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  CameraTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: Active
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+      GlobalSecondaryIndexes:
+      - IndexName: gsiCameryByUserActive
+        KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: Active
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'
+
+
+  MotionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: CameraId
+          AttributeType: S
+        - AttributeName: Occurred
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1    
+      GlobalSecondaryIndexes:
+      - IndexName: gsiMotionByUserOccurred
+        KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: Occurred
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'        
+      - IndexName: gsiMotionByCameraOccurred
+        KeySchema:
+        - AttributeName: CameraId
+          KeyType: HASH
+        - AttributeName: Occurred
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'        
+
+
+  FaceTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  CategoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1      
+
+  IkncuApi:
+    Type: AWS::Serverless::Api
+    Properties:
+        StageName: live
+        DefinitionBody:
+            swagger: "2.0"
+            info:
+              version: "2017-04-26T03:23:48Z"
+              title: "Ikncu"
+            basePath: "/"
+            schemes:
+            - "https"
+            paths:
+              ######################################### USER
+              /user/bytier:
+                get:                 ################## GET BY TIER
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"UserDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiUserByTierCreated\",\r\n        \"KeyConditionExpression\": \"TierId = :hkey and Created > :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+              /user:
+                get:                 ################## GET
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"table\": \"UserDynamoDbARN\",\r\n \"operation\": \"read\",\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\": \"$input.params('id')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                delete:                 ################## DELETE
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"table\": \"UserDynamoDbARN\",\r\n \"operation\": \"delete\",\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\": \"$input.params('id')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                post:           ################## POST
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"UserDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : $input.json('$.id'),\r\n            \"TierId\" : $input.json('$.tierId'),\r\n            \"Name\" : $input.json('$.name'),\r\n            \"Email\" : $input.json('$.email'),\r\n            \"Labels\": $input.json('$.labels'),\r\n            \"Created\": $input.json('$.created')\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"
+
+              ######################################### CAMERA
+              /camera/byuser:
+                get:                 ################## GET
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiCameryByUserActive\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Active = :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey'\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}\r\n"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+              /camera:
+                get:                 ################## GET
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"table\": \"CameraDynamoDbARN\",\r\n \"operation\": \"read\",\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\": \"$input.params('id')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                delete:                 ################## DELETE
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"table\": \"CameraDynamoDbARN\",\r\n \"operation\": \"delete\",\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\": \"$input.params('id')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                post:           ################## POST
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : \"$input.params('id')\",\r\n            \"UserId\" : \"$input.params('userId')\",\r\n            \"Name\" : \"$input.params('name')\",\r\n            \"Active\" : \"$input.params('active')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"
+
+              ######################################### MOTION
+              /motion/byuser:
+                get:                 ################## GET BY USER
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"                    
+
+              /motion/bycamera:
+                get:                 ################## GET BY CAMERA
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByCameraOccurred\",\r\n        \"KeyConditionExpression\": \"CameraId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"   
+
+  IkncuApiGatewayAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      Name: Ikncu
+      RestApiId:
+        Ref: IkncuApi
+      Type: COGNITO_USER_POOLS
+      ProviderARNs:
+        - Fn::GetAtt: [ CognitoUserPool, Arn ]
+      IdentitySource: method.request.header.Authorization
+
+  IkncuAPIFunction:
+    Type: AWS::Serverless::Function
+    Name: 'IkncuAPILambda'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Role: !GetAtt IkncuLambdaApiRole.Arn
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        UserByTier:
+          Type: Api
+          Properties:
+            Path: /user/bytier
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi
+        UserGet:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi
+        UserPost:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: POST
+            RestApiId:
+                Ref: IkncuApi                
+        UserDelete:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: DELETE
+            RestApiId:
+                Ref: IkncuApi
+        CameraPost:
+          Type: Api
+          Properties:
+            Path: /camera
+            Method: POST
+            RestApiId:
+                Ref: IkncuApi                
+        CameraByUser:
+          Type: Api
+          Properties:
+            Path: /camera/byuser
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi                
+        CameraGet:
+          Type: Api
+          Properties:
+            Path: /camera
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi                
+        CameraDelete:
+          Type: Api
+          Properties:
+            Path: /camera
+            Method: DELETE
+            RestApiId:
+                Ref: IkncuApi    
+        MotionByUser:
+          Type: Api
+          Properties:
+            Path: /motion/byuser
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi    
+        MotionByCamera:
+          Type: Api
+          Properties:
+            Path: /motion/bycamera
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi    
+
+Outputs:
+
+  UserDynamoDbARN:
+    Description: "User DynamoDB ARN"
+    Value: 
+      !GetAtt UserTable.Arn
+
+  TierDynamoDbARN:
+    Description: "Tier DynamoDB ARN"
+    Value: 
+      !GetAtt TierTable.Arn
+
+  CameraDynamoDbARN:
+    Description: "Camera DynamoDB ARN"
+    Value: 
+      !GetAtt CameraTable.Arn
+
+  MotionDynamoDbARN:
+    Description: "Motion DynamoDB ARN"
+    Value: 
+      !GetAtt MotionTable.Arn 
+
+  CategoryDynamoDbARN:
+    Description: "Category DynamoDB ARN"
+    Value: 
+      !GetAtt CategoryTable.Arn
+
+  FaceDynamoDbARN:
+    Description: "Face DynamoDB ARN"
+    Value: 
+      !GetAtt FaceTable.Arn
