@@ -18,5 +18,5 @@ export interface IMotionResult {
 }
 
 export interface IMotionsResult {
-    Item: [IMotion];
+    Items: [IMotion];
 }

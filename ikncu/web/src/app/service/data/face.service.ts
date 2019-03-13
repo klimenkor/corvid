@@ -1,60 +1,86 @@
 import { Injectable } from '@angular/core';
-// import { UpdateFaceInput, CreateFaceInput, CreateFaceMutation, DeleteFaceInput, GetFaceQuery } from 'src/graphql/types';
-// import { API, graphqlOperation } from 'aws-amplify';
-// import * as queries from '../../../graphql/queries';
-// import * as mutations from '../../../graphql/mutations';
-// import { GetUserQuery, UpdateUserInput } from '../../../graphql/types';
-// import { GraphQLResult } from '@aws-amplify/api/lib/types';
+import { AuthService } from '../auth/auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { IFace, IFaceResult } from 'src/app/model/_index';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FaceService {
 
-  private _initialized = false;
-  // private _data: [UpdateFaceInput];
+    private httpOptions = {
+        headers: new HttpHeaders({
+        Authorization: this.authService.CognitoUser.jwtToken
+    })};
 
-  constructor() { }
+    constructor(
+        private authService: AuthService,
+        private http: HttpClient ) {
+    }
 
-  public Initialize(userId, callback) {
-    // if (!this._initialized) {
-    //   const query = API.graphql(graphqlOperation(queries.listFaces, {faceUserId: userId})) as Promise<GraphQLResult>;
-    //   query.then((value) => {
-    //     const user = value.data as GetFaceQuery;
-    //     this._initialized = true;
-    //     callback(this._initialized);
-    //   });
-    // } else {
-    //   callback(this._initialized);
-    // }
-  }
+    public GetAll(callback) {
+        console.log('FaceService.List');
 
-  // public get Faces(): [UpdateFaceInput] {
-  //   return this._initialized ? this._data : null;
-  // }
+        const userId = this.authService.CognitoUser.id;
 
-  // public Create(item: CreateFaceInput, callback) {
-  //   console.log('Face.Create');
-  //   // const result = API.graphql(graphqlOperation(mutations.createFace, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value.data as CreateFaceMutation);
-  //   // });
-  // }
+        this.http.get(environment.apiHost + '/face/byuser?hkey=' + userId, this.httpOptions)
+            .subscribe(
+                (result: IFaceResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve face');
+                    console.log(error);
+                }
+            );
+    }
 
-  // public Update(item: UpdateFaceInput, callback) {
-  //   console.log('Face.Update');
-  //   // const result = API.graphql(graphqlOperation(mutations.updateFace, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+    public Create(data: IFace, callback) {
+        console.log('FaceService.Create');
 
-  // public Delete(item: DeleteFaceInput, callback) {
-  //   console.log('Face.delete');
-  //   // const result = API.graphql(graphqlOperation(mutations.deleteFace, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+        this.http.post(environment.apiHost + '/camera', data, this.httpOptions)
+        .subscribe(
+            (result: IFaceResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
+
+    public Update(data: IFace, callback) {
+        console.log('FaceService.Update');
+        this.http.put(environment.apiHost + '/face', data, this.httpOptions)
+            .subscribe(
+                (result: IFaceResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve user');
+                    console.log(error);
+                }
+            );
+    }
+
+
+    public Delete(data: IFace, callback) {
+        console.log('FaceService.delete');
+
+        this.http.delete(environment.apiHost + '/face?id=' + data.Id, this.httpOptions)
+        .subscribe(
+            (result: IFaceResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve face');
+                console.log(error);
+            }
+        );
+    }
 
 }

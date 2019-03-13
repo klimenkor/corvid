@@ -42,7 +42,7 @@ export class UserService {
     public Create(data: IUser, callback) {
         console.log('UserService.Create');
 
-        this.http.put(environment.apiHost + '/user', data, this.httpOptions)
+        this.http.post(environment.apiHost + '/user', data, this.httpOptions)
         .subscribe(
             (result: ICreateUserResult) => {
                 console.log(result);
@@ -62,16 +62,16 @@ export class UserService {
     public Update(data: IUser, callback) {
         console.log('UserService.Update');
 
-        this.http.post<ICreateUserResult>(environment.apiHost + '/user', data, this.httpOptions)
-        .subscribe(
-            (result: ICreateUserResult) => {
-                console.log(result);
-                if (callback !== undefined) { callback(result); }
-            },
-            (error) => {
-                console.log('Failed to retrieve user');
-                console.log(error);
-            }
-        );
+        this.http.put<ICreateUserResult>(environment.apiHost + '/user', data, this.httpOptions)
+            .subscribe(
+                (result: ICreateUserResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve user');
+                    console.log(error);
+                }
+            );
     }
 }

@@ -2,8 +2,7 @@ import { Component, AfterViewInit, Input } from '@angular/core';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUserService } from 'src/app/service/common/current-user.service';
-import { CurrentUser } from 'src/app/model/_index';
+import { CurrentUser, IMotionsResult } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
 import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -90,7 +89,7 @@ export class MotionComponent implements AfterViewInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    private currentUserService: CurrentUserService,
+    // private currentUserService: CurrentUserService,
     private motionService: MotionService,
     private userService: UserService,
     private calendar: NgbCalendar) {
@@ -101,23 +100,23 @@ export class MotionComponent implements AfterViewInit {
     console.log('MotionComponent.ngOnInit');
 
     // this.spinner.show();
-    this.currentUserService.Initialize(() => {
-      this.currentUser = this.currentUserService.User;
+    // this.currentUserService.Initialize(() => {
+    //   this.currentUser = this.userService.User;
       this.onDateSelection(this.fromDate);
-    });
+    // });
   }
 
-  // ngOnInit() {
-  //   console.log('MotionComponent.ngOnInit');
+  ngOnInit() {
+    console.log('MotionComponent.ngOnInit');
 
-  //   this.spinner.show();
-  //   this.currentUserService.Initialize(() => {
-  //     this.currentUser = this.currentUserService.User;
-  //     this.onDateSelection(this.fromDate);
-  //   });
+    this.spinner.show();
+    // this.currentUserService.Initialize(() => {
+    //   this.currentUser = this.currentUserService.User;
+      this.onDateSelection(this.fromDate);
+    // });
 
 
-  // }
+  }
 
   public NgbDateToString(date: NgbDate) {
     return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + '000000';
@@ -130,27 +129,27 @@ export class MotionComponent implements AfterViewInit {
   refreshData(userId: String, cameraId: String, fromDate: String, toDate: String) {
     // this.spinner.show();
 
-    // this.userService.Get(userId, cameraId, fromDate, toDate,
-    //   (response: ListMotionsQuery) => {
-    //     const list = [];
-    //     response.listMotions.items.forEach(item => {
-    //       list.push({
-    //         id: item.id,
-    //         camera: item.camera.name,
-    //         occurred: this.timeOfTheDay(item.occurred),
-    //         frame: JSON.stringify({
-    //           url: item.frame,
-    //           faces: item.faces
-    //         }),
-    //         labels: JSON.stringify(item.labels),
-    //         faces: JSON.stringify(item.faces)
-    //       });
-    //     });
-    //     // console.log(list.length);
-    //     this.source = new LocalDataSource(list);
-    //     this.spinner.hide();
-    //   // console.log(this.source);
-    // });
+    this.motionService.GetByUser('20180101000000', 
+      (response: IMotionsResult) => {
+        const list = [];
+        response.Items.forEach(item => {
+          list.push({
+            Id: item.Id,
+            Camera: item.CameraId, //item.camera.name,
+            Occurred: '00000', //this.timeOfTheDay(item.Occurred),
+            frame: JSON.stringify({
+              url: item.Frame,
+              faces: null //item.Faces
+            }),
+            Labels: JSON.stringify(item.Labels),
+            Faces: null //JSON.stringify(item.Faces)
+          });
+        });
+        // console.log(list.length);
+        this.source = new LocalDataSource(list);
+        // this.spinner.hide();
+      // console.log(this.source);
+    });
 
     // this.motionService.ListMotions(userId, cameraId, fromDate, toDate,
     //   (response: ListMotionsQuery) => {
@@ -186,7 +185,7 @@ export class MotionComponent implements AfterViewInit {
     this.fromDate = this.calendar.getToday();
     this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 1);
     // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
-    // this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
+    this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
 
@@ -194,20 +193,20 @@ export class MotionComponent implements AfterViewInit {
     return Math.round(value);
   }
 
-//   formatHappenedFromDate(date: NgbDate) {
-//     return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
-//   }
+  formatHappenedFromDate(date: NgbDate) {
+    return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
+  }
 
-//   formatDateFromHappend(value: string) {
-//     const year = value.substr(0, 4);
-//     const month = value.substr(4, 2);
-//     const day = value.substr(6, 2);
-//     const hour = value.substr(8, 2);
-//     const min = value.substr(10, 2);
-//     const sec = value.substr(12, 2);
+  formatDateFromHappend(value: string) {
+    const year = value.substr(0, 4);
+    const month = value.substr(4, 2);
+    const day = value.substr(6, 2);
+    const hour = value.substr(8, 2);
+    const min = value.substr(10, 2);
+    const sec = value.substr(12, 2);
 
-//     return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
-//   }
+    return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
+  }
 
 
 }

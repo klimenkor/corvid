@@ -1,5 +1,6 @@
 export * from './current-user';
 export * from './user';
+export * from './face';
 export * from './camera';
 export * from './motion';
 export * from './userRegistration';

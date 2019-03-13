@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IMotionResult } from 'src/app/model/_index';
+import { IMotionResult, IMotion } from 'src/app/model/_index';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MotionService {
 
     private httpOptions = {
@@ -19,62 +17,78 @@ export class MotionService {
         private http: HttpClient ) {
     }
 
-    public GetAll(callback) {
-        console.log('MotionService.GetAll');
+    public GetByUser(dateStartsWith, callback) {
+        console.log('MotionService.GetByUser');
 
         const userId = this.authService.CognitoUser.id;
-
-        this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + '&rkey=1', this.httpOptions)
-        .subscribe(
-            (result: IMotionResult) => {
-                console.log(result);
-                if (callback !== undefined) { callback(result); }
-            },
-            (error) => {
-                console.log('Failed to retrieve user');
-                console.log(error);
-            }
-        );
+        let rkey = '';
+        if (dateStartsWith !== null) {
+            rkey = '&rkey=' + dateStartsWith;
+        }
+        this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + rkey, this.httpOptions)
+            .subscribe(
+                (result: IMotionResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve motion');
+                    console.log(error);
+                }
+            );
     }
 
-  public ListMotions(userId: String, cameraId: String, fromDate: String, toDate: String, callback) {
-    // const filter = {
-    //   // occurred: { between: [fromDate, toDate] },
-    //   occurred: { beginsWith: fromDate.substr(0, 8) },
-    //   userId: { eq: userId }
-    // };
-    // console.log(filter);
-    // const query = API.graphql(graphqlOperation(queries.listMotions, {filter: filter , limit: 1000})) as Promise<GraphQLResult>;
-    // const query = API.graphql(graphqlOperation(queries.getUser, {id: userId} )) as Promise<GraphQLResult>;
-    // query.then((response) => {
-    //   const a = <GetUserQuery>response.data;
-    //   // console.log(a.getUser.motions);
-    //   callback(a.getUser.motions);
-    // });
-  }
+    public GetByCamera(cameraId, dateStartsWith, callback) {
+        console.log('MotionService.GetByCamera');
 
-  // public Create(item: CreateMotionInput, callback) {
-  //   console.log('Motion.Create');
-  //   // const result = API.graphql(graphqlOperation(mutations.createMotion, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value.data as CreateMotionMutation);
-  //   // });
-  // }
+        if (cameraId == null) {
+            console.log('  bad argument - cameraId');
+            return 0;
+        }
+        const rkey = dateStartsWith !== null ? '&rkey=' + dateStartsWith : '';
 
-  // public Update(item: UpdateMotionInput, callback) {
-  //   console.log('Motion.Update');
-  //   // const result = API.graphql(graphqlOperation(mutations.updateMotion, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+        this.http.get(environment.apiHost + '/motion/bycamera?hkey=' + cameraId + rkey, this.httpOptions)
+            .subscribe(
+                (result: IMotionResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve motion');
+                    console.log(error);
+                }
+            );
+    }
 
-  // public Delete(item: DeleteMotionInput, callback) {
-  //   console.log('Motion.delete');
-  //   // const result = API.graphql(graphqlOperation(mutations.deleteMotion, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+    public Update(data: IMotion, callback) {
+        console.log('MotionService.Update');
+        this.http.put(environment.apiHost + '/motion', data, this.httpOptions)
+            .subscribe(
+                (result: IMotionResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve motion');
+                    console.log(error);
+                }
+            );
+    }
+
+    public Delete(data: IMotion, callback) {
+        console.log('MotionService.delete');
+
+        this.http.delete(environment.apiHost + '/motion?id=' + data.Id, this.httpOptions)
+            .subscribe(
+                (result: IMotionResult) => {
+                    console.log(result);
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to delete a motion');
+                    console.log(error);
+                }
+            );
+    }
 
 }

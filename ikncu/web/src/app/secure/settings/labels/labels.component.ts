@@ -1,9 +1,8 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { UserService } from 'src/app/service/data/user.service';
-import { CurrentUser, IUser } from 'src/app/model/_index';
+import { IUser } from 'src/app/model/_index';
 
 @Component({
   selector: 'app-settings-labels',
@@ -16,11 +15,7 @@ export class LabelsComponent implements OnInit {
 
   settings = {
     columns: {
-      id: {
-        title: 'Id',
-        filter: false,
-      },
-      name: {
+      Name: {
         title: 'Name',
         filter: false,
       }
@@ -53,7 +48,6 @@ export class LabelsComponent implements OnInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    private currentUserService: CurrentUserService,
     private userService: UserService
   ) {}
 
@@ -61,8 +55,11 @@ export class LabelsComponent implements OnInit {
     console.log('BasicComponent.ngOnInit');
 
     this.userService.Get((user) => {
-      this.currentUser = user;
-      console.log(this.currentUser);
+        this.currentUser = user;
+        this.source = new LocalDataSource(
+            this.currentUser.Labels.map((name) => {
+               return { Name: name };
+            }));
     });
   }
 
@@ -85,7 +82,7 @@ export class LabelsComponent implements OnInit {
 
   onCreateConfirm(event) {
       if (window.confirm('Are you sure you want to create?')) {
-          event.newData['name'] += ' + added in code';
+          event.newData['Name'] += ' + added in code';
           event.confirm.resolve(event.newData);
       } else {
           event.confirm.reject();
