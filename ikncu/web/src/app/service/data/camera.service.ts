@@ -1,63 +1,88 @@
 import { Injectable } from '@angular/core';
-// import { UpdateCameraInput, CreateCameraInput, CreateCameraMutation, DeleteCameraInput } from 'src/graphql/types';
-// import { API, graphqlOperation } from 'aws-amplify';
-// import * as queries from '../../../graphql/queries';
-// import * as mutations from '../../../graphql/mutations';
-// import { GetUserQuery, UpdateUserInput } from '../../../graphql/types';
-// import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import * as shortid from 'node_modules/shortid';
+import { ICamera, ICameraResult } from 'src/app/model/_index';
+import { AuthService } from '../auth/auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CameraService {
 
-  private _initialized = false;
-  // private _data: [UpdateCameraInput];
+    private httpOptions = {
+        headers: new HttpHeaders({
+        Authorization: this.authService.CognitoUser.jwtToken
+    })};
 
-  constructor(
-  ) {}
+    constructor(
+        private authService: AuthService,
+        private http: HttpClient ) {
+    }
 
-  public Initialize(userId, callback) {
-    // if (!this._initialized) {
-    //   const query = API.graphql(graphqlOperation(queries.listCameras, {userId: userId})) as Promise<GraphQLResult>;
-    //   query.then((value) => {
-    //     const user = value.data as GetUserQuery;
-    //     this._initialized = true;
-    //     callback(this._initialized);
-    //   });
-    // } else {
-    //   callback(this._initialized);
-    // }
-  }
+    public GetAll(callback) {
+        console.log('CameraService.List');
 
-  // public get Cameras(): [UpdateCameraInput] {
-  //   return this._initialized ? this._data : null;
-  // }
+        const userId = this.authService.CognitoUser.id;
 
-  // public Create(item: CreateCameraInput, callback) {
-  //   console.log('Camera.Create');
+        this.http.get(environment.apiHost + '/camera/byuser?hkey=' + userId + '&rkey=1', this.httpOptions)
+        .subscribe(
+            (result: ICameraResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
 
-  //   // const result = API.graphql(graphqlOperation(mutations.createCamera, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //     console.log(value)
-  //   //   callback(value.data as CreateCameraMutation);
-  //   // });
-  // }
+    public Create(data: ICamera, callback) {
+        console.log('CameraService.Create');
 
-  // public Update(item: UpdateCameraInput, callback) {
-  //   console.log('Camera.Update');
-  //   // const result = API.graphql(graphqlOperation(mutations.updateCamera, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+        data.Id = shortid();
+        this.http.post(environment.apiHost + '/camera', data, this.httpOptions)
+        .subscribe(
+            (result: ICameraResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
 
-  // public Delete(item: DeleteCameraInput, callback) {
-  //   console.log('Camera.delete');
-  //   // const result = API.graphql(graphqlOperation(mutations.deleteCamera, {input: item})) as Promise<GraphQLResult>;
-  //   // result.then((value) => {
-  //   //   callback(value);
-  //   // });
-  // }
+    public Update(data: ICamera, callback) {
+        console.log('CameraService.Update');
+        this.http.put(environment.apiHost + '/camera', data, this.httpOptions)
+        .subscribe(
+            (result: ICameraResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
+
+    public Delete(data: ICamera, callback) {
+        console.log('CameraService.delete');
+
+        this.http.delete(environment.apiHost + '/camera?id=' + data.Id, this.httpOptions)
+        .subscribe(
+            (result: ICameraResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
 }

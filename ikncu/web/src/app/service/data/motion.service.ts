@@ -1,33 +1,40 @@
 import { Injectable } from '@angular/core';
-// import { UpdateMotionInput, CreateMotionInput, CreateMotionMutation, DeleteMotionInput, GetMotionQuery } from 'src/graphql/types';
-// import { API, graphqlOperation } from 'aws-amplify';
-// import * as queries from '../../../graphql/queries';
-// import * as mutations from '../../../graphql/mutations';
-// import { GetUserQuery, UpdateUserInput } from '../../../graphql/types';
-// import { GraphQLResult } from '@aws-amplify/api/lib/types';
+import { AuthService } from '../auth/auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MotionService {
 
-  private _initialized = false;
-  // private _data: [UpdateMotionInput];
+    private httpOptions = {
+        headers: new HttpHeaders({
+        Authorization: this.authService.CognitoUser.jwtToken
+    })};
 
-  constructor() { }
+    constructor(
+        private authService: AuthService,
+        private http: HttpClient ) {
+    }
 
-  public Initialize(userId, callback) {
-    // if (!this._initialized) {
-    //   const query = API.graphql(graphqlOperation(queries.listMotions, {MotionUserId: userId})) as Promise<GraphQLResult>;
-    //   query.then((value) => {
-    //     const user = value.data as GetMotionQuery;
-    //     this._initialized = true;
-    //     callback(this._initialized);
-    //   });
-    // } else {
-    //   callback(this._initialized);
-    // }
-  }
+    public GetAll(callback) {
+        console.log('MotionService.GetAll');
+
+        const userId = this.authService.CognitoUser.id;
+
+        this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + '&rkey=1', this.httpOptions)
+        .subscribe(
+            (result: IMotionResult) => {
+                console.log(result);
+                if (callback !== undefined) { callback(result); }
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
+        );
+    }
 
   public ListMotions(userId: String, cameraId: String, fromDate: String, toDate: String, callback) {
     // const filter = {
@@ -44,10 +51,6 @@ export class MotionService {
     //   callback(a.getUser.motions);
     // });
   }
-
-  // public get Motions(): [UpdateMotionInput] {
-  //   return this._initialized ? this._data : null;
-  // }
 
   // public Create(item: CreateMotionInput, callback) {
   //   console.log('Motion.Create');

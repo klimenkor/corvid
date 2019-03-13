@@ -1,5 +1,6 @@
 export * from './current-user';
 export * from './user';
+export * from './camera';
 export * from './userRegistration';
 export * from './setting';
 export * from './tier';

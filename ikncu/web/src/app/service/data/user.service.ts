@@ -19,25 +19,23 @@ export class UserService {
         private http: HttpClient ) {
     }
 
-    public Initialize(callback) {
-        if (this.initialized) {
-            return;
-        }
+    public Get(callback) {
+        console.log('UserService.Get');
+
         const userId = this.authService.CognitoUser.id;
-        console.log('UserService.Initialize: userId=' + userId);
+        console.log('  userId=' + userId);
 
         this.http.get(environment.apiHost + '/user?id=' + userId, this.httpOptions)
-        .subscribe(
-        (result: IUserResult) => {
-            this.user = result.Item;
-            this.initialized = true;
-            if (callback !== undefined) { callback(this.initialized); }
-            console.log('UserService.Initialize: after callback');
-        },
-        (error) => {
-            console.log('Failed to retrieve user');
-            console.log(error);
-        }
+            .subscribe(
+            (result: IUserResult) => {
+                this.user = result.Item;
+                if (callback !== undefined) { callback(this.user); }
+                console.log('UserService.Initialize: after callback');
+            },
+            (error) => {
+                console.log('Failed to retrieve user');
+                console.log(error);
+            }
         );
     }
 
@@ -64,7 +62,7 @@ export class UserService {
     public Update(data: IUser, callback) {
         console.log('UserService.Update');
 
-        this.http.post(environment.apiHost + '/user', data, this.httpOptions)
+        this.http.post<ICreateUserResult>(environment.apiHost + '/user', data, this.httpOptions)
         .subscribe(
             (result: ICreateUserResult) => {
                 console.log(result);

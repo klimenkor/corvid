@@ -3,7 +3,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { UserService } from 'src/app/service/data/user.service';
-// import { UpdateUserInput } from 'src/graphql/types';
 import { CurrentUser, IUser } from 'src/app/model/_index';
 
 @Component({

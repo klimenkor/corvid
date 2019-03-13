@@ -1,6 +1,14 @@
-export interface IUser {
-  id: string;
-  userId: string;
-  name: string;
-  active: boolean;
+export interface ICamera {
+  Id: string;
+  UserId: string;
+  Name: string;
+  Active: boolean;
+}
+
+export interface ICamerasResult {
+    Items: [ICamera];
+}
+
+export interface ICameraResult {
+    Items: ICamera;
 }
