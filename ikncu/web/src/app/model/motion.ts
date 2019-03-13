@@ -1,14 +1,22 @@
 import { int } from 'aws-sdk/clients/datapipeline';
 
 export interface Label {
-  name: string;
-  confidence: number;
+  Name: string;
+  Confidence: number;
 }
 
-export interface Motion {
-  id: string;
-  cameraId: string;
-  occurred: int;
-  frame: string;
-  labels: Label[];
+export interface IMotion {
+  Id: string;
+  CameraId: string;
+  Occurred: int;
+  Frame: string;
+  Labels: Label[];
+}
+
+export interface IMotionResult {
+  Item: IMotion;
+}
+
+export interface IMotionsResult {
+    Item: [IMotion];
 }

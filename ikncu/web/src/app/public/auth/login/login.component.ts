@@ -63,7 +63,7 @@ export class LoginComponent implements CognitoCallback, LoggedInCallback, OnInit
           console.log('result: ' + this.errorMessage);
           // this.ddb.writeLogEntry('login');
           this.router.navigate(['/securehome/dashboard']);
-          this.userService.Initialize({});
+          //this.userService.Get({});
 
         }
     }

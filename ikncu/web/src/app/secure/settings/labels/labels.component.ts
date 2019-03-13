@@ -60,9 +60,9 @@ export class LabelsComponent implements OnInit {
   async ngOnInit() {
     console.log('BasicComponent.ngOnInit');
 
-    this.userService.Initialize((value1) => {
-      this.currentUser = this.userService.User;
-      console.log(CurrentUser);
+    this.userService.Get((user) => {
+      this.currentUser = user;
+      console.log(this.currentUser);
     });
   }
 

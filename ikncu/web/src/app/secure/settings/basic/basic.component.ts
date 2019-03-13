@@ -40,9 +40,9 @@ export class BasicComponent implements OnInit {
   async ngOnInit() {
     console.log('BasicComponent.ngOnInit');
 
-    this.userService.Initialize((value1) => {
-      this.currentUser = this.userService.User;
-      console.log(CurrentUser);
+    this.userService.Get((result) => {
+      this.currentUser = result;
+      console.log(this.currentUser);
     });
   }
 

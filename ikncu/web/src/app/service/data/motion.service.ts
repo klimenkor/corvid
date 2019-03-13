@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { IMotionResult } from 'src/app/model/_index';
 
 @Injectable({
   providedIn: 'root'

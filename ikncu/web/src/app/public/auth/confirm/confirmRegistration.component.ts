@@ -61,7 +61,7 @@ export class RegistrationConfirmationComponent implements OnInit, OnDestroy {
               Name: '',
               Labels: null,
               TierId: null
-            } as IUser);
+            } as IUser, {});
 
             // move to the next step
             console.log('Moving to securehome');
