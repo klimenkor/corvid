@@ -150,7 +150,6 @@ export class AuthService {
                           jwtToken: token.jwtToken
                         } as ICognitoUser;
 
-                    console.log(this.CognitoUser);
                     callback.isLoggedIn(err, session.isValid());
                 }
             });

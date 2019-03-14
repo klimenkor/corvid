@@ -31,7 +31,7 @@ export class CloudViewComponent implements ViewCell, OnInit {
 
   ngOnInit() {
     JSON.parse(this.value).forEach(element => {
-      this.data.push({text: element.name, weight: element.confidence, link: '/securehome/settings'});
+      this.data.push({text: element.Name, weight: element.Confidence, link: '/securehome/settings'});
     });
   }
 }

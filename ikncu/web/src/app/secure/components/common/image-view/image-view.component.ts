@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import { ViewCell } from 'ng2-smart-table';
 import { FrameViewComponent } from '../frame-view/frame-view.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-image-view',
@@ -13,7 +14,7 @@ import { FrameViewComponent } from '../frame-view/frame-view.component';
 export class ImageViewComponent implements ViewCell, OnInit {
 
   constructor(public dialog: MatDialog) {}
-  bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
+  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
 
   frameUrl: string;
   faces;
@@ -25,8 +26,8 @@ export class ImageViewComponent implements ViewCell, OnInit {
 
   ngOnInit() {
     const data = JSON.parse(this.value);
-    this.frameUrl = this.bucketPath + data.url;
-    this.faces = data.faces;
+    this.frameUrl = this.bucketPath + data.Url;
+    this.faces = data.Faces;
   }
 
   onClick() {

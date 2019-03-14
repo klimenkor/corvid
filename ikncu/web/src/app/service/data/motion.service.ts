@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IMotionResult, IMotion } from 'src/app/model/_index';
+import { IMotionResult, IMotion, IMotionsResult } from 'src/app/model/_index';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class MotionService {
 
     private httpOptions = {
@@ -27,8 +29,7 @@ export class MotionService {
         }
         this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + rkey, this.httpOptions)
             .subscribe(
-                (result: IMotionResult) => {
-                    console.log(result);
+                (result: IMotionsResult) => {
                     if (callback !== undefined) { callback(result); }
                 },
                 (error) => {

@@ -9,6 +9,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { CloudViewComponent } from '../../components/common/cloud-view/cloud-view.component';
 import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
 import { UserService } from 'src/app/service/data/user.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -38,30 +39,30 @@ export class MotionComponent implements AfterViewInit {
 
   settings = {
     columns: {
-      occurred: {
+      Occurred: {
         title: 'Time',
         filter: false,
         sortDirection: 'desc',
         width: '30%'
       },
-      camera: {
+      Camera: {
         title: 'Camera',
         filter: false,
         width: '30%'
       },
-      frame: {
+      Frame: {
         title: 'Frame',
         filter: false,
         type: 'custom',
         renderComponent: ImageViewComponent
       },
-      labels: {
+      Labels: {
         title: '',
         filter: false,
         type: 'custom',
         renderComponent: CloudViewComponent
       },
-      faces: {
+      Faces: {
         title: '',
         filter: false,
         type: 'custom',
@@ -89,7 +90,7 @@ export class MotionComponent implements AfterViewInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    // private currentUserService: CurrentUserService,
+    private authService: AuthService,
     private motionService: MotionService,
     private userService: UserService,
     private calendar: NgbCalendar) {
@@ -137,9 +138,9 @@ export class MotionComponent implements AfterViewInit {
             Id: item.Id,
             Camera: item.CameraId, //item.camera.name,
             Occurred: '00000', //this.timeOfTheDay(item.Occurred),
-            frame: JSON.stringify({
-              url: item.Frame,
-              faces: null //item.Faces
+            Frame: JSON.stringify({
+              Url: item.Frame,
+              Faces: null //item.Faces
             }),
             Labels: JSON.stringify(item.Labels),
             Faces: null //JSON.stringify(item.Faces)
@@ -147,7 +148,7 @@ export class MotionComponent implements AfterViewInit {
         });
         // console.log(list.length);
         this.source = new LocalDataSource(list);
-        // this.spinner.hide();
+        this.spinner.hide();
       // console.log(this.source);
     });
 
@@ -178,14 +179,14 @@ export class MotionComponent implements AfterViewInit {
     this.fromDate = date;
     this.toDate = this.calendar.getNext(date, 'd', 1);
     console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
-    this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
+    this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
   selectToday() {
     this.fromDate = this.calendar.getToday();
     this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 1);
     // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
-    this.refreshData(this.currentUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
+    this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
 

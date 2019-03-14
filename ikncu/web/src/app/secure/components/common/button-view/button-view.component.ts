@@ -19,7 +19,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
-    this.cameraToken = 'Cam{' + this.rowData.id + '}';
+    this.cameraToken = 'Cam{' + this.rowData.Id + '}';
   }
 
   onClick(event) {
