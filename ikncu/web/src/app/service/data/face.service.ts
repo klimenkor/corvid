@@ -4,7 +4,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { IFace, IFaceResult } from 'src/app/model/_index';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FaceService {
 
     private httpOptions = {

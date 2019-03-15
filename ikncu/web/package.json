@@ -28,7 +28,7 @@
     "amazon-cognito-identity-js": "^3.0.9",
     "angular-calendar": "^0.26.6",
     "angular-tag-cloud-module": "^3.3.0",
-    "aws-sdk": "^2.418.0",
+    "aws-sdk": "^2.422.0",
     "bootstrap": "^4.3.1",
     "core-js": "^2.6.5",
     "dragula": "^3.7.2",

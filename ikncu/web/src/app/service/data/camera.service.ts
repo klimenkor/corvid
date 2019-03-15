@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as shortid from 'node_modules/shortid';
-import { ICamera, ICameraResult } from 'src/app/model/_index';
+import { ICamera, ICameraResult, ICamerasResult } from 'src/app/model/_index';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Timestamp } from 'aws-sdk/clients/kinesisvideoarchivedmedia';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,15 @@ export class CameraService {
         Authorization: this.authService.CognitoUser.jwtToken
     })};
 
+    private data = [] as Array<ICamera>;
+
     constructor(
         private authService: AuthService,
         private http: HttpClient ) {
+    }
+
+    public get Cameras(): Array<ICamera> {
+      return this.data;// != null ? this.data.Items : null;
     }
 
     public GetAll(callback) {
@@ -26,16 +33,19 @@ export class CameraService {
         const userId = this.authService.CognitoUser.id;
 
         this.http.get(environment.apiHost + '/camera/byuser?hkey=' + userId + '&rkey=1', this.httpOptions)
-        .subscribe(
-            (result: ICameraResult) => {
-                console.log(result);
-                if (callback !== undefined) { callback(result); }
-            },
-            (error) => {
-                console.log('Failed to retrieve user');
-                console.log(error);
-            }
-        );
+          .subscribe(
+              (result: ICamerasResult) => {
+                  console.log(result);
+                  for (const item in result.Items) {
+                    //this.data.push(item);
+                  }
+                  if (callback !== undefined) { callback(result); }
+              },
+              (error) => {
+                  console.log('Failed to retrieve user');
+                  console.log(error);
+              }
+          );
     }
 
     public Create(data: ICamera, callback) {
