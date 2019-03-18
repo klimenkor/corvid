@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrentUser, IUser } from 'src/app/model/_index';
+import { CurrentUser, IUser, IUserResult } from 'src/app/model/_index';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -29,19 +29,18 @@ export class BasicComponent implements OnInit {
 
   onSave(event) {
     console.log('saveUser');
-    // this.spinner.show();
-    // this.userService.Update(
-    //   this.user,
-    //   (value) => {
-    //     this.spinner.hide();
-    // });
+    this.spinner.show();
+    this.userService.Update(this.currentUser).subscribe(
+      (value) => {
+        this.spinner.hide();
+    });
   }
 
   async ngOnInit() {
     console.log('BasicComponent.ngOnInit');
 
-    this.userService.Get((result) => {
-      this.currentUser = result;
+    this.userService.Get().subscribe((result: IUserResult) => {
+      this.currentUser = result.Item;
       console.log(this.currentUser);
     });
   }

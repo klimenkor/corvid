@@ -3,6 +3,10 @@ import { IUser, IUserResult, ICreateUserResult } from 'src/app/model/_index';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { Cacheable, CacheBuster } from 'ngx-cacheable';
+import { Subject } from 'rxjs';
+
+const cacheBuster$ = new Subject<void>();
 
 @Injectable({
   providedIn: 'root'
@@ -21,24 +25,16 @@ export class UserService {
         private http: HttpClient ) {
     }
 
-    public Get(callback) {
+    @Cacheable({
+        cacheBusterObserver: cacheBuster$
+    })
+    public Get() {
         console.log('UserService.Get');
 
         const userId = this.authService.CognitoUser.id;
         console.log('  userId=' + userId);
 
-        this.http.get(environment.apiHost + '/user?id=' + userId, this.httpOptions)
-            .subscribe(
-            (result: IUserResult) => {
-                this.user = result.Item;
-                if (callback !== undefined) { callback(this.user); }
-                console.log('UserService.Initialize: after callback');
-            },
-            (error) => {
-                console.log('Failed to retrieve user');
-                console.log(error);
-            }
-        );
+        return this.http.get(environment.apiHost + '/user?id=' + userId, this.httpOptions);
     }
 
     public Create(data: IUser, callback) {
@@ -61,19 +57,13 @@ export class UserService {
         return this.initialized ? this.user : null;
     }
 
-    public Update(data: IUser, callback) {
+    @CacheBuster({
+        cacheBusterNotifier: cacheBuster$
+    })
+    public Update(data: IUser) {
         console.log('UserService.Update');
 
-        this.http.put<ICreateUserResult>(environment.apiHost + '/user', data, this.httpOptions)
-            .subscribe(
-                (result: ICreateUserResult) => {
-                    console.log(result);
-                    if (callback !== undefined) { callback(result); }
-                },
-                (error) => {
-                    console.log('Failed to retrieve user');
-                    console.log(error);
-                }
-            );
+        return this.http.put<ICreateUserResult>(environment.apiHost + '/user', data, this.httpOptions);
     }
+
 }

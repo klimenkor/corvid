@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserService } from 'src/app/service/data/user.service';
-import { IUser } from 'src/app/model/_index';
+import { IUser, IUserResult } from 'src/app/model/_index';
 
 @Component({
   selector: 'app-settings-labels',
@@ -54,13 +54,13 @@ export class LabelsComponent implements OnInit {
   async ngOnInit() {
     console.log('BasicComponent.ngOnInit');
 
-    this.userService.Get((user) => {
-        this.currentUser = user;
+    this.userService.Get().subscribe((result: IUserResult) => {
+        this.currentUser = result.Item;
         this.source = new LocalDataSource(
             this.currentUser.Labels.map((name) => {
                return { Name: name };
             }));
-    });
+      });
   }
 
   onDeleteConfirm(event) {

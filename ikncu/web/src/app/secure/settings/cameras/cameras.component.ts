@@ -91,13 +91,12 @@ export class CamerasComponent implements OnInit {
 
     async ngOnInit() {
         console.log('CamerasComponent.ngOnInit');
-        // this.spinner.show();
+        this.spinner.show();
 
-        this.userService.Get((user) => {
-
+        this.userService.Get().subscribe((user) => {
             this.cameraService.GetAll((result: ICamerasResult) => {
                 this.source = result.Items;
-                //   this.spinner.hide();
+                this.spinner.hide();
             });
         });
     }

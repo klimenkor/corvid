@@ -36,6 +36,7 @@
     "ng-bootstrap": "^1.6.3",
     "ng2-completer": "^2.0.8",
     "ng2-smart-table": "^1.4.0",
+    "ngx-cacheable": "^1.1.1",
     "ngx-spinner": "^7.0.0",
     "ngx-toastr": "^9.1.2",
     "ngx-ui-switch": "^8.0.0",
