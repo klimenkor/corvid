@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrentUser, IUser, IUserResult } from 'src/app/model/_index';
-import { CurrentUserService } from 'src/app/service/common/current-user.service';
+import { IUser, IUserResult } from 'src/app/model/_index';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserService } from 'src/app/service/data/user.service';
@@ -23,7 +22,6 @@ export class BasicComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private spinner: NgxSpinnerService) {
-      // this.currentUser = new CurrentUser();
       console.log('BasicComponent.constructor');
     }
 
@@ -40,8 +38,9 @@ export class BasicComponent implements OnInit {
     console.log('BasicComponent.ngOnInit');
 
     this.userService.Get().subscribe((result: IUserResult) => {
-      this.currentUser = result.Item;
-      console.log(this.currentUser);
+        console.log(result);
+        this.currentUser = result.Item;
+
     });
   }
 

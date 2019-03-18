@@ -10,5 +10,5 @@ export interface ICamerasResult {
 }
 
 export interface ICameraResult {
-    Items: ICamera;
+    Item: ICamera;
 }
