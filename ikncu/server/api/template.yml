@@ -141,6 +141,25 @@ Resources:
                 Resource: 
                   - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
 
+  S3BucketIkncu:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketName: public-bucket
+      MetricsConfigurations: 
+        - Id: EntireBucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+        RoutingRules:
+        - RoutingRuleCondition:
+            HttpErrorCodeReturnedEquals: '404'
+            KeyPrefixEquals: out1/
+          RedirectRule:
+            HostName: ikncu.com
+            ReplaceKeyPrefixWith: report-404/
+    DeletionPolicy: Retain
+
   UserTable:
     Type: AWS::DynamoDB::Table
     Properties:
