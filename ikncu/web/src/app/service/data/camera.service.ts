@@ -33,13 +33,12 @@ export class CameraService {
         return this.http.get(environment.apiHost + '/camera/byuser?hkey=' + this.authService.CognitoUser.id + '&rkey=1', this.httpOptions);
     }
 
-    // @CacheBuster({
-    //     cacheBusterNotifier: cacheBuster$
-    // })
+    @CacheBuster({
+        cacheBusterNotifier: cacheBuster$
+    })
     public Create(data: ICamera) {
         console.log('CameraService.Create');
         data.UserId = this.authService.CognitoUser.id;
-        console.log(data);
         return this.http.post(environment.apiHost + '/camera', data, this.httpOptions);
     }
 

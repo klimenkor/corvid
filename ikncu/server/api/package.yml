@@ -123,7 +123,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/9391135000b9d4dec74bdbd6018d5283
+      CodeUri: s3://ecorvid/b556211d0c87e2d0e58ff0f926643cf1
       Events:
         CameraByUser:
           Properties:
@@ -328,10 +328,10 @@ Resources:
                   application/json: "#set($inputRoot = $input.path('$')){ \r\n   \
                     \ \"operation\": \"create\",\r\n    \"table\": \"CameraDynamoDbARN\"\
                     ,\r\n    \"payload\": {      \r\n        \"Item\" : {        \
-                    \  \r\n            \"Id\" : \"$input.params('id')\",\r\n     \
-                    \       \"UserId\" : \"$input.params('userId')\",\r\n        \
-                    \    \"Name\" : \"$input.params('name')\",\r\n            \"Active\"\
-                    \ : \"$input.params('active')\"\r\n        }\r\n    }\r\n}"
+                    \  \r\n            \"Id\" : $input.json('$.Id'),\r\n         \
+                    \   \"UserId\" : $input.json('$.UserId'),\r\n            \"Name\"\
+                    \ : $input.json('$.Name'),\r\n            \"Active\" :$input.json('$.Active')\r\
+                    \n        }\r\n    }\r\n}"
                 responses:
                   default:
                     responseParameters:
@@ -366,8 +366,8 @@ Resources:
                     list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
                     gsiCameryByUserActive\",\r\n        \"KeyConditionExpression\"\
                     : \"UserId = :hkey and Active = :rkey\",\r\n        \"ExpressionAttributeValues\"\
-                    : {\r\n            \":hkey\": \"$input.params('hkey'\",\r\n  \
-                    \          \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
+                    : {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n \
+                    \           \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
                     \n    }\r\n}\r\n"
                 responses:
                   default:
@@ -377,6 +377,35 @@ Resources:
                 type: aws
                 uri:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST,GET,OPTIONS'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
           /motion/bycamera:
             get:
               consumes:
@@ -682,18 +711,6 @@ Resources:
         swagger: '2.0'
       StageName: live
     Type: AWS::Serverless::Api
-  IkncuApiGatewayAuthorizer:
-    Properties:
-      IdentitySource: method.request.header.Authorization
-      Name: Ikncu
-      ProviderARNs:
-      - Fn::GetAtt:
-        - CognitoUserPool
-        - Arn
-      RestApiId:
-        Ref: IkncuApi
-      Type: COGNITO_USER_POOLS
-    Type: AWS::ApiGateway::Authorizer
   IkncuLambdaApiRole:
     Properties:
       AssumeRolePolicyDocument:
@@ -815,25 +832,12 @@ Resources:
         AttributeType: S
       - AttributeName: UserId
         AttributeType: S
-      - AttributeName: CameraId
-        AttributeType: S
       - AttributeName: Occurred
         AttributeType: S
       GlobalSecondaryIndexes:
-      - IndexName: gsiMotionByUserOccured
+      - IndexName: gsiMotionByUserOccurred
         KeySchema:
         - AttributeName: UserId
-          KeyType: HASH
-        - AttributeName: Occurred
-          KeyType: RANGE
-        Projection:
-          ProjectionType: ALL
-        ProvisionedThroughput:
-          ReadCapacityUnits: '1'
-          WriteCapacityUnits: '1'
-      - IndexName: gsiMotionByCameraOccurred
-        KeySchema:
-        - AttributeName: CameraId
           KeyType: HASH
         - AttributeName: Occurred
           KeyType: RANGE

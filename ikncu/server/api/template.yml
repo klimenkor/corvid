@@ -1,4 +1,4 @@
-StackName: ikncu-mail
+# StackName: ikncu
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: IKNCU
@@ -212,50 +212,6 @@ Resources:
           ReadCapacityUnits: '1'
           WriteCapacityUnits: '1'
 
-
-  MotionTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: Id
-          AttributeType: S
-        - AttributeName: UserId
-          AttributeType: S
-        - AttributeName: CameraId
-          AttributeType: S
-        - AttributeName: Occurred
-          AttributeType: S
-      KeySchema:
-        - AttributeName: Id
-          KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1    
-      GlobalSecondaryIndexes:
-      - IndexName: gsiMotionByUserOccurred
-        KeySchema:
-        - AttributeName: UserId
-          KeyType: HASH
-        - AttributeName: Occurred
-          KeyType: RANGE
-        Projection:
-          ProjectionType: ALL
-        ProvisionedThroughput:
-          ReadCapacityUnits: '1'
-          WriteCapacityUnits: '1'        
-      - IndexName: gsiMotionByCameraOccurred
-        KeySchema:
-        - AttributeName: CameraId
-          KeyType: HASH
-        - AttributeName: Occurred
-          KeyType: RANGE
-        Projection:
-          ProjectionType: ALL
-        ProvisionedThroughput:
-          ReadCapacityUnits: '1'
-          WriteCapacityUnits: '1'        
-
-
   FaceTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -281,6 +237,49 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1      
+
+  MotionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
+        # - AttributeName: CameraId
+        #   AttributeType: S
+        - AttributeName: Occurred
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1    
+      GlobalSecondaryIndexes:
+      - IndexName: gsiMotionByUserOccurred
+        KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: Occurred
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'        
+      # - IndexName: gsiMotionByCameraOccurred
+      #   KeySchema:
+      #   - AttributeName: CameraId
+      #     KeyType: HASH
+      #   - AttributeName: Occurred
+      #     KeyType: RANGE
+      #   Projection:
+      #     ProjectionType: ALL
+      #   ProvisionedThroughput:
+      #     ReadCapacityUnits: '1'
+      #     WriteCapacityUnits: '1'        
+
 
   IkncuApi:
     Type: AWS::Serverless::Api
@@ -593,7 +592,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : \"$input.params('id')\",\r\n            \"UserId\" : \"$input.params('userId')\",\r\n            \"Name\" : \"$input.params('name')\",\r\n            \"Active\" : \"$input.params('active')\"\r\n        }\r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : $input.json('$.Id'),\r\n            \"UserId\" : $input.json('$.UserId'),\r\n            \"Name\" : $input.json('$.Name'),\r\n            \"Active\" :$input.json('$.Active')\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -752,16 +751,16 @@ Resources:
                     passthroughBehavior: "when_no_match"
                     type: "mock"   
 
-  IkncuApiGatewayAuthorizer:
-    Type: AWS::ApiGateway::Authorizer
-    Properties:
-      Name: Ikncu
-      RestApiId:
-        Ref: IkncuApi
-      Type: COGNITO_USER_POOLS
-      ProviderARNs:
-        - Fn::GetAtt: [ CognitoUserPool, Arn ]
-      IdentitySource: method.request.header.Authorization
+  # IkncuApiGatewayAuthorizer:
+  #   Type: AWS::ApiGateway::Authorizer
+  #   Properties:
+  #     Name: Ikncu
+  #     RestApiId:
+  #       Ref: IkncuApi
+  #     Type: COGNITO_USER_POOLS
+  #     ProviderARNs:
+  #       - Fn::GetAtt: [ CognitoUserPool, Arn ]
+  #     IdentitySource: method.request.header.Authorization
 
   IkncuAPIFunction:
     Type: AWS::Serverless::Function

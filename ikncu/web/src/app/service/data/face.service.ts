@@ -2,87 +2,60 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IFace, IFaceResult } from 'src/app/model/_index';
+import { IFace } from 'src/app/model/_index';
+import { Cacheable, CacheBuster } from 'ngx-cacheable';
+import { Subject } from 'rxjs';
+
+const cacheBuster$ = new Subject<void>();
 
 @Injectable({
   providedIn: 'root'
 })
 export class FaceService {
 
-    private httpOptions = {
-        headers: new HttpHeaders({
-        Authorization: this.authService.CognitoUser.jwtToken
-    })};
+  private httpOptions = {
+    headers: new HttpHeaders({
+    Authorization: this.authService.CognitoUser.jwtToken
+  })};
 
-    constructor(
-        private authService: AuthService,
-        private http: HttpClient ) {
-    }
+  constructor(
+      private authService: AuthService,
+      private http: HttpClient ) {
+  }
 
-    public GetAll(callback) {
-        console.log('FaceService.List');
+  @Cacheable({
+      cacheBusterObserver: cacheBuster$
+  })
+  public Get() {
+      console.log('FaceService.GetByUser');
+      return this.http.get(environment.apiHost + '/face/byuser?hkey=' + this.authService.CognitoUser.id + '&rkey=1', this.httpOptions);
+  }
 
-        const userId = this.authService.CognitoUser.id;
+  @CacheBuster({
+      cacheBusterNotifier: cacheBuster$
+  })
+  public Create(data: IFace) {
+      console.log('FaceService.Create');
+      data.UserId = this.authService.CognitoUser.id;
+      console.log(data);
+      return this.http.post(environment.apiHost + '/face', data, this.httpOptions);
+  }
 
-        this.http.get(environment.apiHost + '/face/byuser?hkey=' + userId, this.httpOptions)
-            .subscribe(
-                (result: IFaceResult) => {
-                    console.log(result);
-                    if (callback !== undefined) { callback(result); }
-                },
-                (error) => {
-                    console.log('Failed to retrieve face');
-                    console.log(error);
-                }
-            );
-    }
+  @CacheBuster({
+      cacheBusterNotifier: cacheBuster$
+  })
+  public Update(data: IFace) {
+      console.log('FaceService.Update');
+      data.UserId = this.authService.CognitoUser.id;
+      return this.http.put(environment.apiHost + '/face', data, this.httpOptions);
+  }
 
-    public Create(data: IFace, callback) {
-        console.log('FaceService.Create');
-
-        this.http.post(environment.apiHost + '/camera', data, this.httpOptions)
-        .subscribe(
-            (result: IFaceResult) => {
-                console.log(result);
-                if (callback !== undefined) { callback(result); }
-            },
-            (error) => {
-                console.log('Failed to retrieve user');
-                console.log(error);
-            }
-        );
-    }
-
-    public Update(data: IFace, callback) {
-        console.log('FaceService.Update');
-        this.http.put(environment.apiHost + '/face', data, this.httpOptions)
-            .subscribe(
-                (result: IFaceResult) => {
-                    console.log(result);
-                    if (callback !== undefined) { callback(result); }
-                },
-                (error) => {
-                    console.log('Failed to retrieve user');
-                    console.log(error);
-                }
-            );
-    }
-
-
-    public Delete(data: IFace, callback) {
-        console.log('FaceService.delete');
-
-        this.http.delete(environment.apiHost + '/face?id=' + data.Id, this.httpOptions)
-        .subscribe(
-            (result: IFaceResult) => {
-                console.log(result);
-                if (callback !== undefined) { callback(result); }
-            },
-            (error) => {
-                console.log('Failed to retrieve face');
-                console.log(error);
-            }
-        );
-    }
+  @CacheBuster({
+      cacheBusterNotifier: cacheBuster$
+  })
+  public Delete(data: IFace) {
+      console.log('FaceService.delete');
+      return this.http.delete(environment.apiHost + '/face?id=' + data.Id, this.httpOptions);
+  }
 
 }

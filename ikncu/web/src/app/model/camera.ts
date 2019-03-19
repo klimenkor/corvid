@@ -2,7 +2,7 @@ export interface ICamera {
   Id: string;
   UserId: string;
   Name: string;
-  Active: boolean;
+  Active: string;
 }
 
 export interface ICamerasResult {

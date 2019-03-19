@@ -6,7 +6,7 @@ let arns = new Map(
     [
         [
             "MotionDynamoDbARN",
-            "arn:aws:dynamodb:us-east-1:558796877616:table/ikncu-MotionTable-VOUWTWLMBN5T"
+            "arn:aws:dynamodb:us-east-1:558796877616:table/ikncu-MotionTable-HP1JOWQISUK2"
         ],
         [
             "TierDynamoDbARN",

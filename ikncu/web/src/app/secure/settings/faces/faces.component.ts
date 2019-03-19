@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-// import { API, graphqlOperation } from 'aws-amplify';
-// import * as queries from '../../../../graphql/queries';
 import * as shortid from 'node_modules/shortid';
-// import { ListFacesQuery, CreateFaceMutation, CreateFaceInput,
-//           UpdateFaceMutation, DeleteFaceMutation } from '../../../../graphql/types';
-// import { GraphQLResult } from '@aws-amplify/api/lib/types';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
-import { CurrentUser } from 'src/app/model/_index';
+import { CurrentUser, IFace, IFaceResult, IFacesResult } from 'src/app/model/_index';
 import { FaceService } from 'src/app/service/data/Face.service';
 
 @Component({
@@ -19,13 +14,13 @@ export class FacesComponent implements OnInit {
 
   settings = {
     columns: {
-      name: {
+      Id: {
+        title: 'Id',
+        filter: false
+      },
+      Name: {
         title: 'Name',
         filter: false,
-      },
-      active: {
-        title: 'Active',
-        filter: false
       }
     },
     attr: {
@@ -61,47 +56,46 @@ export class FacesComponent implements OnInit {
       this.currentUser = this.currentUserService.User;
     });
 
-    // const result = API.graphql(graphqlOperation(queries.listFaces)) as Promise<GraphQLResult>;
-    // result.then((value) => {
-    //   const v = value.data as ListFacesQuery;
-    //   this.source = v.listFaces.items;
-    //   this.spinner.hide();
-    // });
+    this.faceService.Get().subscribe(
+      (result: IFacesResult) => {
+        this.source = result.Items;
+        this.spinner.hide();
+      });
   }
 
   onDeleteConfirm(event) {
       console.log('onDeleteConfirm');
       const item = {
-          id: event.data.id
-      };
-      // this.faceService.Delete(item, (value) => {
-      //   const v = value.data as DeleteFaceMutation;
-      //   event.confirm.resolve(event.newData);
-      // });
+          Id: event.data.Id
+      } as IFace;
+      this.faceService.Delete(item).subscribe(
+        (value) => {
+          event.confirm.resolve(event.newData);
+        });
   }
 
   onSaveConfirm(event) {
       console.log('onSaveConfirm');
-      // this.faceService.Update(event.newData, (value) => {
-      //   const v = value.data as UpdateFaceMutation;
-      //   event.newData.id = v.updateFace.id;
-      //   event.confirm.resolve(event.newData);
-      // });
+      this.faceService.Update(event.newData).subscribe(
+          (value: IFaceResult) => {
+            event.newData.Id = value.Item.Id;
+            event.confirm.resolve(event.newData);
+          });
   }
 
   async onCreateConfirm(event) {
-    // const item = <CreateFaceInput>{
-    //   id: shortid.generate(),
-    //   name: event.newData.name,
-    //   active: false,
-    //   userId: this.currentUser.id,
-    // };
-    // this.faceService.Create(item, (value) => {
-    //   event.newData.id = value.createFace.id;
-    //   event.newData.shortid = value.createFace.shortid;
-    //   event.newData.active = value.createFace.active;
-    //   event.confirm.resolve(event.newData);
-    // });
+    const item = {
+      Id: shortid.generate(),
+      Name: event.newData.Name,
+      CategoryId: ''
+    } as IFace;
+    this.faceService.Create(item).subscribe(
+        (value: IFaceResult) => {
+        event.newData.Id = value.Item.Id;
+        event.newData.Name = value.Item.Name;
+        event.newData.CategoryId = value.Item.CategoryId;
+        event.confirm.resolve(event.newData);
+      });
   }
 
 }

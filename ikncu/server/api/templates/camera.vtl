@@ -3,10 +3,10 @@
     "table": "CameraDynamoDbARN",
     "payload": {      
         "Item" : {          
-            "Id" : "$input.params('id')",
-            "UserId" : "$input.params('userId')",
-            "Name" : "$input.params('name')",
-            "Active" : "$input.params('active')"
+            "Id" : $input.json('$.Id'),
+            "UserId" : $input.json('$.UserId'),
+            "Name" : $input.json('$.Name'),
+            "Active" :$input.json('$.Active')
         }
     }
 }

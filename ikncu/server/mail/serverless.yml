@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: ikncu-mail # NOTE: update this with your service name
+service: corvid # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -21,7 +21,7 @@ provider:
   name: aws
   runtime: python3.7
   timeout: 10
-  stage: dev
+  stage: live
   region: us-east-1
 
   iamRoleStatements:

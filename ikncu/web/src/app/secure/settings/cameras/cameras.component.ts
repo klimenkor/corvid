@@ -164,15 +164,14 @@ export class CamerasComponent implements OnInit {
           Id: shortid.generate(),
           UserId: '',
           Name: event.newData.Name,
-          Active: false
+          Active: 'false'
         } as ICamera;
         this.cameraService.Create(item).subscribe(
+            // (value: ICameraResult) => {
             (value) => {
                 console.log(value);
-                // event.newData.id = value.Item.Id;
-                // event.newData.name = value.Item.Name;
-                // event.newData.active = value.Item.Active;
-                // event.confirm.resolve(event.newData);
+                event.newData.Id = item.Id;
+                event.confirm.resolve(event.newData);
             });
     }
 }
