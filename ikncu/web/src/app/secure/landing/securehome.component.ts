@@ -13,7 +13,10 @@ export class SecureHomeComponent implements OnInit, LoggedInCallback {
 
     collapedSideBar: boolean;
 
-    constructor(public router: Router, public authService: AuthService) {
+    constructor(
+      public router: Router,
+      public authService: AuthService
+      ) {
       console.log('SecureHomeComponent.constructor');
       this.authService.isAuthenticated(this);
     }

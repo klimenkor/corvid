@@ -19,13 +19,13 @@ export class MotionService {
         private http: HttpClient ) {
     }
 
-    public GetByUser(dateStartsWith, callback) {
+    public GetByUser(fromDate, toDate, callback) {
         console.log('MotionService.GetByUser');
 
         const userId = this.authService.CognitoUser.id;
         let rkey = '';
-        if (dateStartsWith !== null) {
-            rkey = '&rkey=' + dateStartsWith;
+        if (fromDate !== null) {
+            rkey = '&rkey1=' + fromDate + '&rkey2=' + toDate;
         }
         this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + rkey, this.httpOptions)
             .subscribe(

@@ -141,24 +141,24 @@ Resources:
                 Resource: 
                   - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
 
-  S3BucketIkncu:
-    Type: AWS::S3::Bucket
-    Properties:
-      AccessControl: PublicRead
-      BucketName: public-bucket
-      MetricsConfigurations: 
-        - Id: EntireBucket
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: error.html
-        RoutingRules:
-        - RoutingRuleCondition:
-            HttpErrorCodeReturnedEquals: '404'
-            KeyPrefixEquals: out1/
-          RedirectRule:
-            HostName: ikncu.com
-            ReplaceKeyPrefixWith: report-404/
-    DeletionPolicy: Retain
+  # S3BucketIkncu:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     AccessControl: PublicRead
+  #     BucketName: public-bucket
+  #     MetricsConfigurations: 
+  #       - Id: EntireBucket
+  #     WebsiteConfiguration:
+  #       IndexDocument: index.html
+  #       ErrorDocument: error.html
+  #       RoutingRules:
+  #       - RoutingRuleCondition:
+  #           HttpErrorCodeReturnedEquals: '404'
+  #           KeyPrefixEquals: out1/
+  #         RedirectRule:
+  #           HostName: ikncu.com
+  #           ReplaceKeyPrefixWith: report-404/
+  #   DeletionPolicy: Retain
 
   UserTable:
     Type: AWS::DynamoDB::Table
@@ -265,10 +265,10 @@ Resources:
           AttributeType: S
         - AttributeName: UserId
           AttributeType: S
-        # - AttributeName: CameraId
-        #   AttributeType: S
-        - AttributeName: Occurred
+        - AttributeName: CameraId
           AttributeType: S
+        - AttributeName: Occurred
+          AttributeType: N
       KeySchema:
         - AttributeName: Id
           KeyType: HASH
@@ -287,17 +287,17 @@ Resources:
         ProvisionedThroughput:
           ReadCapacityUnits: '1'
           WriteCapacityUnits: '1'        
-      # - IndexName: gsiMotionByCameraOccurred
-      #   KeySchema:
-      #   - AttributeName: CameraId
-      #     KeyType: HASH
-      #   - AttributeName: Occurred
-      #     KeyType: RANGE
-      #   Projection:
-      #     ProjectionType: ALL
-      #   ProvisionedThroughput:
-      #     ReadCapacityUnits: '1'
-      #     WriteCapacityUnits: '1'        
+      - IndexName: gsiMotionByCameraOccurred
+        KeySchema:
+        - AttributeName: CameraId
+          KeyType: HASH
+        - AttributeName: Occurred
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'        
 
 
   IkncuApi:
@@ -673,7 +673,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Occurred between :rkey1 and :rkey2\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey1\": $input.params('rkey1'),\r\n            \":rkey2\": $input.params('rkey2')\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -733,7 +733,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByCameraOccurred\",\r\n        \"KeyConditionExpression\": \"CameraId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Occurred between :rkey1 and :rkey2\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey1\": $input.params('rkey1'),\r\n            \":rkey2\": $input.params('rkey2')\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"

@@ -1,7 +1,7 @@
 export interface IFace {
   Id: string;
   UserId: string;
-  CategoryId: boolean;
+  CategoryId: string;
   Name: string;
 }
 

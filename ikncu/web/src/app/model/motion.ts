@@ -1,5 +1,3 @@
-import { int } from 'aws-sdk/clients/datapipeline';
-
 export interface Label {
   Name: string;
   Confidence: number;
@@ -8,7 +6,7 @@ export interface Label {
 export interface IMotion {
   Id: string;
   CameraId: string;
-  Occurred: int;
+  Occurred: number;
   Frame: string;
   Labels: Label[];
 }

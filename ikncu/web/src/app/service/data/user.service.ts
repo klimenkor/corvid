@@ -25,6 +25,13 @@ export class UserService {
         private http: HttpClient ) {
     }
 
+    public Init(callback) {
+      this.Get().subscribe(
+        (response) => {
+          callback(response);
+      });
+    }
+
     @Cacheable({
         cacheBusterObserver: cacheBuster$
     })

@@ -4,6 +4,8 @@ import { AuthService } from './service/auth/auth.service';
 import { CognitoUtil, LoggedInCallback } from './service/auth/cognito.service';
 import { CurrentUser } from './model/_index';
 import { CurrentUserService } from './service/common/current-user.service';
+import { CameraService } from './service/data/camera.service';
+import { UserService } from './service/data/user.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,9 @@ export class AppComponent implements OnInit, LoggedInCallback {
       private currentUserService: CurrentUserService,
       public awsUtil: AwsUtil,
       public authService: AuthService,
+      public userService: UserService,
+      public cameraService: CameraService,
+
       public cognito: CognitoUtil) {
         console.log('AppComponent: constructor');
         this.currentUser = new CurrentUser();
@@ -45,8 +50,18 @@ export class AppComponent implements OnInit, LoggedInCallback {
             callback() { },
             callbackWithParam(token: any) {
                 // Include the passed-in callback here as well so that it's executed downstream
+                mythis.userService.Init(
+                  () => {
+                    console.log('AppComponent: user loaded');
+                    mythis.cameraService.Init(
+                      () => {
+                         console.log('AppComponent: cameras loaded');
+                    });
+                });
+
                 console.log('AppComponent: calling initAwsService in callback');
                 mythis.awsUtil.initAwsService(null, isLoggedIn, token);
+
             }
         });
     }

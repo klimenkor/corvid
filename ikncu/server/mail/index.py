@@ -16,7 +16,7 @@ def get_arn(name):
     return dict([
     [
         "MotionDynamoDbARN",
-        "arn:aws:dynamodb:us-east-1:558796877616:table/ikncu-MotionTable-HP1JOWQISUK2"
+        "arn:aws:dynamodb:us-east-1:558796877616:table/ikncu-MotionTable-1NCQALS59OW8A"
     ],
     [
         "TierDynamoDbARN",
@@ -175,7 +175,7 @@ def save_motion_data(user_id, camera_id, labels, s3key, faces):
             "Id": str(uuid.uuid4()),
             "UserId": user_id,
             "CameraId": camera_id,
-            "Occurred": datetime.now(tz).strftime('%Y%m%d%H%M%S'),
+            "Occurred": int(datetime.now(tz).strftime('%Y%m%d%H%M%S')),
             "Labels": labels_list,
             "Faces": faces_list,
             "Frame": s3key

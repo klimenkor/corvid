@@ -1,8 +1,8 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, OnInit } from '@angular/core';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUser, IMotionsResult } from 'src/app/model/_index';
+import { CurrentUser, IMotionsResult, ICamera, ICamerasResult } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
 import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -10,6 +10,9 @@ import { CloudViewComponent } from '../../components/common/cloud-view/cloud-vie
 import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
 import { UserService } from 'src/app/service/data/user.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
+import { environment } from 'src/environments/environment';
+import { CameraService } from 'src/app/service/data/camera.service';
+import { NouisliderModule } from 'ng2-nouislider';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -86,99 +89,75 @@ export class MotionComponent implements AfterViewInit {
   currentUser: CurrentUser;
   fromDate: NgbDate;
   toDate: NgbDate;
-  bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
+  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
+
+  cameras: [ICamera];
 
   constructor(
     private spinner: NgxSpinnerService,
     private authService: AuthService,
     private motionService: MotionService,
-    private userService: UserService,
+    private cameraService: CameraService,
     private calendar: NgbCalendar) {
       this.selectToday();
     }
 
   ngAfterViewInit() {
-    console.log('MotionComponent.ngOnInit');
+    console.log('MotionComponent.ngAfterViewInit');
 
-    // this.spinner.show();
-    // this.currentUserService.Initialize(() => {
-    //   this.currentUser = this.userService.User;
-      this.onDateSelection(this.fromDate);
-    // });
-  }
-
-  ngOnInit() {
-    console.log('MotionComponent.ngOnInit');
-
-    this.spinner.show();
-    // this.currentUserService.Initialize(() => {
-    //   this.currentUser = this.currentUserService.User;
-      this.onDateSelection(this.fromDate);
-    // });
-
-
+    this.cameraService.Get().subscribe((response: ICamerasResult) => {
+      this.cameras = response.Items;
+    });
+    this.onDateSelection(this.fromDate);
   }
 
   public NgbDateToString(date: NgbDate) {
     return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + '000000';
   }
 
-  timeOfTheDay(timestamp: String) {
-    return timestamp.slice(8, 10) + ':' + timestamp.slice(10, 12) + ':' + timestamp.slice(12, 14)
+  timeOfTheDay(timestamp: number) {
+    const ts = timestamp.toString();
+    return ts.slice(8, 10) + ':' + ts.slice(10, 12) + ':' + ts.slice(12, 14);
   }
 
-  refreshData(userId: String, cameraId: String, fromDate: String, toDate: String) {
-    // this.spinner.show();
+  cameraName(id) {
+    return this.cameras.find((c) => {
+      return c.Id === id;
+    }).Name;
+  }
 
-    this.motionService.GetByUser('20180101000000', 
+  refreshData(userId: string, cameraId: string, fromDate: string, toDate: string) {
+    console.log('refreshData: ' + fromDate +  '-' + toDate);
+    this.spinner.show();
+
+    this.motionService.GetByUser(fromDate, toDate,
       (response: IMotionsResult) => {
         const list = [];
         response.Items.forEach(item => {
           list.push({
             Id: item.Id,
-            Camera: item.CameraId, //item.camera.name,
-            Occurred: '00000', //this.timeOfTheDay(item.Occurred),
+            Camera: this.cameraName(item.CameraId),
+            Occurred: this.timeOfTheDay(item.Occurred),
             Frame: JSON.stringify({
               Url: item.Frame,
-              Faces: null //item.Faces
+              Faces: null
             }),
             Labels: JSON.stringify(item.Labels),
-            Faces: null //JSON.stringify(item.Faces)
+            Faces: null // JSON.stringify(item.Faces)
           });
+          // this.spinner.hide();
         });
         // console.log(list.length);
         this.source = new LocalDataSource(list);
         this.spinner.hide();
       // console.log(this.source);
     });
-
-    // this.motionService.ListMotions(userId, cameraId, fromDate, toDate,
-    //   (response: ListMotionsQuery) => {
-    //     const list = [];
-    //     response.listMotions.items.forEach(item => {
-    //       list.push({
-    //         id: item.id,
-    //         camera: item.camera.name,
-    //         occurred: this.timeOfTheDay(item.occurred),
-    //         frame: JSON.stringify({
-    //           url: item.frame,
-    //           faces: item.faces
-    //         }),
-    //         labels: JSON.stringify(item.labels),
-    //         faces: JSON.stringify(item.faces)
-    //       });
-    //     });
-    //     // console.log(list.length);
-    //     this.source = new LocalDataSource(list);
-    //     this.spinner.hide();
-    //   // console.log(this.source);
-    // });
   }
 
   onDateSelection(date: NgbDate) {
     this.fromDate = date;
     this.toDate = this.calendar.getNext(date, 'd', 1);
-    console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
+    // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
     this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
 
@@ -188,7 +167,6 @@ export class MotionComponent implements AfterViewInit {
     // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
     this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
   }
-
 
   formatConfidence(value: number) {
     return Math.round(value);

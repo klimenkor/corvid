@@ -123,7 +123,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/b556211d0c87e2d0e58ff0f926643cf1
+      CodeUri: s3://ecorvid/f225eb6e318e4da9057fa6c1fad7ee2a
       Events:
         CameraByUser:
           Properties:
@@ -430,10 +430,11 @@ Resources:
                   application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
                     \    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"\
                     list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
-                    gsiMotionByCameraOccurred\",\r\n        \"KeyConditionExpression\"\
-                    : \"CameraId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\"\
-                    : {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n \
-                    \           \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
+                    gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\"\
+                    : \"UserId = :hkey and Occurred between :rkey1 and :rkey2\",\r\
+                    \n        \"ExpressionAttributeValues\": {\r\n            \":hkey\"\
+                    : \"$input.params('hkey')\",\r\n            \":rkey1\": $input.params('rkey1'),\r\
+                    \n            \":rkey2\": $input.params('rkey2')\r\n        }\r\
                     \n    }\r\n}"
                 responses:
                   default:
@@ -497,9 +498,10 @@ Resources:
                     \    \"table\": \"MotionDynamoDbARN\",\r\n    \"operation\": \"\
                     list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
                     gsiMotionByUserOccurred\",\r\n        \"KeyConditionExpression\"\
-                    : \"UserId = :hkey and Occurred > :rkey\",\r\n        \"ExpressionAttributeValues\"\
-                    : {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n \
-                    \           \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
+                    : \"UserId = :hkey and Occurred between :rkey1 and :rkey2\",\r\
+                    \n        \"ExpressionAttributeValues\": {\r\n            \":hkey\"\
+                    : \"$input.params('hkey')\",\r\n            \":rkey1\": $input.params('rkey1'),\r\
+                    \n            \":rkey2\": $input.params('rkey2')\r\n        }\r\
                     \n    }\r\n}"
                 responses:
                   default:
@@ -832,12 +834,25 @@ Resources:
         AttributeType: S
       - AttributeName: UserId
         AttributeType: S
-      - AttributeName: Occurred
+      - AttributeName: CameraId
         AttributeType: S
+      - AttributeName: Occurred
+        AttributeType: N
       GlobalSecondaryIndexes:
       - IndexName: gsiMotionByUserOccurred
         KeySchema:
         - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: Occurred
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: '1'
+          WriteCapacityUnits: '1'
+      - IndexName: gsiMotionByCameraOccurred
+        KeySchema:
+        - AttributeName: CameraId
           KeyType: HASH
         - AttributeName: Occurred
           KeyType: RANGE

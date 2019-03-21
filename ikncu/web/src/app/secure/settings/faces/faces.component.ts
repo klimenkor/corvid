@@ -87,6 +87,7 @@ export class FacesComponent implements OnInit {
     const item = {
       Id: shortid.generate(),
       Name: event.newData.Name,
+      UserId: '',
       CategoryId: ''
     } as IFace;
     this.faceService.Create(item).subscribe(
