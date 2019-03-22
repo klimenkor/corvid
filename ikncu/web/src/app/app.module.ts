@@ -34,7 +34,6 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
 import { MatDialogModule, MatDialogRef } from '@angular/material';
 import { UserService } from './service/data/user.service';
 import { LogoutComponent } from './secure/logout/logout.component';
-import { NouisliderModule } from 'ng2-nouislider';
 
 @NgModule({
   schemas: [
@@ -72,8 +71,7 @@ import { NouisliderModule } from 'ng2-nouislider';
     SettingsModule,
     DashboardModule,
     SweetAlert2Module.forRoot(),
-    MatDialogModule,
-    NouisliderModule
+    MatDialogModule
   ],
   providers: [
     BrowserModule,

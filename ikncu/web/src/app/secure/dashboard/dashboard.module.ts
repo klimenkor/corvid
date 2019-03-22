@@ -15,6 +15,7 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
 import { FaceViewComponent } from '../components/common/face-view/face-view.component';
 import { FrameViewComponent } from '../components/common/frame-view/frame-view.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Ng5SliderModule } from 'ng5-slider';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
       checkedLabel: 'yes',
       uncheckedLabel: 'no'
     }),
-    TagCloudModule
+    TagCloudModule,
+    Ng5SliderModule
   ],
   declarations: [
     DashboardComponent,

@@ -9,7 +9,12 @@
                   <button class="btn btn-outline-secondary calendar" (click)="d.toggle()"></button>
                   <button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Today</button>
               </div>
-              <!-- <nouislider [connect]="true" [min]="0" [max]="15" [(ngModel)]="someRange"></nouislider> -->
+              <ng5-slider
+                [(value)]="this.fromHour"
+                (userChangeEnd)="this.onSliderChange()"
+                [(highValue)]="this.toHour"
+                [options]="this.options">
+              </ng5-slider>
             </div>
         </div>
     </form>

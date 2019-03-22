@@ -12,7 +12,7 @@ import { UserService } from 'src/app/service/data/user.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { CameraService } from 'src/app/service/data/camera.service';
-import { NouisliderModule } from 'ng2-nouislider';
+import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -89,9 +89,25 @@ export class MotionComponent implements AfterViewInit {
   currentUser: CurrentUser;
   fromDate: NgbDate;
   toDate: NgbDate;
+  fromHour = 0;
+  toHour = 6;
+
   bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
 
   cameras: [ICamera];
+
+  options: Options = {
+    floor: 0,
+    ceil: 24,
+    step: 1,
+    minRange: 1,
+    maxRange: 12,
+    pushRange: true
+  };
+
+  onSliderChange(){
+    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
+  }
 
   constructor(
     private spinner: NgxSpinnerService,
@@ -111,8 +127,8 @@ export class MotionComponent implements AfterViewInit {
     this.onDateSelection(this.fromDate);
   }
 
-  public NgbDateToString(date: NgbDate) {
-    return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + '000000';
+  DateTimeToString(date: NgbDate, hour: number ) {
+    return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + hour.toString().padStart(2, '0') + '0000';
   }
 
   timeOfTheDay(timestamp: number) {
@@ -126,7 +142,7 @@ export class MotionComponent implements AfterViewInit {
     }).Name;
   }
 
-  refreshData(userId: string, cameraId: string, fromDate: string, toDate: string) {
+  refreshData(fromDate: string, toDate: string) {
     console.log('refreshData: ' + fromDate +  '-' + toDate);
     this.spinner.show();
 
@@ -156,16 +172,17 @@ export class MotionComponent implements AfterViewInit {
 
   onDateSelection(date: NgbDate) {
     this.fromDate = date;
-    this.toDate = this.calendar.getNext(date, 'd', 1);
-    // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
-    this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
+    this.toDate = date; //this.calendar.getNext(date, 'd', 1);
+    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
   selectToday() {
+    console.log(this.fromHour)
+    console.log(this.toHour)
     this.fromDate = this.calendar.getToday();
-    this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 1);
-    // console.log('onDateSelection: ' + this.NgbDateToString(this.fromDate), '-', this.NgbDateToString(this.toDate));
-    this.refreshData(this.authService.CognitoUser.id, '', this.NgbDateToString(this.fromDate), this.NgbDateToString(this.toDate));
+    this.fromHour = 0;
+    this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
+    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
   formatConfidence(value: number) {
@@ -175,17 +192,5 @@ export class MotionComponent implements AfterViewInit {
   formatHappenedFromDate(date: NgbDate) {
     return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
   }
-
-  formatDateFromHappend(value: string) {
-    const year = value.substr(0, 4);
-    const month = value.substr(4, 2);
-    const day = value.substr(6, 2);
-    const hour = value.substr(8, 2);
-    const min = value.substr(10, 2);
-    const sec = value.substr(12, 2);
-
-    return month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
-  }
-
 
 }
