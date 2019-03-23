@@ -334,12 +334,14 @@ def handler(event, context):
         print('CameraId was not found in email Subject')
         return
 
+    # get Camera details based on short ID in email subject
     camera = get_camera(camera_id)
     camera_name = camera['Name']
     user = get_user(camera['UserId'])
     user_id = user['Id']
     alarm_email = user['Email']
-    enabled_labels = user['Labels']
+    enabled_labels = user['Labels']  #labels should be considered
+
     if user_id is not None and camera_id is not None:
         print('...user_id: %s camera_id: %s' % (user_id, camera_id))
         data = attachment.get_payload(decode=True)
@@ -360,13 +362,14 @@ def handler(event, context):
 
                 labels_string = ','.join(s for s in alarm_labels)
                 timestamp = datetime.now(tz).strftime('%m/%d/%Y %H:%M:%S')
-                subject = " %s: %s at %s" % (camera_name, labels_string, timestamp)
+                subject = "%s: %s recorded on %s (ikncu)" % (camera_name, labels_string, timestamp)
                 html_body = "<body>"
 
                 # faces
                 faces = detect_faces(frame_bucket, message_id)
                 if len(faces) > 0:
-                    index_faces(user_id, frame_bucket, message_id)
+                    # 
+                    # index_faces(user_id, frame_bucket, message_id)
                     html_body = html_body + get_faces_info(faces)                
 
                 html_body = "%s<p><img src=\"%s%s\" width=\"640\"/></p></body>" % (html_body, bucket_path, message_id)

@@ -1,17 +1,19 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-face-view',
   template: `
-  <button type="button" class="btn btn-outline-warning" *ngIf="facesFound" (click)="onClick($event)">
-    <i class="icon-user-female"></i>
-  </button>
-  `
+  <img [src] = "frameUrl" style="height:200px;" (click)="onClick()"/>
+  `,
 })
 export class FaceViewComponent implements ViewCell, OnInit {
   facesFound = false;
+
+  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
+  frameUrl: string;
 
   @Input() value: string;
   @Input() rowData: any;
@@ -19,17 +21,13 @@ export class FaceViewComponent implements ViewCell, OnInit {
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
-    const faces = JSON.parse(this.value);
-    this.facesFound = faces !== null && faces.length>0;
-    if (this.facesFound) {
-      // console.log(faces);
-    }
+    const data = JSON.parse(this.value);
+    this.frameUrl = this.bucketPath + data.Url;
   }
 
   onClick(event) {
     console.log('Face clicked');
   }
-
 
 }
 

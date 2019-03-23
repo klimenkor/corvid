@@ -12,10 +12,11 @@ import { ImageViewComponent } from '../components/common/image-view/image-view.c
 import { FaceComponent } from './face/face.component';
 import { CloudViewComponent } from '../components/common/cloud-view/cloud-view.component';
 import { TagCloudModule } from 'angular-tag-cloud-module';
-import { FaceViewComponent } from '../components/common/face-view/face-view.component';
+import { FaceButtonComponent } from '../components/common/face-button/face-button.component';
 import { FrameViewComponent } from '../components/common/frame-view/frame-view.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Ng5SliderModule } from 'ng5-slider';
+import { FaceViewComponent } from '../components/common/face-view/face-view.component';
 
 @NgModule({
   imports: [
@@ -39,8 +40,9 @@ import { Ng5SliderModule } from 'ng5-slider';
     FaceComponent,
     ImageViewComponent,
     CloudViewComponent,
-    FaceViewComponent,
-    FrameViewComponent
+    FaceButtonComponent,
+    FrameViewComponent,
+    FaceViewComponent
   ],
   providers: [
     { provide: MAT_DIALOG_DATA, useValue: {} },
@@ -49,6 +51,7 @@ import { Ng5SliderModule } from 'ng5-slider';
   entryComponents: [
     ImageViewComponent,
     CloudViewComponent,
+    FaceButtonComponent,
     FaceViewComponent,
     FrameViewComponent
   ]

@@ -1,5 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
-import { CurrentUser } from 'src/app/model/_index';
+import { CurrentUser, IFacesResult, IFace } from 'src/app/model/_index';
+import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
+import { LocalDataSource } from 'ng2-smart-table';
+import { FaceService } from 'src/app/service/data/Face.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -28,41 +32,71 @@ import { CurrentUser } from 'src/app/model/_index';
 })
 export class FaceComponent implements AfterViewInit {
 
+  settings = {
+    columns: {
+      Id: {
+        title: 'Id',
+        filter: false,
+        sortDirection: 'desc',
+        width: '30%'
+      },
+      Active: {
+        title: 'Active',
+        filter: false,
+        sortDirection: 'desc',
+        width: '30%'
+      },
+      Frame: {
+        title: '',
+        filter: false,
+        type: 'custom',
+        renderComponent: FaceViewComponent
+      }
+    },
+    actions: {
+      add: false,
+      edit: false,
+      delete: false,
+      custom: false,
+      position:  'left',
+    },
+    attr: {
+      class: 'table table-responsive'
+    }
+  };
+
+  source: LocalDataSource;
+
   currentUser: CurrentUser;
   bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
 
   @ViewChild('myCanvas') canvas: ElementRef;
   public context: CanvasRenderingContext2D;
 
-  constructor() { }
+  constructor(
+    private faceService: FaceService,
+    private spinner: NgxSpinnerService
+    ) { }
 
   ngAfterViewInit() {
     console.log('FaceComponent.ngOnInit');
-    this.context = (<HTMLCanvasElement>this.canvas.nativeElement).getContext('2d');
+    this.spinner.show();
 
-    const img = new Image();
-
-    const fx = [0.664271891117096, 0.4181285500526428, 0.7425548434257507];
-    const fy = [0.21990881860256195, 0.6321630477905273, 0.1957627832889557];
-    const fw = [0.031146444380283356, 0.04200395196676254, 0.04335761070251465];
-    const fh = [0.06442948430776596, 0.11178691685199738, 0.09993976354598999];
-
-    img.onload = () => {
-      const w = img.width / 4;
-      const h = img.height / 4;
-      (<HTMLCanvasElement>this.canvas.nativeElement).width = w;
-      (<HTMLCanvasElement>this.canvas.nativeElement).height = h;
-      this.context.drawImage(img, 0, 0, w, h);
-
-      for (let i = 0; i < 3; i++) {
-        this.context.rect(fx[i] * w, fy[i] * h, fw[i] * w, fh[i] * h);
-        this.context.strokeStyle = 'yellow';
-        this.context.stroke();
-      }
-      };
-      img.src = 'https://s3.amazonaws.com/corvid-frames/hi1rrucfjp9b89hmng2ajod3ee9cjjva002pfa81';
-
-      // this.draw();
+    this.faceService.Get().subscribe((response: IFacesResult) => {
+      const list = [];
+      response.Items.forEach(item => {
+        list.push({
+          Id: item.Id,
+          CategoryId: item.CategoryId,
+          Frame: JSON.stringify({
+            Url: item.Frame,
+            Location: item.Location
+          })
+        });
+      });
+      this.source = new LocalDataSource(list);
+      this.spinner.hide();
+    });
   }
 
 }

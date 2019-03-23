@@ -113,6 +113,18 @@ Resources:
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
+      - AttributeName: UserId
+        AttributeType: S
+      GlobalSecondaryIndexes:
+      - IndexName: gsiFaceByUser
+        KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
       KeySchema:
       - AttributeName: Id
         KeyType: HASH
@@ -123,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/f225eb6e318e4da9057fa6c1fad7ee2a
+      CodeUri: s3://ecorvid/edf8a89ad6d629a2843b00eba66d74e2
       Events:
         CameraByUser:
           Properties:
@@ -150,6 +162,13 @@ Resources:
           Properties:
             Method: POST
             Path: /camera
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        FaceByUser:
+          Properties:
+            Method: GET
+            Path: /face/byuser
             RestApiId:
               Ref: IkncuApi
           Type: Api
@@ -369,6 +388,71 @@ Resources:
                     : {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n \
                     \           \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
                     \n    }\r\n}\r\n"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST,GET,OPTIONS'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+          /face/byuser:
+            get:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
+                    \    \"table\": \"FaceDynamoDbARN\",\r\n    \"operation\": \"\
+                    list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
+                    gsiFaceByUser\",\r\n        \"KeyConditionExpression\": \"UserId\
+                    \ = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n \
+                    \           \":hkey\": \"$input.params('hkey')\"\r\n        }\r\
+                    \n    }\r\n}"
                 responses:
                   default:
                     responseParameters:

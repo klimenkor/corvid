@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser, IFace, IFaceResult, IFacesResult } from 'src/app/model/_index';
 import { FaceService } from 'src/app/service/data/Face.service';
+import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
 
 @Component({
   selector: 'app-settings-faces',
@@ -18,9 +19,11 @@ export class FacesComponent implements OnInit {
         title: 'Id',
         filter: false
       },
-      Name: {
-        title: 'Name',
+      Frame: {
+        title: 'Frame',
         filter: false,
+        type: 'custom',
+        renderComponent: FaceViewComponent
       }
     },
     attr: {
@@ -86,14 +89,12 @@ export class FacesComponent implements OnInit {
   async onCreateConfirm(event) {
     const item = {
       Id: shortid.generate(),
-      Name: event.newData.Name,
       UserId: '',
       CategoryId: ''
     } as IFace;
     this.faceService.Create(item).subscribe(
         (value: IFaceResult) => {
         event.newData.Id = value.Item.Id;
-        event.newData.Name = value.Item.Name;
         event.newData.CategoryId = value.Item.CategoryId;
         event.confirm.resolve(event.newData);
       });

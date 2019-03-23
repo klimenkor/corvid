@@ -237,12 +237,24 @@ Resources:
       AttributeDefinitions:
         - AttributeName: Id
           AttributeType: S
+        - AttributeName: UserId
+          AttributeType: S
       KeySchema:
         - AttributeName: Id
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1      
+      GlobalSecondaryIndexes:
+      - IndexName: gsiFaceByUser
+        KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1        
 
   CategoryTable:
     Type: AWS::DynamoDB::Table
@@ -770,6 +782,67 @@ Resources:
                     passthroughBehavior: "when_no_match"
                     type: "mock"   
 
+              ######################################### FACE
+              /face/byuser:
+                get:                 ################## GET BY USER
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"FaceDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiFaceByUser\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\"\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"  
+
   # IkncuApiGatewayAuthorizer:
   #   Type: AWS::ApiGateway::Authorizer
   #   Properties:
@@ -860,6 +933,13 @@ Resources:
             Method: GET
             RestApiId:
                 Ref: IkncuApi    
+        FaceByUser:
+          Type: Api
+          Properties:
+            Path: /face/byuser
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi                
 
 Outputs:
 

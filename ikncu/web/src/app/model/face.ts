@@ -1,8 +1,11 @@
+import { IBoxInput } from './motion';
+
 export interface IFace {
   Id: string;
   UserId: string;
   CategoryId: string;
-  Name: string;
+  Frame: string;
+  Location: IBoxInput;
 }
 
 export interface IFacesResult {

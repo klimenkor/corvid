@@ -7,7 +7,7 @@ import { MotionService } from 'src/app/service/data/motion.service';
 import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CloudViewComponent } from '../../components/common/cloud-view/cloud-view.component';
-import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
+import { FaceButtonComponent } from '../../components/common/face-button/face-button.component';
 import { UserService } from 'src/app/service/data/user.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
@@ -69,7 +69,7 @@ export class MotionComponent implements AfterViewInit {
         title: '',
         filter: false,
         type: 'custom',
-        renderComponent: FaceViewComponent
+        renderComponent: FaceButtonComponent
       }
     },
     actions: {
@@ -90,7 +90,7 @@ export class MotionComponent implements AfterViewInit {
   fromDate: NgbDate;
   toDate: NgbDate;
   fromHour = 0;
-  toHour = 6;
+  toHour = 12;
 
   bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
 
@@ -156,17 +156,16 @@ export class MotionComponent implements AfterViewInit {
             Occurred: this.timeOfTheDay(item.Occurred),
             Frame: JSON.stringify({
               Url: item.Frame,
-              Faces: null
+              Faces: item.Faces
             }),
             Labels: JSON.stringify(item.Labels),
-            Faces: null // JSON.stringify(item.Faces)
+            Faces: JSON.stringify(item.Faces)
           });
           // this.spinner.hide();
         });
         // console.log(list.length);
         this.source = new LocalDataSource(list);
         this.spinner.hide();
-      // console.log(this.source);
     });
   }
 

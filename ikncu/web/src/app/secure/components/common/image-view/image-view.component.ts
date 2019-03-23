@@ -38,7 +38,7 @@ export class ImageViewComponent implements ViewCell, OnInit {
       hasBackdrop: false,
       disableClose: false,
       autoFocus: true,
-      data: { url: this.frameUrl, faces: this.faces }
+      data: { Url: this.frameUrl, Faces: this.faces }
     });
   }
 
