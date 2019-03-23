@@ -87,7 +87,7 @@ export class CognitoUtil {
             IdentityPoolId: CognitoUtil._IDENTITY_POOL_ID, /* required */
             Logins: logins
         };
-        const serviceConfigs = <awsservice.ServiceConfigurationOptions>{};
+        const serviceConfigs = {} as awsservice.ServiceConfigurationOptions;
         if (environment.cognito_identity_endpoint) {
             serviceConfigs.endpoint = environment.cognito_identity_endpoint;
         }
@@ -106,7 +106,7 @@ export class CognitoUtil {
             throw new Error(('CognitoUtil: callback in getAccessToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
-            this.getCurrentUser().getSession(function (err, session) {
+            this.getCurrentUser().getSession((err, session) => {
                 if (err) {
                     console.log('CognitoUtil: Can\'t set the credentials:' + err);
                     callback.callbackWithParam(null);
@@ -126,7 +126,7 @@ export class CognitoUtil {
             throw new Error(('CognitoUtil: callback in getIdToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
-            this.getCurrentUser().getSession(function (err, session) {
+            this.getCurrentUser().getSession((err, session) => {
                 if (err) {
                     console.log('CognitoUtil: Can\'t set the credentials:' + err);
                     callback.callbackWithParam(null);
@@ -148,7 +148,7 @@ export class CognitoUtil {
             throw new Error(('CognitoUtil: callback in getRefreshToken is null...returning'));
         }
         if (this.getCurrentUser() != null) {
-            this.getCurrentUser().getSession(function (err, session) {
+            this.getCurrentUser().getSession((err, session) => {
                 if (err) {
                     console.log('CognitoUtil: Can\'t set the credentials:' + err);
                     callback.callbackWithParam(null);
@@ -164,7 +164,7 @@ export class CognitoUtil {
     }
 
     refresh(): void {
-        this.getCurrentUser().getSession(function (err, session) {
+        this.getCurrentUser().getSession((err, session) => {
             if (err) {
                 console.log('CognitoUtil: Can\'t set the credentials:' + err);
             } else {

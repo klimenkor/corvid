@@ -15,7 +15,6 @@ export class ImageViewComponent implements ViewCell, OnInit {
 
   constructor(public dialog: MatDialog) {}
   bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
-
   frameUrl: string;
   faces;
 

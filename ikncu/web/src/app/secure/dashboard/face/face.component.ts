@@ -30,21 +30,32 @@ import { NgxSpinnerService } from 'ngx-spinner';
     }
   `]
 })
-export class FaceComponent implements AfterViewInit {
+export class FaceComponent implements OnInit {
 
   settings = {
+    edit: {
+      editButtonContent: '<i class="ft-edit-3"></i>',
+      saveButtonContent: '<div class="btn btn-outline-success btn-sm"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger btn-sm"><i class="ft-x"></i></div>',
+      confirmCreate: false
+    },
+    delete: {
+        deleteButtonContent: '<i class="ft-trash-2"></i>',
+        confirmDelete: true
+    },
+
     columns: {
-      Id: {
-        title: 'Id',
-        filter: false,
-        sortDirection: 'desc',
-        width: '30%'
-      },
-      Active: {
-        title: 'Active',
-        filter: false,
-        sortDirection: 'desc',
-        width: '30%'
+      // Id: {
+      //   title: 'Id',
+      //   filter: false,
+      //   sortDirection: 'desc',
+      //   width: '30%'
+      // },
+      CategoryId: {
+        type: 'list',
+        config: {
+          list: [{title: 'Family and friends', value: '1'}, {title: 'Utilities', value: '2'}, {title: 'Unknown', value: '4'}]
+        }
       },
       Frame: {
         title: '',
@@ -55,8 +66,8 @@ export class FaceComponent implements AfterViewInit {
     },
     actions: {
       add: false,
-      edit: false,
-      delete: false,
+      edit: true,
+      delete: true,
       custom: false,
       position:  'left',
     },
@@ -78,7 +89,7 @@ export class FaceComponent implements AfterViewInit {
     private spinner: NgxSpinnerService
     ) { }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     console.log('FaceComponent.ngOnInit');
     this.spinner.show();
 

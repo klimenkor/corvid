@@ -15,8 +15,7 @@ export class SecureHomeComponent implements OnInit, LoggedInCallback {
 
     constructor(
       public router: Router,
-      public authService: AuthService
-      ) {
+      public authService: AuthService ) {
       console.log('SecureHomeComponent.constructor');
       this.authService.isAuthenticated(this);
     }

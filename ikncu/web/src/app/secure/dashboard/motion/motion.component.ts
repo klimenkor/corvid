@@ -38,7 +38,7 @@ import { Options } from 'ng5-slider';
     }
   `]
 })
-export class MotionComponent implements AfterViewInit {
+export class MotionComponent implements OnInit {
 
   settings = {
     columns: {
@@ -105,7 +105,7 @@ export class MotionComponent implements AfterViewInit {
     pushRange: true
   };
 
-  onSliderChange(){
+  onSliderChange() {
     this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
@@ -118,13 +118,12 @@ export class MotionComponent implements AfterViewInit {
       this.selectToday();
     }
 
-  ngAfterViewInit() {
-    console.log('MotionComponent.ngAfterViewInit');
-
+  ngOnInit() {
+    console.log('MotionComponent.ngOnInit');
     this.cameraService.Get().subscribe((response: ICamerasResult) => {
       this.cameras = response.Items;
+      this.onDateSelection(this.fromDate);
     });
-    this.onDateSelection(this.fromDate);
   }
 
   DateTimeToString(date: NgbDate, hour: number ) {
@@ -176,8 +175,6 @@ export class MotionComponent implements AfterViewInit {
   }
 
   selectToday() {
-    console.log(this.fromHour)
-    console.log(this.toHour)
     this.fromDate = this.calendar.getToday();
     this.fromHour = 0;
     this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);

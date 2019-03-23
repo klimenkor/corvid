@@ -19,6 +19,12 @@ export class FacesComponent implements OnInit {
         title: 'Id',
         filter: false
       },
+      CategoryId: {
+        type: 'list',
+        config: {
+          list: [{title: 'Family and friends', value: '1'}, {title: 'Utilities', value: '2'}, {title: 'Unknown', value: '4'}]
+        }
+      },
       Frame: {
         title: 'Frame',
         filter: false,
@@ -57,13 +63,12 @@ export class FacesComponent implements OnInit {
 
     this.currentUserService.Initialize(() => {
       this.currentUser = this.currentUserService.User;
+      this.faceService.Get().subscribe(
+        (result: IFacesResult) => {
+          this.source = result.Items;
+          this.spinner.hide();
+        });
     });
-
-    this.faceService.Get().subscribe(
-      (result: IFacesResult) => {
-        this.source = result.Items;
-        this.spinner.hide();
-      });
   }
 
   onDeleteConfirm(event) {
@@ -86,11 +91,11 @@ export class FacesComponent implements OnInit {
           });
   }
 
-  async onCreateConfirm(event) {
+  async onUpdate(event) {
     const item = {
-      Id: shortid.generate(),
-      UserId: '',
-      CategoryId: ''
+      Id: event.newData.Id,
+      UserId: event.newData.UserId,
+      CategoryId: event.newData.CategoryId
     } as IFace;
     this.faceService.Create(item).subscribe(
         (value: IFaceResult) => {

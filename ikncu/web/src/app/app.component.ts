@@ -16,7 +16,6 @@ export class AppComponent implements OnInit, LoggedInCallback {
     currentUser: CurrentUser;
 
     constructor(
-      private currentUserService: CurrentUserService,
       public awsUtil: AwsUtil,
       public authService: AuthService,
       public userService: UserService,
@@ -30,16 +29,6 @@ export class AppComponent implements OnInit, LoggedInCallback {
     ngOnInit() {
         console.log('AppComponent: Checking if the user is already authenticated');
         this.authService.isAuthenticated(this);
-
-        this.currentUserService.Initialize((initialized) => {
-          if (initialized) {
-            this.currentUser = this.currentUserService.User;
-            console.log(':::: currentUser.id = ' + this.currentUser.id);
-          } else {
-            console.log(':::: not authenticated yet');
-          }
-
-        });
     }
 
     async isLoggedIn(message: string, isLoggedIn: boolean) {
@@ -61,7 +50,6 @@ export class AppComponent implements OnInit, LoggedInCallback {
 
                 console.log('AppComponent: calling initAwsService in callback');
                 mythis.awsUtil.initAwsService(null, isLoggedIn, token);
-
             }
         });
     }
