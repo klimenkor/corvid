@@ -1,5 +1,6 @@
 'use strict';
 let AWS = require('aws-sdk');
+var Jimp = require('jimp');
 let tableNames = require('./settings.js');
 var documentClient = new AWS.DynamoDB.DocumentClient();
 

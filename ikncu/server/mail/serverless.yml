@@ -24,6 +24,9 @@ provider:
   stage: live
   region: us-east-1
 
+  environment:
+    PYTHONPATH : "/opt/"
+
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -53,3 +56,5 @@ functions:
   catch_email:
     handler: index.handler
     
+  image_processor:
+    handler: image_processor.handler
