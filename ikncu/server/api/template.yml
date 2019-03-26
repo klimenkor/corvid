@@ -325,6 +325,69 @@ Resources:
             schemes:
             - "https"
             paths:
+
+              ######################################### image
+              /image:
+                post:                 ################## POST
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n \"operation\": \"image\",\r\n \"sourceBucket\": $input.json('SourceBucket'), \r\n \"destinationBucket\": $input.json('DestinationBucket'), \r\n \"sourceFile\": $input.json('$.SourceFile'), \r\n \"destinationFile\": $input.json('$.DestinationFile'), \r\n \"width\" : $input.json('$.Width'),\r\n \"height\" : $input.json('$.Height')\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"     
+                      
               ######################################### USER
               /user/bytier:
                 get:                 ################## GET BY TIER
@@ -843,17 +906,6 @@ Resources:
                     passthroughBehavior: "when_no_match"
                     type: "mock"  
 
-  # IkncuApiGatewayAuthorizer:
-  #   Type: AWS::ApiGateway::Authorizer
-  #   Properties:
-  #     Name: Ikncu
-  #     RestApiId:
-  #       Ref: IkncuApi
-  #     Type: COGNITO_USER_POOLS
-  #     ProviderARNs:
-  #       - Fn::GetAtt: [ CognitoUserPool, Arn ]
-  #     IdentitySource: method.request.header.Authorization
-
   IkncuAPIFunction:
     Type: AWS::Serverless::Function
     Name: 'IkncuAPILambda'
@@ -863,6 +915,13 @@ Resources:
       Role: !GetAtt IkncuLambdaApiRole.Arn
       Policies: AmazonDynamoDBFullAccess
       Events:
+        Image:
+          Type: Api
+          Properties:
+            Path: /image
+            Method: POST
+            RestApiId:
+                Ref: IkncuApi
         UserByTier:
           Type: Api
           Properties:

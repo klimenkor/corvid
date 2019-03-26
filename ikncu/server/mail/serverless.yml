@@ -56,5 +56,3 @@ functions:
   catch_email:
     handler: index.handler
     
-  image_processor:
-    handler: image_processor.handler

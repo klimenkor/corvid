@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/edf8a89ad6d629a2843b00eba66d74e2
+      CodeUri: s3://ecorvid/de973e9e84646471cb7720e780dc96fd
       Events:
         CameraByUser:
           Properties:
@@ -169,6 +169,13 @@ Resources:
           Properties:
             Method: GET
             Path: /face/byuser
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        Image:
+          Properties:
+            Method: POST
+            Path: /image
             RestApiId:
               Ref: IkncuApi
           Type: Api
@@ -490,6 +497,70 @@ Resources:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     statusCode: '200'
                 type: mock
+          /image:
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST,GET,OPTIONS'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+            post:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
+                    \ \"operation\": \"image\",\r\n \"sourceBucket\": $input.json('SourceBucket'),\
+                    \ \r\n \"destinationBucket\": $input.json('DestinationBucket'),\
+                    \ \r\n \"sourceFile\": $input.json('$.SourceFile'), \r\n \"destinationFile\"\
+                    : $input.json('$.DestinationFile'), \r\n \"width\" : $input.json('$.Width'),\r\
+                    \n \"height\" : $input.json('$.Height')\r\n}"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
           /motion/bycamera:
             get:
               consumes:
