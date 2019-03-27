@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/e709b455e89b94341c75259de730e8ab
+      CodeUri: s3://ecorvid/067f9c4663e692978cd41c326ad66bb1
       Events:
         CameraByUser:
           Properties:
@@ -871,7 +871,7 @@ Resources:
   IkncuImageFunction:
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ecorvid/e709b455e89b94341c75259de730e8ab
+      CodeUri: s3://ecorvid/067f9c4663e692978cd41c326ad66bb1
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:
@@ -945,6 +945,7 @@ Resources:
             Resource:
             - arn:aws:s3:::corvid-frames/*
             - arn:aws:s3:::ecorvid/*
+            - arn:aws:s3:::corvid-mail/*
           - Action:
             - s3:GetObject
             Effect: Allow

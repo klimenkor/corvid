@@ -98,6 +98,7 @@ Resources:
                 Resource: 
                   - "arn:aws:s3:::corvid-frames/*"
                   - "arn:aws:s3:::ecorvid/*"
+                  - "arn:aws:s3:::corvid-mail/*"
               - Effect: "Allow"
                 Action:
                   - "s3:GetObject"
