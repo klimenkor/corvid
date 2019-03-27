@@ -1,10 +1,12 @@
 let tableNames = require('./settings.js');
-var AWS = require('aws-sdk');
-var s3 = new AWS.S3();
+let AWS = require('aws-sdk');
+let s3 = new AWS.S3();
+let rekognition = new AWS.Rekognition();
+let docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 let simpleParser = require('mailparser').simpleParser;
-AWS.config.update({region: 'us-east-1'});
 var Jimp = require('jimp');
-var docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+
+AWS.config.update({region: 'us-east-1'});
 
 console.log(tableNames.getName('UserDynamoDbARN'));
 
@@ -108,7 +110,7 @@ function saveMotionData(userId, cameraId, labels, s3key, faces) {
     var labels_list = [];
 
     labels.forEach(label => {
-        labels_list.append({"Name": label.Name, "Confidence": Math.round(label.Confidence)});
+        labels_list.push({"Name": label.Name, "Confidence": Math.round(label.Confidence)});
     }); 
     
     faces_list = []
@@ -116,10 +118,10 @@ function saveMotionData(userId, cameraId, labels, s3key, faces) {
     if (faces !== null) {
         print('   saving ' + str(len(faces)) + ' faces')
         
-        faces.foreach(face => {
+        faces.forEach(face => {
             var emotions_list = [];
-            face.Emotions.foreach(emotion => {
-                emotions_list.append({"Type": emotion.Type, "Confidence": Math.round(emotion.Confidence)});
+            face.Emotions.forEach(emotion => {
+                emotions_list.push({"Type": emotion.Type, "Confidence": Math.round(emotion.Confidence)});
             });
 
             bounding_box = face.BoundingBox;
@@ -132,7 +134,7 @@ function saveMotionData(userId, cameraId, labels, s3key, faces) {
             mustache = face.Mustache;
             eyesopen = face.EyesOpen;
             mouthopen = face.MouthOpen;
-            faces_list.append({
+            faces_list.push({
                 "Confidence": int(round(face.Confidence)),
                 "Emotions": emotions_list,
                 "Box": { "Width": str(bounding_box.Width), "Height":str(bounding_box.Height), "Left":str(bounding_box.Left), "Top":str(bounding_box.Top)},
@@ -174,11 +176,50 @@ function saveMotionData(userId, cameraId, labels, s3key, faces) {
 }    
 
 function detectlabels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1") {
-
+    let param = { 
+        Image = {
+            'S3Object': {
+                'Bucket': bucket,
+                'Name': key
+            }
+        },
+        MaxLabels=max_labels,
+        MinConfidence=min_confidence
+    };
+    rekognition.detectLabels(param,(err,data)=>{
+        if(err!==null){
+            callback(err,null);
+        }
+        else {
+            if(data !== null)
+                callback(null,data.Labels);
+            else
+                callback(null,null);
+        }
+    });
 }
 
 function detectFaces(bucket, key, attributes=['ALL'], region="us-east-1") {
-
+    let param = { 
+        Image = {
+            'S3Object': {
+                'Bucket': bucket,
+                'Name': key
+            }
+        },
+        Attributes = attributes
+    };
+    rekognition.detectFaces(param,(err,data)=>{
+        if(err!==null){
+            callback(err,null);
+        }
+        else {
+            if(data !== null)
+                callback(null,data.FaceDetails);
+            else
+                callback(null,null);
+        }
+    });
 }
 
 function parseCameraId(subject) {
@@ -186,6 +227,17 @@ function parseCameraId(subject) {
     if(parse === null)
         return null;
     return parse[1];    
+}
+
+function getAlarmLabels(enabled, detected) {
+    let labels = []
+    detected.forEach( dl => {
+        let found = enabled.find(el => { return el.Name == dl.Name; });
+        if(found) {
+            labels.push(found.Name);
+        }
+    });
+    return labels;
 }
 
 function initCollection(userid) {
@@ -198,16 +250,16 @@ function indexFace(userId, bucket, frame) {
 
 function getFacesInfo(faces) {
     let html_body = "<ul>";
-    faces.foreach(face => {
+    faces.forEach(face => {
         let header = "Face ${face.Confidence}%<li><b>${line}</b><ul>";
         let footer = "</ul><ul>";
         emotions = ""
-        face.Emotions.foreach(emotion => {
+        face.Emotions.forEach(emotion => {
             emotions = emotions + "<li>{Type} : ${emotion.Confidence}%</li></ul><ul>"
         });
 
         qualities = ""    
-        face.Quality.items.foreach(item => {
+        face.Quality.items.forEach(item => {
             qualities = qualities + "<li>${quality} : ${value}</li>"
         });
         html_body = html_body + header + emotions + qualities + footer;
@@ -255,38 +307,51 @@ exports.handler = function (event, context, callback) {
                 if(err){
                     console.log(err)
                     callback(null, null);
-                } else {
-                    console.log('Subject: ' + mail.subject);
-                    let cameraId = parseCameraId(mail.subject);
-                    if(cameraId === null) {
-                        callback(true,'Invalid CameraId in mail subject');
+                    return;
+                } 
+                console.log('Subject: ' + mail.subject);
+                let cameraId = parseCameraId(mail.subject);
+                if(cameraId === null) {
+                    callback(true,'Invalid CameraId in mail subject');
+                    return;
+                }
+                getObject('Camera', cameraId, (err, data) => {
+                    if(err !== null || data === null) {
+                        callback(err, null);
                         return;
                     }
-                    getObject('Camera', cameraId, (err, data) => {
-                        if(err === null && data !== null) {
-                            let camera = data;
-                            getObject('User', camera.UserId, (err, data) => {
-                                if(err === null) {
-                                    let user = data;
-                                    console.log('UserId = ' + user.Id);
-                                    console.log('Camera name = ' + camera.Name);        
-                                    console.log('Email = ' + user.Email);  
-                                    console.log(user.Labels);  
-                                    let image = mail.attachments[0].content;
-                                    saveFrame(frameBucket, messageId, image, (err) => {
-                                        if (err) {
-                                            console.log(err, err.stack); 
-                                            callback();
-                                        } else {
-                                            console.log('Uploaded');
-                                            callback();
-                                        }
-                                    });  
-                                }    
-                            });       
-                        }    
-                    });
-                }
+
+                    let camera = data;
+                    getObject('User', camera.UserId, (err, data) => {
+                        if(err !== null){
+                            callback(err, null);
+                            return;
+                        }
+                            
+                        let user = data;
+                        console.log('UserId = ' + user.Id);
+                        console.log('Camera name = ' + camera.Name);        
+                        console.log('Email = ' + user.Email);  
+                        let enabledLables = user.Labels;  
+                        if(enabledLables.length === 0)
+                            return; // nothing to signal about
+
+                        detectedLabels = detectLabels(frameBucket, messageId);    
+
+                        alarmLabels = getAlarmLabels(enabledLabels, labels)
+
+                        let image = mail.attachments[0].content;
+                        saveFrame(frameBucket, messageId, image, (err) => {
+                            if (err) {
+                                console.log(err, err.stack); 
+                                callback();
+                            } else {
+                                console.log('Uploaded');
+                                callback();
+                            }
+                        });  
+                    });       
+                });
             })
          }     
        });
