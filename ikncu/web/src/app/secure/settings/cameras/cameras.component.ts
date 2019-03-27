@@ -75,7 +75,7 @@ export class CamerasComponent implements OnInit {
             }
         },
         attr: {
-        class: 'table table-responsive'
+          class: 'table table-responsive'
         }
     };
 

@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/de973e9e84646471cb7720e780dc96fd
+      CodeUri: s3://ecorvid/e709b455e89b94341c75259de730e8ab
       Events:
         CameraByUser:
           Properties:
@@ -868,6 +868,18 @@ Resources:
         swagger: '2.0'
       StageName: live
     Type: AWS::Serverless::Api
+  IkncuImageFunction:
+    Name: IkncuImageLambda
+    Properties:
+      CodeUri: s3://ecorvid/e709b455e89b94341c75259de730e8ab
+      Handler: image.handler
+      Policies: AmazonDynamoDBFullAccess
+      Role:
+        Fn::GetAtt:
+        - IkncuLamdaImageRole
+        - Arn
+      Runtime: nodejs8.10
+    Type: AWS::Serverless::Function
   IkncuLambdaApiRole:
     Properties:
       AssumeRolePolicyDocument:
@@ -913,7 +925,7 @@ Resources:
           Version: '2012-10-17'
         PolicyName: DynamoDBWriteAccess
     Type: AWS::IAM::Role
-  IkncuLamdaMailRole:
+  IkncuLamdaImageRole:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
@@ -930,7 +942,9 @@ Resources:
             - s3:PutObject
             - s3:GetObject
             Effect: Allow
-            Resource: arn:aws:s3:::corvid-frames/*
+            Resource:
+            - arn:aws:s3:::corvid-frames/*
+            - arn:aws:s3:::ecorvid/*
           - Action:
             - s3:GetObject
             Effect: Allow
