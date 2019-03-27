@@ -12,9 +12,6 @@ console.log(tableNames.getName('UserDynamoDbARN'));
 
 function sendEmail(recipient, subject, body, html, callback) {
     const sender = "roman.klimenko@gmail.com"
-    const charset = "UTF-8"
-    const region = "us-east-1"
-    const client = boto3.client('ses', region_name=region)
 
     try {
         var params = {
@@ -175,16 +172,19 @@ function saveMotionData(userId, cameraId, labels, s3key, faces) {
     return;
 }    
 
-function detectlabels(bucket, key, max_labels=10, min_confidence=80, region="us-east-1") {
+function detectLabels(bucket, key, callback) {
+    let maxLabels=10;
+    let minConfidence=80;
+    let region='us-east-1';
     let param = { 
-        Image = {
+        Image: {
             'S3Object': {
                 'Bucket': bucket,
                 'Name': key
             }
         },
-        MaxLabels=max_labels,
-        MinConfidence=min_confidence
+        MaxLabels: maxLabels,
+        MinConfidence: minConfidence
     };
     rekognition.detectLabels(param,(err,data)=>{
         if(err!==null){
@@ -199,15 +199,18 @@ function detectlabels(bucket, key, max_labels=10, min_confidence=80, region="us-
     });
 }
 
-function detectFaces(bucket, key, attributes=['ALL'], region="us-east-1") {
+function detectFaces(bucket, key, callback) {
+    let attributes=['ALL'];
+    let region='us-east-1';
+
     let param = { 
-        Image = {
+        Image: {
             'S3Object': {
                 'Bucket': bucket,
                 'Name': key
             }
         },
-        Attributes = attributes
+        Attributes: attributes
     };
     rekognition.detectFaces(param,(err,data)=>{
         if(err!==null){
@@ -249,24 +252,25 @@ function indexFace(userId, bucket, frame) {
 }
 
 function getFacesInfo(faces) {
-    let html_body = "<ul>";
+    let html = "<ul>";
+    let footer = '</ul><ul>';
     faces.forEach(face => {
-        let header = "Face ${face.Confidence}%<li><b>${line}</b><ul>";
-        let footer = "</ul><ul>";
-        emotions = ""
+        let header = '<li><b>Face ' + face.Confidence + '%</b>';
+        let emotions = '';
         face.Emotions.forEach(emotion => {
-            emotions = emotions + "<li>{Type} : ${emotion.Confidence}%</li></ul><ul>"
+            emotions = emotions + '<li>' + emotion.Type + ': ' + emotion.Confidence + '%</li>'
         });
 
-        qualities = ""    
+        let qualities = '';    
         face.Quality.items.forEach(item => {
-            qualities = qualities + "<li>${quality} : ${value}</li>"
+            qualities = qualities + '<li>' + item.quality + ':' + item.value + '</li>';
         });
-        html_body = html_body + header + emotions + qualities + footer;
-    });
-    html_body = html_body + "</ul>";
 
-    return html_body
+        html = html + header + '<ul>' + emotions + '</ul><ul>' + qualities + '</ul>';
+
+    }); 
+    html = html + footer;
+    return html;
 }
 
 function saveFrame(bucket,key,data,callback) {
@@ -279,19 +283,40 @@ function saveFrame(bucket,key,data,callback) {
     s3.putObject(params, 
         function(err) {
             if (err) {
-                callback(err);
+                console.log(err, err.stack); 
+                callback();
             } else {
+                console.log('Uploaded');
                 callback();
             }
         });
     return;    
 }
+
+function getTimestamp() {
+    let d = new date();
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+}
+
+function formatAlarmMessage(cameraName, labels) {
+    let labelsString = labels.join(',');
+    return cameraName + ': ' + labelsString + ' recorded on ' + getTimestamp() + ' (ikncu)';
+}
+
+function formatAlarmBodyHeader() {
+    return '<body>';
+}
+
+function formatAlarmBodyFoter(bucket, messageId) {
+    let path = 'https://s3.amazonaws.com/' + bucket + '/' + messageId; 
+    return '<p><img src="' + path + '" width=\"640\"/></p></body>';
+}
+
 exports.handler = function (event, context, callback) {
     const frameBucket = 'corvid-frames';
     const item = event.Records[0].s3;
     const mailBucket = item.bucket.name;
     const messageId = item.object.key;
-    // const bucketPath = 'https://s3.amazonaws.com/corvid-frames/';
 
     console.log('...new email:' + mailBucket + ' / ' + messageId);
     var params = {
@@ -301,58 +326,76 @@ exports.handler = function (event, context, callback) {
        s3.getObject(params, function(err, data) {
          if (err) {
              console.log(err, err.stack); 
+             callback(null,null);
+             return;
          }
-         else {
-            simpleParser(data.Body, (err, mail) => {
-                if(err){
-                    console.log(err)
-                    callback(null, null);
-                    return;
-                } 
-                console.log('Subject: ' + mail.subject);
-                let cameraId = parseCameraId(mail.subject);
-                if(cameraId === null) {
-                    callback(true,'Invalid CameraId in mail subject');
+        simpleParser(data.Body, (err, mail) => {
+            if(err){
+                console.log(err)
+                callback(null, null);
+                return;
+            } 
+            console.log('Subject: ' + mail.subject);
+            let cameraId = parseCameraId(mail.subject);
+            if(cameraId === null) {
+                callback(true,'Invalid CameraId in mail subject');
+                return;
+            }
+            getObject('Camera', cameraId, (err, data) => {
+                if(err !== null || data === null) {
+                    callback(err, null);
                     return;
                 }
-                getObject('Camera', cameraId, (err, data) => {
-                    if(err !== null || data === null) {
+
+                let camera = data;
+                getObject('User', camera.UserId, (err, data) => {
+                    if(err !== null){
                         callback(err, null);
                         return;
                     }
+                        
+                    let user = data;
+                    console.log('UserId = ' + user.Id);
+                    console.log('Camera name = ' + camera.Name);        
+                    console.log('Email = ' + user.Email);  
+                    console.log(user.Labels);  
+                    let enabledLabels = user.Labels;  
+                    if(enabledLabels.length === 0)
+                        return; // nothing to signal about
 
-                    let camera = data;
-                    getObject('User', camera.UserId, (err, data) => {
-                        if(err !== null){
-                            callback(err, null);
-                            return;
+                    console.log('detecting labels');  
+                    detectLabels(frameBucket, messageId, (err,data) => {
+                        if(err!==null) {
+                            callback(err);
+                            return;     
                         }
-                            
-                        let user = data;
-                        console.log('UserId = ' + user.Id);
-                        console.log('Camera name = ' + camera.Name);        
-                        console.log('Email = ' + user.Email);  
-                        let enabledLables = user.Labels;  
-                        if(enabledLables.length === 0)
-                            return; // nothing to signal about
+                        console.log(data);  
+                        let detectedLabels = data;
 
-                        detectedLabels = detectLabels(frameBucket, messageId);    
-
-                        alarmLabels = getAlarmLabels(enabledLabels, labels)
-
-                        let image = mail.attachments[0].content;
-                        saveFrame(frameBucket, messageId, image, (err) => {
-                            if (err) {
-                                console.log(err, err.stack); 
-                                callback();
-                            } else {
-                                console.log('Uploaded');
-                                callback();
-                            }
-                        });  
-                    });       
-                });
-            })
-         }     
-       });
+                        console.log('getting configured labels');  
+                        let labels = getAlarmLabels(enabledLabels, detectedLabels);
+                        console.log(labels);
+                        if(labels.length>0) {
+                            console.log('detecting faces');  
+                            detectFaces(frameBucket, messageId, (err,data) => {
+                                if(err!==null) {
+                                    callback(err);
+                                    return;     
+                                }
+                                console.log(data);  
+                                faces = data;
+                                console.log('sending an email');  
+                                let subject = formatAlarmMessage(camera.Name, labels);
+                                let body = formatAlarmBodyHeader() + 
+                                    getFacesInfo(faces) + 
+                                    formatAlarmBodyFooter(frameBucket, messageId);
+                                sendEmail(user.Email, subject, null, body, {});    
+                            });        
+                            saveFrame(frameBucket, messageId, mail.attachments[0].content, {});
+                        }
+                    });    
+                });       
+            });
+        })
+    });
 };
