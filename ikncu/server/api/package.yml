@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/4653f79d973f00ad02077f97614ec31c
+      CodeUri: s3://ecorvid/d10da8b1a33dee5a03a7cefd900cd51d
       Events:
         CameraByUser:
           Properties:
@@ -871,7 +871,7 @@ Resources:
   IkncuImageFunction:
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ecorvid/4653f79d973f00ad02077f97614ec31c
+      CodeUri: s3://ecorvid/d10da8b1a33dee5a03a7cefd900cd51d
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:

@@ -1,3 +1,5 @@
+var Jimp = require('jimp');
+
 function getAlarmLabels(enabled, detected) {
     let labels = []
     detected.forEach( dl => {
@@ -32,5 +34,25 @@ enabled = [];
 detected = null;
 
 // console.log(formatAlarmMessage('test',['1','2','3']))
-let d = new Date()
- console.log(d.toLocaleDateString(), d.toLocaleTimeString())
+//let d = new Date()
+//console.log(d.toLocaleDateString(), d.toLocaleTimeString())
+
+let Width=  0.024836357682943344;
+let Height= 0.058885764330625534;
+let Left= 0.6026195883750916;
+let Top= 0.14392173290252686;
+
+var image = new Jimp("E:\\dev\\corvid\\test2.jpg", function (err, image) {
+    var w = image.bitmap.width; // the width of the image
+    var h = image.bitmap.height; // the height of the image
+    var cx = Left * w;
+    var cy = Top * h;
+    var cw = Width * w;
+    var ch = Height * w;
+    console.log(image.bitmap.data);
+    image.crop( cx, cy, cw, ch );
+    image.getBuffer(Jimp.MIME_JPEG, (err,res)=> {
+       console.log(res)     
+    });
+    //image.write("E:\\dev\\corvid\\test2-face.jpg")
+});

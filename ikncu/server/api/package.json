@@ -10,7 +10,8 @@
     "axios": "^0.18.0",
     "jimp": "^0.6.0",
     "js-base64": "^2.5.1",
-    "mailparser": "^2.5.0"
+    "mailparser": "^2.5.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "test": "mocha tests/unit/"

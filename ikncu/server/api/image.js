@@ -5,12 +5,13 @@ let rekognition = new AWS.Rekognition();
 let docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 let simpleParser = require('mailparser').simpleParser;
 var Jimp = require('jimp');
+let uuidv1 = require('uuid/v1');
 
 AWS.config.update({region: 'us-east-1'});
 
 console.log(tableNames.getName('UserDynamoDbARN'));
 
-function sendEmail(recipient, subject, body, html, callback) {
+function sendEmail(recipient, subject, body, html) {
     const sender = "roman.klimenko@gmail.com"
 
     try {
@@ -43,17 +44,17 @@ function sendEmail(recipient, subject, body, html, callback) {
         sendPromise.then(
           function(data) {
             console.log("Email sent! Message ID: " + data.MessageId);
-            callback(null,data.MessageId);
+            // callback(null,data.MessageId);
         }).catch(
             function(err) {
                 console.error(err, err.stack);
-                callback(err,null)
+                // callback(err,null)
           });
 
     }
     catch (err) {
-        print(err.stack)
-        callback(e,null)
+        console.log(err.stack);
+        // callback(e,null)
     }
 
     return;
@@ -103,69 +104,71 @@ function saveObject(table, item, callback){
     return;
 }
 
-function saveMotionData(userId, cameraId, labels, s3key, faces) {
+function saveMotionData(userId, cameraId, labels, key, faces) {
     var labels_list = [];
 
     labels.forEach(label => {
         labels_list.push({"Name": label.Name, "Confidence": Math.round(label.Confidence)});
     }); 
     
-    faces_list = []
+    facesList = []
 
     if (faces !== null) {
-        print('   saving ' + str(len(faces)) + ' faces')
+        console.log('saving ' + faces.length.toString() + ' faces');
         
         faces.forEach(face => {
-            var emotions_list = [];
+            var emotionsList = [];
             face.Emotions.forEach(emotion => {
-                emotions_list.push({"Type": emotion.Type, "Confidence": Math.round(emotion.Confidence)});
+                emotionsList.push({'Type': emotion.Type, 'Confidence': Math.round(emotion.Confidence)});
             });
 
-            bounding_box = face.BoundingBox;
-            age_range = face.AgeRange;
+            boundingBox = face.BoundingBox;
+            ageRange = face.AgeRange;
             gender = face.Gender;
             smile = face.Smile;
-            eyeglasses = face.Eyeglasses;
-            sunglasses = face.Sunglasses;
+            eyeGlasses = face.Eyeglasses;
+            sunGlasses = face.Sunglasses;
             beard = face.Beard;
             mustache = face.Mustache;
-            eyesopen = face.EyesOpen;
-            mouthopen = face.MouthOpen;
-            faces_list.push({
-                "Confidence": int(round(face.Confidence)),
-                "Emotions": emotions_list,
-                "Box": { "Width": str(bounding_box.Width), "Height":str(bounding_box.Height), "Left":str(bounding_box.Left), "Top":str(bounding_box.Top)},
-                "Age": { "Low": int(round(age_range.Low)), "High": int(round(age_range.High)) },
-                "Gender": { "Value": gender.Value, "Confidence": int(round(gender.Confidence))},
-                "Smile": { "Value": smile.Value, "Confidence": int(round(smile.Confidence))},
-                "Eyeglasses": { "Value": eyeglasses.Value, "Confidence": int(round(eyeglasses.Confidence))},
-                "Sunglasses": { "Value": sunglasses.Value, "Confidence": int(round(sunglasses.Confidence))}, 
-                "Beard": { "Value": beard.Value, "Confidence": int(round(beard.Confidence))},
-                "Mustache": { "Value": mustache.Value, "Confidence": int(round(mustache.Confidence))},
-                "Eyesopen": { "Value": eyesopen.Value, "Confidence": int(round(eyesopen.Confidence))},
-                "Mouthopen": { "Value": mouthopen.Value, "Confidence": int(round(mouthopen.Confidence))}
+            eyesOpen = face.EyesOpen;
+            mouthOpen = face.MouthOpen;
+            facesList.push({
+                "Confidence": Math.round(face.Confidence),
+                "Emotions": emotionsList,
+                "Box": { "Width": boundingBox.Width, "Height":boundingBox.Height, "Left":boundingBox.Left, "Top":boundingBox.Top},
+                "Age": { "Low": Math.round(ageRange.Low), "High": Math.round(ageRange.High)},
+                "Gender": { "Value": gender.Value, "Confidence": Math.round(gender.Confidence)},
+                "Smile": { "Value": smile.Value, "Confidence": Math.round(smile.Confidence)},
+                "Eyeglasses": { "Value": eyeGlasses.Value, "Confidence": Math.round(eyeGlasses.Confidence)},
+                "Sunglasses": { "Value": sunGlasses.Value, "Confidence": Math.round(sunGlasses.Confidence)}, 
+                "Beard": { "Value": beard.Value, "Confidence": Math.round(beard.Confidence)},
+                "Mustache": { "Value": mustache.Value, "Confidence": Math.round(mustache.Confidence)},
+                "Eyesopen": { "Value": eyesOpen.Value, "Confidence": Math.round(eyesOpen.Confidence)},
+                "Mouthopen": { "Value": mouthOpen.Value, "Confidence": Math.round(mouthOpen.Confidence)}
             })
         });
     }
 
     item = {
-        "Id": str(uuid.uuid4()),
-        "UserId": user_id,
-        "CameraId": camera_id,
-        "Occurred": int(datetime.now(tz).strftime('%Y%m%d%H%M%S')),
-        "Labels": labels_list,
-        "Faces": faces_list,
-        "Frame": s3key
+        "Id": uuidv1(),
+        "UserId": userId,
+        "CameraId": cameraId,
+        "Occurred": parseInt(getYYYMMDDHHMMSS()),
+        "Labels": labels,
+        "Faces": faces,
+        "Frame": key
     }
-    console.log('Saving new motion...')
+    console.log('Saving new motion...');
+    console.log(item);
 
-    saveObject('MotionDynamoDbARN', item, 
+    saveObject('Motion', item, 
         (err, data) => {
             if(err!==null){
-                callback(err,null);
+                console.log('failed to save motion');
+                console.log(err);
             }
             else {
-                callback(null,data);
+                console.log('saved motion');
             }
         });
 
@@ -196,6 +199,32 @@ function detectLabels(bucket, key, callback) {
             else
                 callback(null,null);
         }
+    });
+}
+
+function saveFaces(image, faces, bucket, frame, callback) {
+    const jimage = new Jimp(image, (res) => {
+        var w = jimage.bitmap.width; 
+        var h = jimage.bitmap.height;
+        let i = 0;
+        faces.forEach(face => {
+            let box = face.BoundingBox;
+            var cx = box.Left * w;
+            var cy = box.Top * h;
+            var cw = box.Width * w;
+            var ch = box.Height * w;
+    
+            jimage.crop( cx, cy, cw, ch, () => {
+                i = i + 1;
+                let key = frame + '/' + i.toString();
+        
+                jimage.getBuffer(Jimp.MIME_JPEG,(err, res) => {
+                    saveFrame(bucket, key, res, () => {
+                        callback();
+                    });
+                });
+            });
+        });
     });
 }
 
@@ -235,9 +264,9 @@ function parseCameraId(subject) {
 function getAlarmLabels(enabled, detected) {
     let labels = []
     detected.forEach( dl => {
-        let found = enabled.find(el => { return el.Name == dl.Name; });
+        let found = enabled.find(el => { return el == dl.Name && dl.Confidence > 50.0; });
         if(found) {
-            labels.push(found.Name);
+            labels.push(found);
         }
     });
     return labels;
@@ -261,9 +290,9 @@ function getFacesInfo(faces) {
             emotions = emotions + '<li>' + emotion.Type + ': ' + emotion.Confidence + '%</li>'
         });
 
-        let qualities = '';    
-        face.Quality.items.forEach(item => {
-            qualities = qualities + '<li>' + item.quality + ':' + item.value + '</li>';
+        let qualities = '';   
+        Object.keys(face.Quality).forEach(item => {
+            qualities = qualities + '<li>' + item + ':' + face.Quality[item] + '</li>';
         });
 
         html = html + header + '<ul>' + emotions + '</ul><ul>' + qualities + '</ul>';
@@ -294,8 +323,25 @@ function saveFrame(bucket,key,data,callback) {
 }
 
 function getTimestamp() {
-    let d = new date();
+    let d = new Date();
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+}
+
+function getYYYMMDDHHMMSS() {
+    var x = new Date();
+    var y = x.getFullYear().toString();
+    var m = (x.getMonth() + 1).toString();
+    var d = x.getDate().toString();
+    var hh = x.getHours().toString();
+    var mm = x.getMinutes().toString();
+    var ss = x.getSeconds().toString();
+    (d.length == 1) && (d = '0' + d);
+    (m.length == 1) && (m = '0' + m);
+    (hh.length == 1) && (hh = '0' + hh);
+    (mm.length == 1) && (mm = '0' + mm);
+    (ss.length == 1) && (ss = '0' + ss);
+    var res = y + m + d + hh + mm + ss;
+    return res;
 }
 
 function formatAlarmMessage(cameraName, labels) {
@@ -307,7 +353,7 @@ function formatAlarmBodyHeader() {
     return '<body>';
 }
 
-function formatAlarmBodyFoter(bucket, messageId) {
+function formatAlarmBodyFooter(bucket, messageId) {
     let path = 'https://s3.amazonaws.com/' + bucket + '/' + messageId; 
     return '<p><img src="' + path + '" width=\"640\"/></p></body>';
 }
@@ -335,6 +381,7 @@ exports.handler = function (event, context, callback) {
                 callback(null, null);
                 return;
             } 
+            let image = mail.attachments[0].content;
             console.log('Subject: ' + mail.subject);
             let cameraId = parseCameraId(mail.subject);
             if(cameraId === null) {
@@ -384,14 +431,24 @@ exports.handler = function (event, context, callback) {
                                 }
                                 console.log(data);  
                                 faces = data;
+
+                                console.log('cropping faces');
+                                saveFaces(image, faces, frameBucket, messageId, () =>
+                                {
+                                    console.log('saved faces');
+                                });
+
                                 console.log('sending an email');  
                                 let subject = formatAlarmMessage(camera.Name, labels);
                                 let body = formatAlarmBodyHeader() + 
                                     getFacesInfo(faces) + 
                                     formatAlarmBodyFooter(frameBucket, messageId);
-                                sendEmail(user.Email, subject, null, body, {});    
+                                sendEmail(user.Email, subject, '', body);    
+                                saveMotionData(user.Id, camera.Id, labels, messageId, faces);
                             });        
-                            saveFrame(frameBucket, messageId, mail.attachments[0].content, {});
+                            saveFrame(frameBucket, messageId, image, (err,data) => {
+                                console.log('uploaded');
+                            });
                         }
                     });    
                 });       

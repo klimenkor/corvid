@@ -6,7 +6,8 @@
   "dependencies": {
     "@angular/http": "^7.2.8",
     "aws-sdk": "^2.405.0",
-    "copy-dynamodb-table": "^2.0.14"
+    "copy-dynamodb-table": "^2.0.14",
+    "jimp": "^0.6.0"
   },
   "devDependencies": {},
   "scripts": {
