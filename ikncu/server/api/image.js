@@ -1,5 +1,6 @@
 let tableNames = require('./settings.js');
 let AWS = require('aws-sdk');
+var moment = require('moment');
 let s3 = new AWS.S3();
 let rekognition = new AWS.Rekognition();
 let docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
@@ -7,6 +8,7 @@ let simpleParser = require('mailparser').simpleParser;
 var Jimp = require('jimp');
 let uuidv1 = require('uuid/v1');
 AWS.config.update({region: 'us-east-1'});
+const s3url = 'https://s3.amazonaws.com/';
 
 console.log(tableNames.getName('UserDynamoDbARN'));
 
@@ -103,7 +105,7 @@ function saveObject(table, item, callback){
     return;
 }
 
-function saveMotionData(userId, cameraId, labels, key, faces) {
+function saveMotionData(userId, cameraId, labels, key, faces, utcOffset) {
     var labels_list = [];
 
     labels.forEach(label => {
@@ -152,9 +154,9 @@ function saveMotionData(userId, cameraId, labels, key, faces) {
         "Id": uuidv1(),
         "UserId": userId,
         "CameraId": cameraId,
-        "Occurred": parseInt(getYYYMMDDHHMMSS()),
+        "Occurred": parseInt(moment().utcOffset(utcOffset).format("YYYYMMDDhhmmss")),
         "Labels": labels,
-        "Faces": faces,
+        "Faces": facesList,
         "Frame": key
     }
     console.log('Saving new motion...');
@@ -272,22 +274,26 @@ function getAlarmLabels(enabled, detected) {
     return labels;
 }
 
-function initCollection(userid) {
+// function initCollection(userid) {
 
-}
+// }
 
-function indexFace(userId, bucket, frame) {
+// function indexFace(userId, bucket, frame) {
 
-}
+// }
 
-function getFacesInfo(faces) {
+function getFacesInfo(faces, bucket, key) {
     let html = "<ul>";
     let footer = '</ul><ul>';
+    let path = s3url + bucket + '/' + key; 
+
+    let i = 1     
     faces.forEach(face => {
-        let header = '<li><b>Face ' + face.Confidence + '%</b>';
+        html = html + '<table><tr><td><img src="' + path + '/' + i + '" width=\"50\"/></td><td>';
+        let header = '<li><b>Face ' + Math.round(parseFloat(face.Confidence)) + '%</b>';
         let emotions = '';
         face.Emotions.forEach(emotion => {
-            emotions = emotions + '<li>' + emotion.Type + ': ' + emotion.Confidence + '%</li>'
+            emotions = emotions + '<li>' + emotion.Type + ': ' + Math.round(parseFloat(emotion.Confidence)) + '%</li>'
         });
 
         let qualities = '';   
@@ -295,8 +301,10 @@ function getFacesInfo(faces) {
             qualities = qualities + '<li>' + item + ':' + face.Quality[item] + '</li>';
         });
 
-        html = html + header + '<ul>' + emotions + '</ul><ul>' + qualities + '</ul>';
+        photo = '<img src="' + path + '/' + i + '" width=\"50\"/>';
 
+        html = html + header + '<ul>' + emotions + '</ul><ul>' + qualities + '</ul></td></tr></table>';
+        i = i + 1;
     }); 
     html = html + footer;
     return html;
@@ -327,22 +335,22 @@ function getTimestamp() {
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
 }
 
-function getYYYMMDDHHMMSS() {
-    var x = new Date();
-    var y = x.getFullYear().toString();
-    var m = (x.getMonth() + 1).toString();
-    var d = x.getDate().toString();
-    var hh = x.getHours().toString();
-    var mm = x.getMinutes().toString();
-    var ss = x.getSeconds().toString();
-    (d.length == 1) && (d = '0' + d);
-    (m.length == 1) && (m = '0' + m);
-    (hh.length == 1) && (hh = '0' + hh);
-    (mm.length == 1) && (mm = '0' + mm);
-    (ss.length == 1) && (ss = '0' + ss);
-    var res = y + m + d + hh + mm + ss;
-    return res;
-}
+// function getYYYMMDDHHMMSS() {
+//     var x = new Date();
+//     var y = x.getFullYear().toString();
+//     var m = (x.getMonth() + 1).toString();
+//     var d = x.getDate().toString();
+//     var hh = x.getHours().toString();
+//     var mm = x.getMinutes().toString();
+//     var ss = x.getSeconds().toString();
+//     (d.length == 1) && (d = '0' + d);
+//     (m.length == 1) && (m = '0' + m);
+//     (hh.length == 1) && (hh = '0' + hh);
+//     (mm.length == 1) && (mm = '0' + mm);
+//     (ss.length == 1) && (ss = '0' + ss);
+//     var res = y + m + d + hh + mm + ss;
+//     return res;
+// }
 
 function formatAlarmMessage(cameraName, labels) {
     let labelsString = labels.join(',');
@@ -354,7 +362,7 @@ function formatAlarmBodyHeader() {
 }
 
 function formatAlarmBodyFooter(bucket, messageId) {
-    let path = 'https://s3.amazonaws.com/' + bucket + '/' + messageId; 
+    let path = s3url + bucket + '/' + messageId; 
     return '<p><img src="' + path + '" width=\"640\"/></p></body>';
 }
 
@@ -370,11 +378,11 @@ exports.handler = function (event, context, callback) {
         Key: messageId
        };
        s3.getObject(params, function(err, data) {
-         if (err) {
-             console.log(err, err.stack); 
-             callback(null,null);
-             return;
-         }
+        if (err) {
+            console.log(err, err.stack); 
+            callback(null,null);
+            return;
+        }
         simpleParser(data.Body, (err, mail) => {
             if(err){
                 console.log(err)
@@ -389,14 +397,15 @@ exports.handler = function (event, context, callback) {
                 return;
             }
             getObject('Camera', cameraId, (err, data) => {
-                if(err !== null || data === null) {
-                    callback(err, null);
+                if(err !== null || data === null || data === undefined) {
+                    callback(err, 'Camera is not registered');
                     return;
                 }
 
                 let camera = data;
                 getObject('User', camera.UserId, (err, data) => {
                     if(err !== null){
+                        callback(err, 'User is not registered');
                         callback(err, null);
                         return;
                     }
@@ -406,6 +415,8 @@ exports.handler = function (event, context, callback) {
                     console.log('Camera name = ' + camera.Name);        
                     console.log('Email = ' + user.Email);  
                     console.log(user.Labels);  
+
+                    let utcOffset = -420; /// should include int User
                     let enabledLabels = user.Labels;  
                     if(enabledLabels.length === 0)
                         return; // nothing to signal about
@@ -443,10 +454,10 @@ exports.handler = function (event, context, callback) {
                                     console.log('sending an email');  
                                     let subject = formatAlarmMessage(camera.Name, labels);
                                     let body = formatAlarmBodyHeader() + 
-                                        getFacesInfo(faces) + 
+                                        getFacesInfo(faces, frameBucket, messageId) + 
                                         formatAlarmBodyFooter(frameBucket, messageId);
                                     sendEmail(user.Email, subject, '', body);    
-                                    saveMotionData(user.Id, camera.Id, labels, messageId, faces);
+                                    saveMotionData(user.Id, camera.Id, detectedLabels, messageId, faces, utcOffset);
                                 });        
                             }
                         });  
