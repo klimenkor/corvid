@@ -410,47 +410,47 @@ exports.handler = function (event, context, callback) {
                     if(enabledLabels.length === 0)
                         return; // nothing to signal about
 
-                    console.log('detecting labels');  
-                    detectLabels(frameBucket, messageId, (err,data) => {
-                        if(err!==null) {
-                            callback(err);
-                            return;     
-                        }
-                        console.log(data);  
-                        let detectedLabels = data;
-
-                        console.log('getting configured labels');  
-                        let labels = getAlarmLabels(enabledLabels, detectedLabels);
-                        console.log(labels);
-                        if(labels.length>0) {
-                            console.log('detecting faces');  
-                            detectFaces(frameBucket, messageId, (err,data) => {
-                                if(err!==null) {
-                                    callback(err);
-                                    return;     
-                                }
-                                console.log(data);  
-                                faces = data;
-
-                                console.log('cropping faces');
-                                saveFaces(image, faces, frameBucket, messageId, () =>
-                                {
-                                    console.log('saved faces');
-                                });
-
-                                console.log('sending an email');  
-                                let subject = formatAlarmMessage(camera.Name, labels);
-                                let body = formatAlarmBodyHeader() + 
-                                    getFacesInfo(faces) + 
-                                    formatAlarmBodyFooter(frameBucket, messageId);
-                                sendEmail(user.Email, subject, '', body);    
-                                saveMotionData(user.Id, camera.Id, labels, messageId, faces);
-                            });        
-                            saveFrame(frameBucket, messageId, image, (err,data) => {
-                                console.log('uploaded');
-                            });
-                        }
-                    });    
+                    saveFrame(frameBucket, messageId, image, (err,data) => {
+                        console.log('uploaded');
+                        console.log('detecting labels');  
+                        detectLabels(frameBucket, messageId, (err,data) => {
+                            if(err!==null) {
+                                callback(err);
+                                return;     
+                            }
+                            console.log(data);  
+                            let detectedLabels = data;
+    
+                            console.log('getting configured labels');  
+                            let labels = getAlarmLabels(enabledLabels, detectedLabels);
+                            console.log(labels);
+                            if(labels.length>0) {
+                                console.log('detecting faces');  
+                                detectFaces(frameBucket, messageId, (err,data) => {
+                                    if(err!==null) {
+                                        callback(err);
+                                        return;     
+                                    }
+                                    console.log(data);  
+                                    faces = data;
+    
+                                    console.log('cropping faces');
+                                    saveFaces(image, faces, frameBucket, messageId, () =>
+                                    {
+                                        console.log('saved faces');
+                                    });
+    
+                                    console.log('sending an email');  
+                                    let subject = formatAlarmMessage(camera.Name, labels);
+                                    let body = formatAlarmBodyHeader() + 
+                                        getFacesInfo(faces) + 
+                                        formatAlarmBodyFooter(frameBucket, messageId);
+                                    sendEmail(user.Email, subject, '', body);    
+                                    saveMotionData(user.Id, camera.Id, labels, messageId, faces);
+                                });        
+                            }
+                        });  
+                    });
                 });       
             });
         })
