@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ecorvid/d10da8b1a33dee5a03a7cefd900cd51d
+      CodeUri: s3://ecorvid/7bffa09458aaf8c817ff25e9285a9ebf
       Events:
         CameraByUser:
           Properties:
@@ -869,9 +869,10 @@ Resources:
       StageName: live
     Type: AWS::Serverless::Api
   IkncuImageFunction:
+    FunctionName: ikncu-IkncuImage-Function
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ecorvid/d10da8b1a33dee5a03a7cefd900cd51d
+      CodeUri: s3://ecorvid/7bffa09458aaf8c817ff25e9285a9ebf
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:
@@ -939,19 +940,21 @@ Resources:
       - PolicyDocument:
           Statement:
           - Action:
-            - s3:PutObject
             - s3:GetObject
             Effect: Allow
-            Resource:
-            - arn:aws:s3:::corvid-frames/*
-            - arn:aws:s3:::ecorvid/*
-            - arn:aws:s3:::corvid-mail/*
+            Resource: arn:aws:s3:::ikncu-mail/*
+          Version: '2012-10-17'
+        PolicyName: IkncuS3BucketMailAccess
+      - PolicyDocument:
+          Statement:
           - Action:
             - s3:GetObject
+            - s3:PutObject
             Effect: Allow
-            Resource: arn:aws:s3:::corvid-mailbox/*
+            Resource:
+            - arn:aws:s3:::ikncu-frames/*
           Version: '2012-10-17'
-        PolicyName: S3BucketWriteAccess
+        PolicyName: IkncuS3BucketFramesAccess
       - PolicyDocument:
           Statement:
           - Action:
@@ -963,7 +966,7 @@ Resources:
             Effect: Allow
             Resource: '*'
           Version: '2012-10-17'
-        PolicyName: RekognitionAccess
+        PolicyName: IkncuRekognitionAccess
       - PolicyDocument:
           Statement:
           - Action:
@@ -979,7 +982,7 @@ Resources:
                 - Ref: AWS::AccountId
                 - table/*
           Version: '2012-10-17'
-        PolicyName: DynamoDBRekognitionWriteAccess
+        PolicyName: IkncuDynamoDBRekognitionWriteAccess
       - PolicyDocument:
           Statement:
           - Action:
@@ -995,8 +998,20 @@ Resources:
                 - Ref: AWS::AccountId
                 - log-group:/aws/lambda/*:*:*
           Version: '2012-10-17'
-        PolicyName: CloudWatchWriteAccess
+        PolicyName: IkncuCloudWatchWriteAccess
     Type: AWS::IAM::Role
+  LambdaInvokePermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - IkncuImageFunction
+        - Arn
+      Principal: s3.amazonaws.com
+      SourceAccount:
+        Ref: AWS::AccountId
+      SourceArn: arn:aws:s3:::ikncu-mail
+    Type: AWS::Lambda::Permission
   MotionTable:
     Properties:
       AttributeDefinitions:

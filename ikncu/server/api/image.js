@@ -6,7 +6,6 @@ let docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 let simpleParser = require('mailparser').simpleParser;
 var Jimp = require('jimp');
 let uuidv1 = require('uuid/v1');
-
 AWS.config.update({region: 'us-east-1'});
 
 console.log(tableNames.getName('UserDynamoDbARN'));
@@ -189,6 +188,7 @@ function detectLabels(bucket, key, callback) {
         MaxLabels: maxLabels,
         MinConfidence: minConfidence
     };
+    console.log(param);
     rekognition.detectLabels(param,(err,data)=>{
         if(err!==null){
             callback(err,null);
@@ -359,7 +359,7 @@ function formatAlarmBodyFooter(bucket, messageId) {
 }
 
 exports.handler = function (event, context, callback) {
-    const frameBucket = 'corvid-frames';
+    const frameBucket = 'ikncu-frames';
     const item = event.Records[0].s3;
     const mailBucket = item.bucket.name;
     const messageId = item.object.key;
