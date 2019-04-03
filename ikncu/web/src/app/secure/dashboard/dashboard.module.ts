@@ -17,6 +17,7 @@ import { FrameViewComponent } from '../components/common/frame-view/frame-view.c
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Ng5SliderModule } from 'ng5-slider';
 import { FaceViewComponent } from '../components/common/face-view/face-view.component';
+import { TimelineComponent } from './timeline/timeline.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { FaceViewComponent } from '../components/common/face-view/face-view.comp
     DashboardComponent,
     MotionComponent,
     FaceComponent,
+    TimelineComponent,
     ImageViewComponent,
     CloudViewComponent,
     FaceButtonComponent,

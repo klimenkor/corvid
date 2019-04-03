@@ -8,12 +8,18 @@
         <div class="card-block">
           <ngb-tabset>
 
+            <ngb-tab title="Timeline">
+                <ng-template ngbTabContent>
+                    <app-dashboard-timeline></app-dashboard-timeline>
+                </ng-template>
+            </ngb-tab>
+
             <ngb-tab title="Motion">
               <ng-template ngbTabContent>
                 <app-dashboard-motion></app-dashboard-motion>
               </ng-template>
             </ngb-tab>
-
+            
             <ngb-tab title="Faces">
               <ng-template ngbTabContent>
                 <app-dashboard-face></app-dashboard-face>
