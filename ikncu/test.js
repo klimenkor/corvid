@@ -64,6 +64,6 @@ var moment = require('moment');
   
 // const d = new Date();
 // console.log(moment().utcOffset());
-// console.log(moment().utcOffset(-420).format("YYYYMMDDhhmmss"));
+console.log(moment().format("YYYYMMDDHHmmss"));
 
-console.log(Math.round(parseFloat('12121.1212111212')))
+//console.log(Math.round(parseFloat('12121.1212111212')))
