@@ -1,0 +1,13 @@
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "FaceDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiFaceByUser",
+        "KeyConditionExpression": "UserId = :hkey",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey')"
+        }
+    }
+}
+

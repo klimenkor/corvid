@@ -1,0 +1,19 @@
+#set($inputRoot : $input.path('$'))
+{ 
+ "operation": "image",
+ "sourceBucket": $input.json('SourceBucket'), 
+ "destinationBucket": $input.json('DestinationBucket'), 
+ "sourceFile": $input.json('$.SourceFile'), 
+ "destinationFile": $input.json('$.DestinationFile'), 
+ "width" : $input.json('$.Width'),
+ "height" : $input.json('$.Height')
+}
+
+{
+    "SourceBucket" : "corvid-frames",
+    "DestinationBucket" : "corvid-faces",
+    "SourceFile" : "source",
+    "DestinationFile" : "dest",
+    "Width" : "600",
+    "Height" : "400"    
+}

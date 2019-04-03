@@ -1,0 +1,50 @@
+#set($inputRoot = $input.path('$')){ 
+    "operation": "create",
+    "table": "UserDynamoDbARN",
+    "payload": {      
+        "Item" : {          
+            "Id" : $input.json('$.id'),
+            "TierId" : $input.json('$.tierId'),
+            "Name" : $input.json('$.name'),
+            "Email" : $input.json('$.email'),
+            "Labels": $input.json('$.labels'),
+            "Created": $input.json('$.created')
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+ "table": "UserDynamoDbARN",
+ "operation": "read",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+ "table": "UserDynamoDbARN",
+ "operation": "delete",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "UserDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiUserByTierCreated",
+        "KeyConditionExpression": "TierId = :hkey and Created > :rkey",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey')",
+            ":rkey": "$input.params('rkey')"
+        }
+    }
+}

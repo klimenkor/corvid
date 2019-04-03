@@ -1,0 +1,29 @@
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "MotionDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiMotionByUserOccurred",
+        "KeyConditionExpression": "UserId = :hkey and Occurred between :rkey1 and :rkey2",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey')",
+            ":rkey1": $input.params('rkey1'),
+            ":rkey2": $input.params('rkey2')
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "MotionDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiMotionByCameraOccurred",
+        "KeyConditionExpression": "CameraId = :hkey and Occurred between :rkey1 and :rkey2",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey')",
+            ":rkey1": $input.params('rkey1'),
+            ":rkey2": $input.params('rkey2')
+        }
+    }
+}
