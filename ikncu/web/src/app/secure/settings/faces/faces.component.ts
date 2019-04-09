@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import * as shortid from 'node_modules/shortid';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUserService } from 'src/app/service/common/current-user.service';
 import { CurrentUser, IFace, IFaceResult, IFacesResult } from 'src/app/model/_index';
 import { FaceService } from 'src/app/service/data/Face.service';
 import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
+import { UserService } from 'src/app/service/data/user.service';
 
 @Component({
   selector: 'app-settings-faces',
@@ -25,26 +24,30 @@ export class FacesComponent implements OnInit {
           list: [{title: 'Family and friends', value: '1'}, {title: 'Utilities', value: '2'}, {title: 'Unknown', value: '4'}]
         }
       },
-      Frame: {
-        title: 'Frame',
+      Name: {
+        title: 'Name',
         filter: false,
-        type: 'custom',
-        renderComponent: FaceViewComponent
+        type: 'string'
       }
+    },
+    add: {
+      addButtonContent: '<div class="btn btn-outline-primary btn-round btn-block"><i class="ft-plus"></i></div>',
+      createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
+      confirmCreate: true
+    },
+    edit: {
+      editButtonContent: '<div class="btn btn-outline-success btn-round"><i class="ft-edit-3"></i></div>',
+      saveButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
+      confirmCreate: false
+    },
+    delete: {
+      deleteButtonContent: '<div class="btn btn-outline-success btn-round"><i class="ft-trash-2"></i></div>',
+      confirmDelete: true
     },
     attr: {
       class: 'table table-responsive'
-    },
-    edit: {
-      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-      confirmSave: true
-    },
-    delete: {
-      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
-      confirmDelete: true
-    },
-    add: {
-      confirmCreate: true
     }
   };
 
@@ -53,7 +56,7 @@ export class FacesComponent implements OnInit {
 
   constructor(
     private spinner: NgxSpinnerService,
-    private currentUserService: CurrentUserService,
+    private userService: UserService,
     private faceService: FaceService
   ) { }
 
@@ -61,10 +64,10 @@ export class FacesComponent implements OnInit {
     console.log('FacesComponent.ngOnInit');
     this.spinner.show();
 
-    this.currentUserService.Initialize(() => {
-      this.currentUser = this.currentUserService.User;
+    this.userService.Get().subscribe(() => {
       this.faceService.Get().subscribe(
         (result: IFacesResult) => {
+          console.log(result.Items)
           this.source = result.Items;
           this.spinner.hide();
         });

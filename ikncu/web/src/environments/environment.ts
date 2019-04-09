@@ -10,10 +10,12 @@ export const environment = {
   ssl: true,
 
   region: 'us-east-1',
+  s3url: 'https://s3.amazonaws.com/',
   identityPoolId: 'us-east-1:1aaa072e-635b-43b6-90c8-ffc8985bea4d',
   userPoolId: 'us-east-1_2UAv3TYR1',
   clientId: '3j892k1a89fc3672050jcs0hqm',
   rekognitionBucket: 'ikncu-frames',
+  facesBucket: 'ikncu-faces',
   albumName: '',
   bucketRegion: 'us-east-1',
 

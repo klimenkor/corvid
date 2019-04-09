@@ -20,19 +20,24 @@ export class LabelsComponent implements OnInit {
         filter: false,
       }
     },
-    attr: {
-      class: 'table table-responsive'
+    add: {
+      addButtonContent: '<div class="btn btn-outline-primary btn-round btn-block"><i class="ft-plus"></i> Add new label</div>',
+      createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
+      confirmCreate: true
     },
     edit: {
-      editButtonContent: '<i class="ft-edit-2 info font-medium-1 mr-2"></i>',
-      confirmSave: true
+      editButtonContent: '<div class="btn btn-outline-primary btn-round"><i class="ft-edit-3"></i></div>',
+      saveButtonContent: '<div class="btn btn-outline-success btn-sm"><i class="ft-check"></i></div>',
+      cancelButtonContent: '<div class="btn btn-outline-danger btn-sm"><i class="ft-x"></i></div>',
+      confirmCreate: false
     },
     delete: {
-      deleteButtonContent: '<i class="ft-x danger font-medium-1 mr-2"></i>',
+      deleteButtonContent: '<div class="btn btn-outline-primary btn-round"><i class="ft-trash-2"></i></div>',
       confirmDelete: true
     },
-    add: {
-      confirmCreate: true
+    attr: {
+      class: 'table table-responsive'
     }
   };
 
@@ -53,14 +58,16 @@ export class LabelsComponent implements OnInit {
 
   async ngOnInit() {
     console.log('BasicComponent.ngOnInit');
+    this.spinner.show();
 
     this.userService.Get().subscribe((result: IUserResult) => {
         this.currentUser = result.Item;
         this.source = new LocalDataSource(
-            this.currentUser.Labels.map((name) => {
-               return { Name: name };
-            }));
-      });
+          this.currentUser.Labels.map((name) => {
+              return { Name: name };
+          }));
+          this.spinner.hide();
+        });
   }
 
   onDeleteConfirm(event) {

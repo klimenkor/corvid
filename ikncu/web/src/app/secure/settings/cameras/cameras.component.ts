@@ -18,65 +18,53 @@ import { UserService } from 'src/app/service/data/user.service';
 export class CamerasComponent implements OnInit {
 
     settings = {
-        add: {
-            addButtonContent: '<div class="btn btn-outline-primary"><i class="ft-plus"></i> Add new camera</div>',
-            createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
-            cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
-            confirmCreate: true
+      columns: {
+        copy: {
+          title: 'Camera token',
+          filter: false,
+          sort: false,
+          type: 'custom',
+          editable: false,
+          renderComponent: ButtonViewComponent,
+          onComponentInitFunction: (instance) => {
+            instance.save.subscribe(row => {
+                console.log('!!!');
+            });
+          }
         },
-        edit: {
-            editButtonContent: '<i class="ft-edit-3"></i>',
-            saveButtonContent: '<div class="btn btn-outline-success btn-sm"><i class="ft-check"></i></div>',
-            cancelButtonContent: '<div class="btn btn-outline-danger btn-sm"><i class="ft-x"></i></div>',
-            confirmCreate: false
+        Name: {
+            title: 'Name',
+            filter: false,
         },
-        delete: {
-            deleteButtonContent: '<i class="ft-trash-2"></i>',
-            confirmDelete: true
-        },
-        columns: {
-            copy: {
-                title: 'Camera token',
-                filter: false,
-                sort: false,
-                type: 'custom',
-                editable: false,
-                renderComponent: ButtonViewComponent,
-                onComponentInitFunction: (instance) => {
-                instance.save.subscribe(row => {
-                    console.log('!!!');
-                });
-                }
+        Active: {
+            title: 'Active',
+            filter: false,
+            type: 'custom',
+            editor: {
+            type: 'checkbox'
             },
-            Name: {
-                title: 'Name',
-                filter: false,
-            },
-            Active: {
-                title: 'Active',
-                filter: false,
-                type: 'custom',
-                editor: {
-                type: 'checkbox'
-                },
-                renderComponent: CheckboxViewComponent,
-                // onComponentInitFunction: (instance) => {
-                //   instance.save.subscribe(row => {
-                //     this.save(
-                //       <UpdateCameraInput>{
-                //         id: row.id,
-                //         name: row.name,
-                //         active: row.active,
-                //         userId: row.userId
-                //       },
-                //       () => { });
-                //   });
-                // }
-            }
-        },
-        attr: {
-          class: 'table table-responsive'
+            renderComponent: CheckboxViewComponent
         }
+      },
+      add: {
+        addButtonContent: '<div class="btn btn-outline-primary btn-round btn-block"><i class="ft-plus"></i></div>',
+        createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
+        cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
+        confirmCreate: true
+      },
+      edit: {
+        editButtonContent: '<div class="btn btn-outline-primary btn-round"><i class="ft-edit-3"></i></div>',
+        saveButtonContent: '<div class="btn btn-outline-success btn-sm"><i class="ft-check"></i></div>',
+        cancelButtonContent: '<div class="btn btn-outline-danger btn-sm"><i class="ft-x"></i></div>',
+        confirmCreate: false
+      },
+      delete: {
+        deleteButtonContent: '<div class="btn btn-outline-primary btn-round"><i class="ft-trash-2"></i></div>',
+        confirmDelete: true
+      },
+      attr: {
+        class: 'table table-responsive'
+      }
     };
 
     source = [];

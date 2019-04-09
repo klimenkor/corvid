@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class ImageViewComponent implements OnInit {
 
   constructor() {}
-  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
+  bucketPath = environment.s3url + environment.rekognitionBucket + '/';
 
   frameUrl: string;
 
