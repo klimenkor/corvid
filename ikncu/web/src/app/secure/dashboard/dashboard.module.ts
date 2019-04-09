@@ -9,7 +9,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { UiSwitchModule } from 'ngx-ui-switch';
 import { ImageViewComponent } from '../components/common/image-view/image-view.component';
-import { FaceComponent } from './face/face.component';
 import { CloudViewComponent } from '../components/common/cloud-view/cloud-view.component';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { FaceButtonComponent } from '../components/common/face-button/face-button.component';
@@ -38,7 +37,6 @@ import { TimelineComponent } from './timeline/timeline.component';
   declarations: [
     DashboardComponent,
     MotionComponent,
-    FaceComponent,
     TimelineComponent,
     ImageViewComponent,
     CloudViewComponent,
@@ -54,7 +52,6 @@ import { TimelineComponent } from './timeline/timeline.component';
     ImageViewComponent,
     CloudViewComponent,
     FaceButtonComponent,
-    FaceViewComponent,
     FrameViewComponent
   ]
 })

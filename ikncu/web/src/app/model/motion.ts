@@ -54,6 +54,21 @@ export interface IMotion {
   Faces: IDetectedFace[];
 }
 
+export interface ILabelCloud {
+  text: string;
+  weight: number;
+  link: string;
+}
+
+export interface IMotionView {
+  Id: string;
+  Camera: string;
+  Occurred: string;
+  Frame: string;
+  Labels: ILabelCloud[];
+  Faces: IDetectedFace[];
+}
+
 export interface IMotionResult {
   Item: IMotion;
 }

@@ -1,14 +1,10 @@
-import { Component, AfterViewInit, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUser, IMotionsResult, ICamera, ICamerasResult } from 'src/app/model/_index';
+import { CurrentUser, IMotionsResult, ICamera, ICamerasResult, ILabelCloud, IMotionView, IDetectedFace } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
-import { ImageViewComponent } from '../../components/common/image-view/image-view.component';
 import { LocalDataSource } from 'ng2-smart-table';
-import { CloudViewComponent } from '../../components/common/cloud-view/cloud-view.component';
-import { FaceButtonComponent } from '../../components/common/face-button/face-button.component';
-import { UserService } from 'src/app/service/data/user.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { CameraService } from 'src/app/service/data/camera.service';
@@ -40,52 +36,14 @@ import { Options } from 'ng5-slider';
 })
 export class MotionComponent implements OnInit {
 
-  settings = {
-    columns: {
-      Occurred: {
-        title: 'Time',
-        filter: false,
-        sortDirection: 'desc',
-        width: '30%'
-      },
-      Camera: {
-        title: 'Camera',
-        filter: false,
-        width: '30%'
-      },
-      Frame: {
-        title: 'Frame',
-        filter: false,
-        type: 'custom',
-        renderComponent: ImageViewComponent
-      },
-      Labels: {
-        title: '',
-        filter: false,
-        type: 'custom',
-        renderComponent: CloudViewComponent
-      },
-      Faces: {
-        title: '',
-        filter: false,
-        type: 'custom',
-        renderComponent: FaceButtonComponent
-      }
-    },
-    actions: {
-      add: false,
-      edit: false,
-      delete: false,
-      custom: false,
-      position:  'left',
-    },
-    attr: {
-      class: 'table table-responsive'
-    }
-  };
-
   source: LocalDataSource;
+  motions: Array<IMotionView> = new Array<IMotionView>();
+  currentFrame: string;
+  currentFaces: IDetectedFace[];
+  showFrame = false;
 
+  showCloud = true;
+  showCloudtext = 'Show images';
   currentUser: CurrentUser;
   fromDate: NgbDate;
   toDate: NgbDate;
@@ -109,6 +67,20 @@ export class MotionComponent implements OnInit {
     this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
+  onClick(motion: IMotionView){
+    this.showFrame = true;
+    this.currentFrame = motion.Frame;
+    this.currentFaces = motion.Faces;
+
+    console.log(motion);
+  }
+
+  onClickCurrentFrame(){
+    this.showFrame = false;
+    console.log('clicked!')
+  }
+
+
   constructor(
     private spinner: NgxSpinnerService,
     private authService: AuthService,
@@ -117,6 +89,12 @@ export class MotionComponent implements OnInit {
     private calendar: NgbCalendar) {
       this.selectToday();
     }
+
+  onShowCloudChange() {
+    this.showCloud = !this.showCloud;
+    this.showCloudtext = this.showCloud ? 'Show images' : 'Show cloud';
+    console.log(this.showCloud)
+  }
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
@@ -147,23 +125,27 @@ export class MotionComponent implements OnInit {
 
     this.motionService.GetByUser(fromDate, toDate,
       (response: IMotionsResult) => {
-        const list = [];
-        response.Items.forEach(item => {
-          list.push({
+        this.motions = [];
+        response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
+
+          const labels = new Array<ILabelCloud>();
+          item.Labels.forEach(element => {
+            if (element.Confidence > 50) {
+              labels.push({text: element.Name, weight: element.Confidence, link: '/securehome/settings'});
+            }
+          });
+
+          this.motions.push({
             Id: item.Id,
             Camera: this.cameraName(item.CameraId),
             Occurred: this.timeOfTheDay(item.Occurred),
-            Frame: JSON.stringify({
-              Url: item.Frame,
-              Faces: item.Faces
-            }),
-            Labels: JSON.stringify(item.Labels),
-            Faces: JSON.stringify(item.Faces)
+            Frame: item.Frame,
+            Labels: labels,
+            Faces: item.Faces
           });
           // this.spinner.hide();
         });
-        // console.log(list.length);
-        this.source = new LocalDataSource(list);
+        console.log('loaded ' + this.motions);
         this.spinner.hide();
     });
   }

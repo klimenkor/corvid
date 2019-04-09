@@ -1,39 +1,56 @@
 <section id="simple">
-  <div class="row">
-    <form class="form-inline">
-        <div class="form-group">
-            <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="onDateSelection($event)"
-                      name="dp" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
-              <div class="input-group-append">
-                  <button class="btn btn-outline-secondary calendar" (click)="d.toggle()"></button>
-                  <button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Today</button>
-              </div>
-              <ng5-slider
-                [(value)]="this.fromHour"
-                (userChangeEnd)="this.onSliderChange()"
-                [(highValue)]="this.toHour"
-                [options]="this.options">
-              </ng5-slider>
-            </div>
+  <div *ngIf="!showFrame">
+    <div class="row">
+      <div class="col-12">
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="onDateSelection($event)" name="dp" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
+          <div class="input-group-text" (click)="d.toggle()">
+            <i class="fa fa-calendar" style="cursor: pointer;"></i>
+          </div>
+          <button class="btn btn-sm btn-outline-primary" (click)="selectToday()">Today</button>
         </div>
-    </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+          <button (click)="onShowCloudChange()" class="btn btn-outline-primary btn-lg btn-block">{{showCloudtext}}</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="input-group">
+          <ng5-slider
+            [(value)]="this.fromHour"
+            (userChangeEnd)="this.onSliderChange()"
+            [(highValue)]="this.toHour"
+            [options]="this.options">
+          </ng5-slider>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="row text-left">
-      <div class="col-sm-12">
-          <div class="card">
-              <div class="card-body">
-                  <div class="card-block">
-                      <ng2-smart-table
-                          [source]="source"
-                          [settings]="settings">
-                      </ng2-smart-table>
-                  </div>
-              </div>
-          </div>
-      </div>
+  <div *ngIf="showFrame">
+    <app-frame-view [frame]="currentFrame" [faces]="currentFaces" (click)="onClickCurrentFrame()"></app-frame-view>
   </div>
+
+  <div class="col-12" *ngIf="!showFrame">
+    <div class="card" *ngFor="let motion of motions">
+        <div class="card-body">
+          <div class="card-block">
+            <h4 class="card-title">{{motion.Camera}}</h4>
+            <h6 class="card-subtitle text-muted">{{motion.Occurred}}</h6>
+            <div class="card-img">
+              <app-image-view *ngIf="!showCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+              <app-cloud-view *ngIf="showCloud" [data]="motion.Labels"></app-cloud-view>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
 </section>
 
 

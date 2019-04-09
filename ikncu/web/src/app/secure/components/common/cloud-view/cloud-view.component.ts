@@ -1,38 +1,42 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
-import { ViewCell } from 'ng2-smart-table';
-import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
+import { Component, Input } from '@angular/core';
+import { CloudData, CloudOptions, ZoomOnHoverOptions } from 'angular-tag-cloud-module';
 
 @Component({
   selector: 'app-cloud-view',
+  styleUrls: ['cloud-view.component.css'],
   template: `
+    <div>
       <angular-tag-cloud
         [data]="data"
         [width]="options.width"
         [height]="options.height"
-        [overflow]="options.overflow">
+        [zoomOnHover]="options.zoomOnHover"
+        [overflow]="options.overflow"
+        >
       </angular-tag-cloud>
+    </div>
   `
 })
-export class CloudViewComponent implements ViewCell, OnInit {
+export class CloudViewComponent {
   options: CloudOptions = {
-    // if width is between 0 and 1 it will be set to the size of the upper element multiplied by the value
-    width : 300,
+    width : 0.8,
     height : 200,
     overflow: false,
+    realignOnResize: true,
+    zoomOnHover: {
+      scale: 1.3,
+      transitionTime: 1.2,
+      color: '#aaaaaa'
+    }
   };
 
-  data: CloudData[] = [];
+  @Input() data: CloudData[];
 
-  @Input() value: string;
-  @Input() rowData: any;
+  zoomOnHoverOptions: ZoomOnHoverOptions = {
+    scale: 1.3, // Elements will become 130 % of current zize on hover
+    transitionTime: 1.2, // it will take 1.2 seconds until the zoom level defined in scale property has been reached
+    delay: 0.8 // Zoom will take affect after 0.8 seconds
+  };
 
-  @Output() save: EventEmitter<any> = new EventEmitter();
-
-  ngOnInit() {
-    JSON.parse(this.value).forEach(element => {
-      this.data.push({text: element.Name, weight: element.Confidence, link: '/securehome/settings'});
-    });
-  }
 }
 

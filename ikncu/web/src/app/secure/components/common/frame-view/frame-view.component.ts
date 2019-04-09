@@ -1,7 +1,7 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, Output, EventEmitter } from '@angular/core';
 import { IDetectedFace } from 'src/app/model/motion';
 import { Float } from 'aws-sdk/clients/comprehendmedical';
+import { environment } from 'src/environments/environment';
 
 export interface DialogData {
   url: string;
@@ -14,13 +14,16 @@ export interface DialogData {
     styleUrls: ['./frame-view.component.css']
 })
 export class FrameViewComponent implements AfterViewInit {
-  constructor(
-    public dialogRef: MatDialogRef<FrameViewComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor() { }
+
+  @Input() frame: string;
+  @Input() faces: IDetectedFace[];
+  @Output() click: EventEmitter<any> = new EventEmitter();
+
+  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
 
   width = 800;
   height = 600;
-  frameUrl: string;
 
   @ViewChild('canvas') public canvas: ElementRef;
   private cx: CanvasRenderingContext2D;
@@ -28,7 +31,7 @@ export class FrameViewComponent implements AfterViewInit {
   getEmotions(face: IDetectedFace){
     let result = '';
     face.Emotions.forEach(element => {
-      if(element.Confidence>50)
+      if (element.Confidence > 50)
       {
         result += element.Type + ' ';
       }
@@ -100,7 +103,7 @@ export class FrameViewComponent implements AfterViewInit {
       (this.canvas.nativeElement as HTMLCanvasElement).width = w;
       (this.canvas.nativeElement as HTMLCanvasElement).height = h;
       this.cx.drawImage(img, 0, 0, w, h);
-      this.data.Faces.forEach(face => {
+      this.faces.forEach(face => {
         const box = face.Box;
 
         this.printDetails(this.cx, w as Float, h as Float, face);
@@ -111,12 +114,10 @@ export class FrameViewComponent implements AfterViewInit {
 
       });
     };
-    img.src = this.data.Url;
+    img.src = this.bucketPath + this.frame;
 
   }
 
-  onCloseClick(): void {
-    this.dialogRef.close();
-  }
+  // }
 }
 
