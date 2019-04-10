@@ -10,7 +10,6 @@ import { CloudData, CloudOptions, ZoomOnHoverOptions } from 'angular-tag-cloud-m
         [data]="data"
         [width]="options.width"
         [height]="options.height"
-        [zoomOnHover]="options.zoomOnHover"
         [overflow]="options.overflow"
         >
       </angular-tag-cloud>
@@ -23,11 +22,11 @@ export class CloudViewComponent {
     height : 200,
     overflow: false,
     realignOnResize: true,
-    zoomOnHover: {
-      scale: 1.3,
-      transitionTime: 1.2,
-      color: '#aaaaaa'
-    }
+    // zoomOnHover: {
+    //   scale: 1.3,
+    //   transitionTime: 1.2,
+    //   color: '#aaaaaa'
+    // }
   };
 
   @Input() data: CloudData[];

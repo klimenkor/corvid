@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { CameraService } from 'src/app/service/data/camera.service';
 import { Options } from 'ng5-slider';
+import { CloudData } from 'angular-tag-cloud-module';
+import { collectExternalReferences } from '@angular/compiler';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -128,10 +130,10 @@ export class MotionComponent implements OnInit {
         this.motions = [];
         response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
 
-          const labels = new Array<ILabelCloud>();
+          const labels = new Array<CloudData>();
           item.Labels.forEach(element => {
             if (element.Confidence > 50) {
-              labels.push({text: element.Name, weight: element.Confidence, link: '/securehome/settings'});
+              labels.push({text: element.Name, weight: Math.round(element.Confidence / 10), link: '/securehome/settings', color: 'red'});
             }
           });
 
@@ -145,7 +147,7 @@ export class MotionComponent implements OnInit {
           });
           // this.spinner.hide();
         });
-        console.log('loaded ' + this.motions);
+        console.log(this.motions);
         this.spinner.hide();
     });
   }

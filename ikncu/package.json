@@ -5,6 +5,7 @@
   "main": "handler.js",
   "dependencies": {
     "@angular/http": "^7.2.8",
+    "angular-tag-cloud-module": "^3.4.2",
     "aws-sdk": "^2.405.0",
     "copy-dynamodb-table": "^2.0.14",
     "jimp": "^0.6.0",

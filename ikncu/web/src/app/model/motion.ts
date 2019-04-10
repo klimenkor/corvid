@@ -1,3 +1,5 @@
+import { CloudData } from 'angular-tag-cloud-module';
+
 export interface ILabel {
   Name: string;
   Confidence: number;
@@ -58,6 +60,7 @@ export interface ILabelCloud {
   text: string;
   weight: number;
   link: string;
+  tooltip: string;
 }
 
 export interface IMotionView {
@@ -65,7 +68,7 @@ export interface IMotionView {
   Camera: string;
   Occurred: string;
   Frame: string;
-  Labels: ILabelCloud[];
+  Labels: CloudData[];
   Faces: IDetectedFace[];
 }
 
