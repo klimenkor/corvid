@@ -16,7 +16,10 @@ import { TiersComponent } from './tiers/tiers.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CheckboxViewComponent } from '../components/common/checkbox-view/checkbox-view.component';
 import { ButtonViewComponent } from '../components/common/button-view/button-view.component';
-
+import { MatTabsModule } from '@angular/material/tabs';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { CategoryViewComponent } from '../components/common/category-view/category-view.component';
 
 @NgModule({
   imports: [
@@ -30,7 +33,11 @@ import { ButtonViewComponent } from '../components/common/button-view/button-vie
       size: 'medium',
       checkedLabel: 'yes',
       uncheckedLabel: 'no'
-    })
+    }),
+    MatTabsModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    AppRoutingModule
   ],
   declarations: [
     SettingsComponent,
@@ -40,6 +47,7 @@ import { ButtonViewComponent } from '../components/common/button-view/button-vie
     FacesComponent,
     TiersComponent,
     CheckboxViewComponent,
+    CategoryViewComponent,
     ButtonViewComponent
   ],
   providers: [
@@ -47,6 +55,7 @@ import { ButtonViewComponent } from '../components/common/button-view/button-vie
   ],
   entryComponents: [
     CheckboxViewComponent,
+    CategoryViewComponent,
     ButtonViewComponent
   ]
 })

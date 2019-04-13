@@ -1,8 +1,9 @@
 export interface IUser {
   Id: string;
   TierId: string;
-  Email: string;
   Name: string;
+  Email: string;
+  UtcOffset: string;
   Labels?: Array< string | null > | null;
   Created: Date;
 }

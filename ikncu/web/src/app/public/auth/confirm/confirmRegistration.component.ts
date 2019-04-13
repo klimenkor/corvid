@@ -64,9 +64,9 @@ export class RegistrationConfirmationComponent implements OnInit, OnDestroy {
             } as IUser, {});
 
             // move to the next step
-            console.log('Moving to securehome');
+            console.log('Moving to home');
             // this.configs.curUser = result.user;
-            this.router.navigate(['/securehome']);
+            this.router.navigate(['/home']);
         }
     }
 }

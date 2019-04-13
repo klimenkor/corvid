@@ -16,20 +16,20 @@ export class AboutComponent {
     selector: 'awscognito-angular2-app',
     templateUrl: './landinghome.html'
 })
-export class HomeLandingComponent {
+export class PublicHomeLandingComponent {
     constructor() {
-        console.log('HomeLandingComponent constructor');
+        console.log('PublicHomeLandingComponent constructor');
     }
 }
 
 @Component({
     selector: 'awscognito-angular2-app',
-    templateUrl: './home.html'
+    templateUrl: './publicHome.html'
 })
-export class HomeComponent implements OnInit {
+export class PublicHomeComponent implements OnInit {
 
     constructor() {
-        console.log('HomeComponent constructor');
+        console.log('PublicHomeComponent constructor');
     }
 
     ngOnInit() {

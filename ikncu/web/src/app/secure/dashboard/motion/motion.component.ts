@@ -131,9 +131,11 @@ export class MotionComponent implements OnInit {
         response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
 
           const labels = new Array<CloudData>();
+          let tagsNumber = 0;
           item.Labels.forEach(element => {
-            if (element.Confidence > 50) {
-              labels.push({text: element.Name, weight: Math.round(element.Confidence / 10), link: '/securehome/settings', color: 'red'});
+            if (element.Confidence > 50 && tagsNumber <5 ) {
+              labels.push({text: element.Name, weight: Math.round(element.Confidence / 10), link: '/home/settings/labels', color: 'red'});
+              tagsNumber++;
             }
           });
 

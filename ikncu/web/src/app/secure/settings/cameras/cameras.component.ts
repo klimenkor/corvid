@@ -19,8 +19,21 @@ export class CamerasComponent implements OnInit {
 
     settings = {
       columns: {
+        Name: {
+            title: 'Name',
+            filter: false,
+        },
+        Active: {
+            title: 'Active',
+            filter: false,
+            type: 'custom',
+            editor: {
+              type: 'checkbox'
+            },
+            renderComponent: CheckboxViewComponent
+        },
         copy: {
-          title: 'Camera token',
+          title: 'Token',
           filter: false,
           sort: false,
           type: 'custom',
@@ -31,19 +44,6 @@ export class CamerasComponent implements OnInit {
                 console.log('!!!');
             });
           }
-        },
-        Name: {
-            title: 'Name',
-            filter: false,
-        },
-        Active: {
-            title: 'Active',
-            filter: false,
-            type: 'custom',
-            editor: {
-            type: 'checkbox'
-            },
-            renderComponent: CheckboxViewComponent
         }
       },
       add: {

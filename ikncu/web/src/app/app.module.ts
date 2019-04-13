@@ -12,10 +12,10 @@ import { ResendCodeComponent } from './public/auth/resend/resendCode.component';
 import { ForgotPasswordStep1Component, ForgotPassword2Component } from './public/auth/forgot/forgotPassword.component';
 import { RegisterComponent } from './public/auth/register/registration.component';
 import { MFAComponent } from './public/auth/mfa/mfa.component';
-import { AboutComponent, HomeLandingComponent, HomeComponent } from './public/home.component';
+import { AboutComponent, PublicHomeLandingComponent, PublicHomeComponent } from './public/publicHome.component';
 import { UseractivityComponent } from './secure/useractivity/useractivity.component';
 import { MyProfileComponent } from './secure/profile/myprofile.component';
-import { SecureHomeComponent } from './secure/landing/securehome.component';
+import { HomeComponent } from './secure/landing/home.component';
 import { JwtComponent } from './secure/jwttokens/jwt.component';
 import { SidebarComponent } from './secure/components/sidebar/sidebar.component';
 import { HeaderComponent } from './secure/components/header/header.component';
@@ -50,11 +50,11 @@ import { LogoutComponent } from './secure/logout/logout.component';
     RegisterComponent,
     MFAComponent,
     AboutComponent,
-    HomeLandingComponent,
+    PublicHomeLandingComponent,
     HomeComponent,
     UseractivityComponent,
     MyProfileComponent,
-    SecureHomeComponent,
+    HomeComponent,
     JwtComponent,
     AppComponent,
     SidebarComponent,

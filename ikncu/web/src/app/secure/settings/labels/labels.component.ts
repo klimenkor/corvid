@@ -21,7 +21,7 @@ export class LabelsComponent implements OnInit {
       }
     },
     add: {
-      addButtonContent: '<div class="btn btn-outline-primary btn-round btn-block"><i class="ft-plus"></i> Add new label</div>',
+      addButtonContent: '<div class="btn btn-outline-primary btn-round btn-block"><i class="ft-plus"></i></div>',
       createButtonContent: '<div class="btn btn-outline-success"><i class="ft-check"></i></div>',
       cancelButtonContent: '<div class="btn btn-outline-danger"><i class="ft-x"></i></div>',
       confirmCreate: true

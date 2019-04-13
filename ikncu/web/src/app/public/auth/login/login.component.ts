@@ -62,7 +62,7 @@ export class LoginComponent implements CognitoCallback, LoggedInCallback, OnInit
         } else { // success
           console.log('result: ' + this.errorMessage);
           // this.ddb.writeLogEntry('login');
-          this.router.navigate(['/securehome/dashboard']);
+          this.router.navigate(['/home/dashboard']);
           //this.userService.Get({});
 
         }
@@ -85,7 +85,7 @@ export class LoginComponent implements CognitoCallback, LoggedInCallback, OnInit
     isLoggedIn(message: string, isLoggedIn: boolean) {
       console.log('loginComponent.isLoggedIn');
       if (isLoggedIn) {
-          this.router.navigate(['/securehome']);
+          this.router.navigate(['/home']);
       }
     }
 

@@ -8,27 +8,22 @@
               <div class="form-group">
                 <fieldset class="form-group">
                   <label>ID</label>
-                  <input class="form-control" value="{{currentUser.Id}}" disabled=true/>
+                  <input class="form-control" value="{{user.Id}}" disabled=true/>
                 </fieldset>
                 <fieldset class="form-group">
                   <label>Username</label>
-                  <input class="form-control" value="{{currentUser.Name}}" disabled=true/>
+                  <input class="form-control" value="{{user.Name}}" disabled=true/>
                 </fieldset>
                 <fieldset class="form-group">
                   <label>Email</label>
-                  <input class="form-control" [(ngModel)]= "currentUser.Email" [ngModelOptions]="{standalone: true}"/>
+                  <input class="form-control" [(ngModel)]= "user.Email" [ngModelOptions]="{standalone: true}"/>
                 </fieldset>
                 <fieldset class="form-group">
-                  <label for="basicSelect">Time zone</label>
-                  <select class="form-control" id="basicSelect">
-                    <option>Pacific (GMT-7)</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                    <option>Option 4</option>
-                    <option>Option 5</option>
+                  <label>Time zone</label>
+                  <select [(ngModel)]="user.UtcOffset" [ngModelOptions]="{standalone: true}" class="form-control">
+                    <option *ngFor="let timezone of timeZones" value={{timezone.Name}}>(GMT{{timezone.UtcOffset}}) {{timezone.Id}}</option>
                   </select>
                 </fieldset>
-                
                 <button type="button" class="btn btn-warning btn-raised btn-block" (click)="onSave($event)">Save</button>
             </div>
           </form>

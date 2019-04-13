@@ -3,6 +3,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUser, IFace, IFaceResult, IFacesResult } from 'src/app/model/_index';
 import { FaceService } from 'src/app/service/data/Face.service';
 import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
+import { CategoryViewComponent } from '../../components/common/category-view/category-view.component';
 import { UserService } from 'src/app/service/data/user.service';
 
 @Component({
@@ -14,20 +15,22 @@ export class FacesComponent implements OnInit {
 
   settings = {
     columns: {
-      Id: {
-        title: 'Id',
-        filter: false
-      },
-      CategoryId: {
-        type: 'list',
-        config: {
-          list: [{title: 'Family and friends', value: '1'}, {title: 'Utilities', value: '2'}, {title: 'Unknown', value: '4'}]
-        }
-      },
       Name: {
         title: 'Name',
         filter: false,
-        type: 'string'
+        type: 'text'
+      },
+      CategoryId: {
+        title: 'Category',
+        type: 'custom',
+        filter: false,
+        renderComponent: CategoryViewComponent,
+        editor: {
+          type: 'list',
+          config: {
+            list: [{title: 'Family and friends', value: '1'}, {title: 'Utilities', value: '2'}, {title: 'Unknown', value: '4'}]
+          }
+        }
       }
     },
     add: {

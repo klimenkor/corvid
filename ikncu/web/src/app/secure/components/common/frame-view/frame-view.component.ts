@@ -10,7 +10,7 @@ export interface DialogData {
 
 @Component({
     selector: 'app-frame-view',
-    templateUrl: './frame-view.component.html',
+    template: `<canvas #canvas></canvas>`,
     styleUrls: ['./frame-view.component.css']
 })
 export class FrameViewComponent implements AfterViewInit {

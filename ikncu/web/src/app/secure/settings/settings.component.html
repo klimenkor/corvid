@@ -1,4 +1,3 @@
-<!--Tabset Starts-->
 <div class="col-md-12 col-lg-12">
   <div class="card">
     <div class="card-header">
@@ -6,42 +5,18 @@
     </div>
     <div class="card-body">
       <div class="card-block">
-        <ngb-tabset>
-
-            <!-- <ngb-tab title="Tiers">
-                <ng-template ngbTabContent>
-                    <app-settings-tiers></app-settings-tiers>
-                </ng-template>
-            </ngb-tab> -->
-
-            <ngb-tab title="Basic">
-                <ng-template ngbTabContent>
-                <app-settings-basic></app-settings-basic>
-                </ng-template>
-            </ngb-tab>
-
-            <ngb-tab title="Labels">
-                <ng-template ngbTabContent>
-                    <app-settings-labels></app-settings-labels>
-                </ng-template>
-            </ngb-tab>
-
-            <ngb-tab title="Cameras">
-                <ng-template ngbTabContent>
-                    <app-settings-cameras></app-settings-cameras>
-                </ng-template>
-                </ngb-tab>
-
-            <ngb-tab title="Faces">
-                <ng-template ngbTabContent>
-                    <app-settings-faces></app-settings-faces>
-                </ng-template>
-            </ngb-tab>
-
-        </ngb-tabset>
+          <nav mat-tab-nav-bar>
+              <a mat-tab-link
+                *ngFor="let link of navLinks"
+                [routerLink]="link.link"
+                routerLinkActive #rla="routerLinkActive"
+                [active]="rla.isActive">
+              {{link.label}}
+            </a>
+          </nav>
+          <router-outlet></router-outlet>
       </div>
     </div>
   </div>
 </div>
-<!--Tabset Ends-->
 
