@@ -167,6 +167,13 @@ export class MotionComponent implements OnInit {
     this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
+  selectYesterday() {
+    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -1);
+    this.fromHour = 0;
+    this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
+    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
+  }
+
   formatConfidence(value: number) {
     return Math.round(value);
   }

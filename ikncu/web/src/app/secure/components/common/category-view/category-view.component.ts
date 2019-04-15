@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
-import { ICategory } from 'src/app/model/category';
+import { ICategory, CategoryList } from 'src/app/model/category';
 
 @Component({
   selector: 'app-category-view',
@@ -17,7 +17,7 @@ export class CategoryViewComponent implements ViewCell, OnInit {
 
 
   ngOnInit() {
-    this.list = [{Id: '1', Name: 'Family and friends'}, {Id: '2', Name: 'Utilities'}] as ICategory[];
+    this.list = CategoryList; // [{Id: '1', Name: 'Family and friends'}, {Id: '2', Name: 'Utilities'}] as ICategory[];
 
     this.renderValue = this.list.find((element) => {
       return element.Id === this.value;

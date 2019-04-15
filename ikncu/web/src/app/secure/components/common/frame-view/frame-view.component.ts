@@ -1,7 +1,8 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { IDetectedFace } from 'src/app/model/motion';
 import { Float } from 'aws-sdk/clients/comprehendmedical';
 import { environment } from 'src/environments/environment';
+import { IFaceCategorized, CategoryList } from 'src/app/model/category';
 
 export interface DialogData {
   url: string;
@@ -10,7 +11,7 @@ export interface DialogData {
 
 @Component({
     selector: 'app-frame-view',
-    template: `<canvas #canvas></canvas>`,
+    templateUrl: './frame-view.component.html',
     styleUrls: ['./frame-view.component.css']
 })
 export class FrameViewComponent implements AfterViewInit {
@@ -19,6 +20,9 @@ export class FrameViewComponent implements AfterViewInit {
   @Input() frame: string;
   @Input() faces: IDetectedFace[];
   @Output() click: EventEmitter<any> = new EventEmitter();
+
+  categories = CategoryList;
+  facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
 
   bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
 
@@ -37,6 +41,10 @@ export class FrameViewComponent implements AfterViewInit {
       }
     });
     return result;
+  }
+
+  onClickBack() {
+    this.click = new EventEmitter();
   }
 
   getGender(face: IDetectedFace) {
@@ -83,6 +91,7 @@ export class FrameViewComponent implements AfterViewInit {
   public ngAfterViewInit() {
 
     console.log('FrameViewComponent.ngAfterViewInit');
+
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     this.cx = canvasEl.getContext('2d');
@@ -103,6 +112,8 @@ export class FrameViewComponent implements AfterViewInit {
       (this.canvas.nativeElement as HTMLCanvasElement).width = w;
       (this.canvas.nativeElement as HTMLCanvasElement).height = h;
       this.cx.drawImage(img, 0, 0, w, h);
+      let i = 0;
+      this.facesCategorized = [];
       this.faces.forEach(face => {
         const box = face.Box;
 
@@ -111,7 +122,8 @@ export class FrameViewComponent implements AfterViewInit {
         this.cx.rect(box.Left * w, box.Top * h, box.Width * w, box.Height * h);
         this.cx.strokeStyle = 'yellow';
         this.cx.stroke();
-
+        this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0' } as IFaceCategorized);
+        i++;
       });
     };
     img.src = this.bucketPath + this.frame;
