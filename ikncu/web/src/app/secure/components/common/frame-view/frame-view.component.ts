@@ -19,7 +19,7 @@ export class FrameViewComponent implements AfterViewInit {
 
   @Input() frame: string;
   @Input() faces: IDetectedFace[];
-  @Output() click: EventEmitter<any> = new EventEmitter();
+  @Output() close = new EventEmitter<boolean>();
 
   categories = CategoryList;
   facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
@@ -44,7 +44,8 @@ export class FrameViewComponent implements AfterViewInit {
   }
 
   onClickBack() {
-    this.click = new EventEmitter();
+    console.log('clicked back');
+    this.close.emit(true);
   }
 
   getGender(face: IDetectedFace) {

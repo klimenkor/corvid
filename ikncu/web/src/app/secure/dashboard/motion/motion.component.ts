@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 import { CameraService } from 'src/app/service/data/camera.service';
 import { Options } from 'ng5-slider';
 import { CloudData } from 'angular-tag-cloud-module';
-import { collectExternalReferences } from '@angular/compiler';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -34,9 +34,22 @@ import { collectExternalReferences } from '@angular/compiler';
     .custom-day.faded {
       background-color: rgba(2, 117, 216, 0.5);
     }
-  `]
+  `],
+  animations: [
+    trigger('EnterLeave', [
+      state('flyIn', style({ transform: 'translateX(0)' })),
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('0.3s 300ms ease-in')
+      ]),
+      transition(':leave', [
+        animate('0.3s ease-out', style({ transform: 'translateX(100%)' }))
+      ])
+    ])
+  ]
 })
 export class MotionComponent implements OnInit {
+
 
   source: LocalDataSource;
   motions: Array<IMotionView> = new Array<IMotionView>();
@@ -77,9 +90,9 @@ export class MotionComponent implements OnInit {
     console.log(motion);
   }
 
-  onClickCurrentFrame(){
+  onClose(event){
     this.showFrame = false;
-    console.log('clicked!')
+    console.log(event);
   }
 
 
@@ -149,7 +162,7 @@ export class MotionComponent implements OnInit {
           });
           // this.spinner.hide();
         });
-        console.log(this.motions);
+        // console.log(this.motions);
         this.spinner.hide();
     });
   }

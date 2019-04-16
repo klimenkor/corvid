@@ -1,4 +1,4 @@
-<h1><a href="" (click) = "onClickBack()">&lt;&lt;</a></h1>
+<!-- <div class="btn btn-outline-primary" (click) = "onClickBack()"><i class="icon-arrow-left"></i></div> -->
 
 <div class="row">
   <div class="col-lg-2" *ngFor="let face of faces; let i = index">
@@ -19,4 +19,4 @@
     </div>
   </div>
 </div>
-<canvas #canvas></canvas>
+<canvas #canvas (click) = "onClickBack()"></canvas>

@@ -17,6 +17,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Ng5SliderModule } from 'ng5-slider';
 import { FaceViewComponent } from '../components/common/face-view/face-view.component';
 import { TimelineComponent } from './timeline/timeline.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     NgxSpinnerModule,
     Ng2SmartTableModule,
     BrowserModule,
+    BrowserAnimationsModule,
     UiSwitchModule.forRoot({
       size: 'medium',
       checkedLabel: 'yes',

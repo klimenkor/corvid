@@ -33,11 +33,11 @@
     </div>
   </div>
 
-  <div *ngIf="showFrame">
-    <app-frame-view [frame]="currentFrame" [faces]="currentFaces" (click)="onClickCurrentFrame()"></app-frame-view>
+  <div *ngIf="showFrame" [@EnterLeave]="'flyIn'">
+    <app-frame-view [frame]="currentFrame" [faces]="currentFaces" (close) = "onClose($event)"></app-frame-view>
   </div>
 
-  <div class="col-12" *ngIf="!showFrame">
+  <div class="col-12" *ngIf="!showFrame" [@EnterLeave]="'flyIn'">
     <div class="card" *ngFor="let motion of motions">
         <div class="card-body">
           <div class="card-block">
