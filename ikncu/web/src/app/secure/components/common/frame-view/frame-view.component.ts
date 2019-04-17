@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit } from '@angular/core';
 import { IDetectedFace } from 'src/app/model/motion';
 import { Float } from 'aws-sdk/clients/comprehendmedical';
 import { environment } from 'src/environments/environment';
@@ -14,7 +14,8 @@ export interface DialogData {
     templateUrl: './frame-view.component.html',
     styleUrls: ['./frame-view.component.css']
 })
-export class FrameViewComponent implements AfterViewInit {
+export class FrameViewComponent implements OnInit, AfterViewInit {
+
   constructor() { }
 
   @Input() frame: string;
@@ -89,6 +90,15 @@ export class FrameViewComponent implements AfterViewInit {
 
   }
 
+  ngOnInit(): void {
+    let i = 0;
+    this.facesCategorized = [];
+    this.faces.forEach(face => {
+      this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0' } as IFaceCategorized);
+      i++;
+    });
+  }
+
   public ngAfterViewInit() {
 
     console.log('FrameViewComponent.ngAfterViewInit');
@@ -113,8 +123,6 @@ export class FrameViewComponent implements AfterViewInit {
       (this.canvas.nativeElement as HTMLCanvasElement).width = w;
       (this.canvas.nativeElement as HTMLCanvasElement).height = h;
       this.cx.drawImage(img, 0, 0, w, h);
-      let i = 0;
-      this.facesCategorized = [];
       this.faces.forEach(face => {
         const box = face.Box;
 
@@ -123,14 +131,10 @@ export class FrameViewComponent implements AfterViewInit {
         this.cx.rect(box.Left * w, box.Top * h, box.Width * w, box.Height * h);
         this.cx.strokeStyle = 'yellow';
         this.cx.stroke();
-        this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0' } as IFaceCategorized);
-        i++;
       });
     };
     img.src = this.bucketPath + this.frame;
 
   }
-
-  // }
 }
 
