@@ -13,16 +13,17 @@ var documentClient = new AWS.DynamoDB.DocumentClient();
  */
 exports.handler = (event, context, callback) => {
     const operation = event.operation;
-    if(operation === "image")
+    const method = event.method;
+    if(operation === "rekognition")
     {
-        const sourceBucket = event.sourceBucket;
-        const destinationBucket = event.destinationBucket;
-        const sourceFile = event.sourceFile; 
-        const destinationFile = event.destinationFile;
-        const width = event.width;
-        const height = event.height;    
-        console.log(sourceBucket,destinationBucket,sourceFile,destinationFile,width,height);
-        const res = sourceBucket + "/" + destinationBucket + "/" + sourceFile + "/" + destinationFile + "/" + width + "/" + height
+        switch (method) {
+            case 'AddFace':
+                break;
+            case 'DeleteFace':
+                break;
+            case 'GetFace':
+                break;
+        }    
         callback({
             'statusCode': 200,
             'body': json.dumps(res)

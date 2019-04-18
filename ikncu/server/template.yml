@@ -914,6 +914,158 @@ Resources:
                     passthroughBehavior: "when_no_match"
                     type: "mock"  
 
+              ######################################### REKOGNITION
+              /rekognition/face:
+                get:                 ################## GET
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"GetFace\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"UserId\" : $input.json('$.UserId')\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"     
+                       
+                delete:                 ################## DELETE
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "\r\n#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"DeleteFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\n            \"Id\" : $input.json('$.Id')\r\n        }\r\n    }\r\n}\r\n"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                post:           ################## POST
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\n                \"UserId\" : $input.json('$.UserId'),\r\n                \"Frame\" : $input.json('$.Frame'),\r\n                \"CategoryId\" : $input.json('$.CategoryId') \r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "mock"
+
   IkncuImageFunction:
     Type: AWS::Serverless::Function
     Name: 'IkncuImageLambda'
@@ -1027,7 +1179,28 @@ Resources:
             Path: /face/byuser
             Method: GET
             RestApiId:
+                Ref: IkncuApi       
+        RekognitionFacePost:
+          Type: Api
+          Properties:
+            Path: /rekognition/face
+            Method: POST
+            RestApiId:
                 Ref: IkncuApi                
+        RekognitionFaceGet:
+          Type: Api
+          Properties:
+            Path: /rekognition/face
+            Method: GET
+            RestApiId:
+                Ref: IkncuApi                
+        RekognitionFaceDelete:
+          Type: Api
+          Properties:
+            Path: /rekognition/face
+            Method: DELETE
+            RestApiId:
+                Ref: IkncuApi                           
 
 Outputs:
 

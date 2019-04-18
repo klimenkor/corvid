@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/5392cd5c28a9f1d76a5b8e09b0d468a4
+      CodeUri: s3://ikncu-deploy/7ab2e2391efe12c7185a654bac311f4d
       Events:
         CameraByUser:
           Properties:
@@ -190,6 +190,27 @@ Resources:
           Properties:
             Method: GET
             Path: /motion/byuser
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        RekognitionFaceDelete:
+          Properties:
+            Method: DELETE
+            Path: /rekognition/face
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        RekognitionFaceGet:
+          Properties:
+            Method: GET
+            Path: /rekognition/face
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        RekognitionFacePost:
+          Properties:
+            Method: POST
+            Path: /rekognition/face
             RestApiId:
               Ref: IkncuApi
           Type: Api
@@ -695,6 +716,137 @@ Resources:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     statusCode: '200'
                 type: mock
+          /rekognition/face:
+            delete:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "\r\n#set($inputRoot = $input.path('$'))\r\n{\
+                    \ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"\
+                    DeleteFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\
+                    \n            \"Id\" : $input.json('$.Id')\r\n        }\r\n  \
+                    \  }\r\n}\r\n"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            get:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$')){ \r\n   \
+                    \ \"operation\": \"rekognition\",\r\n    \"method\": \"GetFace\"\
+                    ,\r\n    \"payload\": {      \r\n        \"Item\" : {        \
+                    \  \r\n            \"UserId\" : $input.json('$.UserId')\r\n  \
+                    \      }\r\n    }\r\n}"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST,GET,OPTIONS'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+            post:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
+                    \    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\"\
+                    ,\r\n    \"payload\":{    \r\n        \"Key\": {\r\n         \
+                    \       \"UserId\" : $input.json('$.UserId'),\r\n            \
+                    \    \"Frame\" : $input.json('$.Frame'),\r\n                \"\
+                    CategoryId\" : $input.json('$.CategoryId') \r\n        }\r\n \
+                    \   }\r\n}"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
           /user:
             delete:
               consumes:
@@ -872,7 +1024,7 @@ Resources:
     FunctionName: ikncu-IkncuImage-Function
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/5392cd5c28a9f1d76a5b8e09b0d468a4
+      CodeUri: s3://ikncu-deploy/7ab2e2391efe12c7185a654bac311f4d
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:
