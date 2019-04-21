@@ -71,6 +71,20 @@ Resources:
                   - dynamodb:UpdateItem
                 Resource: 
                   - !Join [ ":", ["arn:aws:dynamodb",!Ref "AWS::Region",!Ref "AWS::AccountId","table/*"]]
+        - 
+          PolicyName: IkncuRekognitionAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "rekognition:DetectFaces"
+                  - "rekognition:DeleteFaces"
+                  - "rekognition:IndexFaces"
+                  - "rekognition:ListFaces"
+                  - "rekognition:CreateCollection"
+                Resource: "*"
 
 
   IkncuLamdaImageRole:
@@ -118,8 +132,6 @@ Resources:
                 Action: 
                   - "rekognition:DetectLabels"
                   - "rekognition:DetectFaces"
-                  - "rekognition:IndexFaces"
-                  - "rekognition:CreateCollection"
                   - "ses:SendEmail"
                 Resource: "*"
         - 
@@ -938,7 +950,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"GetFace\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"UserId\" : $input.json('$.UserId')\r\n        }\r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"GetFace\",\r\n    \"payload\": {      \r\n        \"UserId\" : \"$input.params('UserId')\",\r\n        \"MaxResults\" : \"$input.params('MaxResults')\"\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -998,7 +1010,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "\r\n#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"DeleteFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\n            \"Id\" : $input.json('$.Id')\r\n        }\r\n    }\r\n}\r\n"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"DeleteFace\",\r\n    \"payload\":{    \r\n        \"UserId\" : \"$input.params('UserId')\"\r\n        \"FaceId\" : \"$input.params('FaceId')\"\r\n    }\r\n}\r\n"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -1028,7 +1040,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\n                \"UserId\" : $input.json('$.UserId'),\r\n                \"Frame\" : $input.json('$.Frame'),\r\n                \"CategoryId\" : $input.json('$.CategoryId') \r\n        }\r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\n        \"Frame\" : $input.json('$.Frame'),\r\n        \"CategoryId\" : $input.json('$.CategoryId') \r\n    }\r\n}\r\n"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"

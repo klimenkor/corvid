@@ -1,0 +1,29 @@
+#set($inputRoot = $input.path('$')){ 
+    "operation": "rekognition",
+    "method": "GetFace",
+    "payload": {      
+        "UserId" : "$input.params('UserId')",
+        "MaxResults" : "$input.params('MaxResults')"
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "operation": "rekognition",
+    "method": "AddFace",
+    "payload":{    
+        "UserId" : $input.json('$.UserId'),
+        "Frame" : $input.json('$.Frame'),
+        "CategoryId" : $input.json('$.CategoryId') 
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "operation": "rekognition",
+    "method": "DeleteFace",
+    "payload":{    
+        "UserId" : "$input.params('UserId')"
+        "FaceId" : "$input.params('FaceId')"
+    }
+}

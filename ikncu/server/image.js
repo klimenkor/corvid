@@ -274,14 +274,6 @@ function getAlarmLabels(enabled, detected) {
     return labels;
 }
 
-// function initCollection(userid) {
-
-// }
-
-// function indexFace(userId, bucket, frame) {
-
-// }
-
 function getFacesInfo(faces, bucket, key) {
     let html = "<ul>";
     let footer = '</ul><ul>';

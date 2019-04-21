@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/7ab2e2391efe12c7185a654bac311f4d
+      CodeUri: s3://ikncu-deploy/d9e60c595bff0d7dee80b8dd4996e08d
       Events:
         CameraByUser:
           Properties:
@@ -737,11 +737,11 @@ Resources:
                 httpMethod: POST
                 passthroughBehavior: when_no_templates
                 requestTemplates:
-                  application/json: "\r\n#set($inputRoot = $input.path('$'))\r\n{\
-                    \ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"\
-                    DeleteFace\",\r\n    \"payload\":{    \r\n        \"Key\": {\r\
-                    \n            \"Id\" : $input.json('$.Id')\r\n        }\r\n  \
-                    \  }\r\n}\r\n"
+                  application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
+                    \    \"operation\": \"rekognition\",\r\n    \"method\": \"DeleteFace\"\
+                    ,\r\n    \"payload\":{    \r\n        \"UserId\" : \"$input.params('UserId')\"\
+                    \r\n        \"FaceId\" : \"$input.params('FaceId')\"\r\n    }\r\
+                    \n}\r\n"
                 responses:
                   default:
                     responseParameters:
@@ -772,9 +772,9 @@ Resources:
                 requestTemplates:
                   application/json: "#set($inputRoot = $input.path('$')){ \r\n   \
                     \ \"operation\": \"rekognition\",\r\n    \"method\": \"GetFace\"\
-                    ,\r\n    \"payload\": {      \r\n        \"Item\" : {        \
-                    \  \r\n            \"UserId\" : $input.json('$.UserId')\r\n  \
-                    \      }\r\n    }\r\n}"
+                    ,\r\n    \"payload\": {      \r\n        \"UserId\" : \"$input.params('UserId')\"\
+                    ,\r\n        \"MaxResults\" : \"$input.params('MaxResults')\"\r\
+                    \n    }\r\n}"
                 responses:
                   default:
                     responseParameters:
@@ -834,11 +834,9 @@ Resources:
                 requestTemplates:
                   application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
                     \    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\"\
-                    ,\r\n    \"payload\":{    \r\n        \"Key\": {\r\n         \
-                    \       \"UserId\" : $input.json('$.UserId'),\r\n            \
-                    \    \"Frame\" : $input.json('$.Frame'),\r\n                \"\
-                    CategoryId\" : $input.json('$.CategoryId') \r\n        }\r\n \
-                    \   }\r\n}"
+                    ,\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\
+                    \n        \"Frame\" : $input.json('$.Frame'),\r\n        \"CategoryId\"\
+                    \ : $input.json('$.CategoryId') \r\n    }\r\n}\r\n"
                 responses:
                   default:
                     responseParameters:
@@ -1024,7 +1022,7 @@ Resources:
     FunctionName: ikncu-IkncuImage-Function
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/7ab2e2391efe12c7185a654bac311f4d
+      CodeUri: s3://ikncu-deploy/d9e60c595bff0d7dee80b8dd4996e08d
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:
@@ -1077,6 +1075,18 @@ Resources:
                 - table/*
           Version: '2012-10-17'
         PolicyName: DynamoDBWriteAccess
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - rekognition:DetectFaces
+            - rekognition:DeleteFaces
+            - rekognition:IndexFaces
+            - rekognition:ListFaces
+            - rekognition:CreateCollection
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: IkncuRekognitionAccess
     Type: AWS::IAM::Role
   IkncuLamdaImageRole:
     Properties:
@@ -1112,8 +1122,6 @@ Resources:
           - Action:
             - rekognition:DetectLabels
             - rekognition:DetectFaces
-            - rekognition:IndexFaces
-            - rekognition:CreateCollection
             - ses:SendEmail
             Effect: Allow
             Resource: '*'
