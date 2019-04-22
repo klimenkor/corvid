@@ -10,6 +10,33 @@
   transition: ease-in-out 600ms max-height;
 }
 
+.button-group {
+  width: 100%;
+  margin-left: 15px;
+}
+.button-line {
+  width: 100%;
+}
+.button-col {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.button-col button{
+  background-color: #bbb;
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+}
+
+.button-vertical {
+  -ms-transform: rotate(270deg); /* IE 9 */
+  -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
+  transform: rotate(270deg);
+}
+
 /* .modal-full {
   min-width: 100%;
   margin: 0;

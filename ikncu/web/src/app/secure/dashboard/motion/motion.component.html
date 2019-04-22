@@ -44,8 +44,20 @@
             <h4 class="card-title">{{motion.Camera}}</h4>
             <h6 class="card-subtitle text-muted">{{motion.Occurred}}</h6>
             <div class="card-img">
-              <app-image-view *ngIf="!showCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
-              <app-cloud-view *ngIf="showCloud" [data]="motion.Labels"></app-cloud-view>
+              <div class="row">
+                <div class="col-lg-1" *ngIf="showCloud">
+                  <div class="btn btn-outline-primary button-col button-vertical">PHOTO</div>
+                </div>
+                <div class="col-lg-11" *ngIf="showCloud">
+                  <app-cloud-view [data]="motion.Labels"></app-cloud-view>
+                </div>
+                <div class="col-lg-11" *ngIf="!showCloud">
+                  <app-image-view [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+                </div>
+                <div class="col-lg-1" *ngIf="!showCloud">
+                  <div class="btn btn-block shadow-z-1-hover btn-col btn-vertical">CLOUD</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -28,17 +28,17 @@ export class FaceService {
   })
   public Get() {
       console.log('FaceService.GetByUser');
-      return this.http.get(environment.apiHost + '/face/byuser?hkey=' + this.authService.CognitoUser.id + '&rkey=1', this.httpOptions);
+      return this.http.get(environment.apiHost + '/rekognition/face?UserId=' + this.authService.CognitoUser.id + '&MaxResults=10', this.httpOptions);
   }
 
   @CacheBuster({
       cacheBusterNotifier: cacheBuster$
   })
-  public Create(data: IFace) {
+  public Add(data: IFace) {
       console.log('FaceService.Create');
       data.UserId = this.authService.CognitoUser.id;
       console.log(data);
-      return this.http.post(environment.apiHost + '/face', data, this.httpOptions);
+      return this.http.post(environment.apiHost + '/rekognition/face', data, this.httpOptions);
   }
 
   @CacheBuster({
@@ -55,7 +55,7 @@ export class FaceService {
   })
   public Delete(data: IFace) {
       console.log('FaceService.delete');
-      return this.http.delete(environment.apiHost + '/face?id=' + data.Id, this.httpOptions);
+      return this.http.delete(environment.apiHost + '/rekognition/face?id=' + data.Id, this.httpOptions);
   }
 
 }

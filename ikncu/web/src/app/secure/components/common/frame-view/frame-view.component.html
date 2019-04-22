@@ -1,14 +1,14 @@
 <!-- <div class="btn btn-outline-primary" (click) = "onClickBack()"><i class="icon-arrow-left"></i></div> -->
 
 <div class="row">
-  <div class="col-lg-2" *ngFor="let face of faces; let i = index">
+  <div class="col-lg-2 col-sm-4" *ngFor="let face of faces; let i = index">
     <div class="card">
       <div class="card-title">
         <h2>Face {{i+1}}</h2>
       </div>
       <div class="card-block">
         <div class="card-block">
-          <select [(ngModel)]="facesCategorized[i].CategoryId" [ngModelOptions]="{standalone: true}" class="form-control">
+          <select [(ngModel)]="facesCategorized[i].CategoryId" (change)="onFaceCategoryChange(i)" [ngModelOptions]="{standalone: true}" class="form-control">
             <option *ngFor="let category of categories" value={{category.Id}}>{{category.Name}}</option>
           </select>
         </div>

@@ -97,18 +97,18 @@ export class FacesComponent implements OnInit {
           });
   }
 
-  async onUpdate(event) {
-    const item = {
-      Id: event.newData.Id,
-      UserId: event.newData.UserId,
-      CategoryId: event.newData.CategoryId
-    } as IFace;
-    this.faceService.Create(item).subscribe(
-        (value: IFaceResult) => {
-        event.newData.Id = value.Item.Id;
-        event.newData.CategoryId = value.Item.CategoryId;
-        event.confirm.resolve(event.newData);
-      });
-  }
+  // async onUpdate(event) {
+  //   const item = {
+  //     Id: event.newData.Id,
+  //     UserId: event.newData.UserId,
+  //     CategoryId: event.newData.CategoryId
+  //   } as IFace;
+  //   this.faceService.Create(item).subscribe(
+  //       (value: IFaceResult) => {
+  //       event.newData.Id = value.Item.Id;
+  //       event.newData.CategoryId = value.Item.CategoryId;
+  //       event.confirm.resolve(event.newData);
+  //     });
+  // }
 
 }

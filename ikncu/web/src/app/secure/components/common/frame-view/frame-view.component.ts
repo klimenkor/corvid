@@ -3,6 +3,8 @@ import { IDetectedFace } from 'src/app/model/motion';
 import { Float } from 'aws-sdk/clients/comprehendmedical';
 import { environment } from 'src/environments/environment';
 import { IFaceCategorized, CategoryList } from 'src/app/model/category';
+import { FaceService } from 'src/app/service/data/Face.service';
+import { IFace } from 'src/app/model/face';
 
 export interface DialogData {
   url: string;
@@ -16,7 +18,9 @@ export interface DialogData {
 })
 export class FrameViewComponent implements OnInit, AfterViewInit {
 
-  constructor() { }
+  constructor(
+    private faceService: FaceService
+  ) { }
 
   @Input() frame: string;
   @Input() faces: IDetectedFace[];
@@ -42,6 +46,21 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
       }
     });
     return result;
+  }
+
+
+  onFaceCategoryChange(index) {
+    console.log('frameViewComponent.onFaceCategoryChange: adding face...');
+    // console.log(this.frame, index, this.facesCategorized[index]);
+    const response = this.faceService.Add({
+      Id: '',
+      UserId: '',
+      CategoryId: this.facesCategorized[index].CategoryId,
+      Frame: this.frame + '/' + (index + 1)
+    } as IFace);
+    response.subscribe((res) => {
+      console.log(res);
+    });
   }
 
   onClickBack() {
