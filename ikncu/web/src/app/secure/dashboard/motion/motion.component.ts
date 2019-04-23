@@ -5,7 +5,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrentUser, IMotionsResult, ICamera, ICamerasResult, ILabelCloud, IMotionView, IDetectedFace } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
 import { LocalDataSource } from 'ng2-smart-table';
-import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { CameraService } from 'src/app/service/data/camera.service';
 import { Options } from 'ng5-slider';
@@ -78,6 +77,22 @@ export class MotionComponent implements OnInit {
     pushRange: true
   };
 
+  constructor(
+    private spinner: NgxSpinnerService,
+    private motionService: MotionService,
+    private cameraService: CameraService,
+    private calendar: NgbCalendar) {
+      this.selectToday();
+    }
+
+  ngOnInit() {
+    console.log('MotionComponent.ngOnInit');
+    this.cameraService.Get().subscribe((response: ICamerasResult) => {
+      this.cameras = response.Items;
+      this.onDateSelection(this.fromDate);
+    });
+  }
+
   onSliderChange() {
     this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
@@ -95,34 +110,8 @@ export class MotionComponent implements OnInit {
     console.log(event);
   }
 
-
-  constructor(
-    private spinner: NgxSpinnerService,
-    private authService: AuthService,
-    private motionService: MotionService,
-    private cameraService: CameraService,
-    private calendar: NgbCalendar) {
-      this.selectToday();
-    }
-
-
-
-  // onShowCloudChange() {
-  //   this.showCloud = !this.showCloud;
-  //   this.showCloudtext = this.showCloud ? 'Show images' : 'Show cloud';
-  //   console.log(this.showCloud)
-  // }
-
   onSwitchTagCloud(index){
     this.motions[index].ShowTagCloud = !this.motions[index].ShowTagCloud;
-  }
-
-  ngOnInit() {
-    console.log('MotionComponent.ngOnInit');
-    this.cameraService.Get().subscribe((response: ICamerasResult) => {
-      this.cameras = response.Items;
-      this.onDateSelection(this.fromDate);
-    });
   }
 
   DateTimeToString(date: NgbDate, hour: number ) {
