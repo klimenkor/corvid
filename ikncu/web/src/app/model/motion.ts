@@ -70,6 +70,7 @@ export interface IMotionView {
   Frame: string;
   Labels: CloudData[];
   Faces: IDetectedFace[];
+  ShowTagCloud: boolean;
 }
 
 export interface IMotionResult {

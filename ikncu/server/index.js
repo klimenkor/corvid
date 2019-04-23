@@ -28,6 +28,7 @@ function addFace(payload, callback) {
 
     let userId = payload.UserId;
     let frame = payload.Frame;
+    let categoryId = payload.CategoryId;
 
     const collectionId = 'ikncu-' + userId;
     initCollection(collectionId, 
@@ -45,7 +46,23 @@ function addFace(payload, callback) {
                     }
                 }
             };
-            rekognition.indexFaces(params, callback);
+            rekognition.indexFaces(params, 
+                (err,data) => {
+                    if (err) callback(err);   
+                    console.log(data.FaceRecords[0]);
+                    const faceId = data.FaceRecords[0].Face.FaceId;
+                    const payload = {
+                        TableName: tableNames.getName('FaceDynamoDbARN'),
+                        Item : {          
+                            Id : faceId,
+                            UserId: userId,
+                            CategoryId: categoryId,
+                            Frame: frame,
+                            Name: ''
+                        }
+                    };
+                    documentClient.put(payload, callback);
+                });
         });
 }
 
@@ -80,7 +97,18 @@ function deleteFace(payload, callback) {
                     faceId
                 ]
             };
-            rekognition.deleteFaces(params, callback);
+            rekognition.deleteFaces(params, 
+                (err,data) => {
+                    if (err) callback(err);   
+                    console.log(data.FaceRecords[0]);
+                    const payload = {
+                        TableName: tableNames.getName('FaceDynamoDbARN'),
+                        Key : {          
+                            Id : faceId
+                        }
+                    };
+                    documentClient.delete(payload, callback);
+                });
         });
 }
 
@@ -109,7 +137,6 @@ exports.handler = (event, context, callback) => {
             default:
                 callback(new Error(`Unrecognized operation "${operation}"`));
         }    
-        
     }
     else // database generic operations
     {

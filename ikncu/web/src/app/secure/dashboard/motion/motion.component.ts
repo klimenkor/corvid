@@ -105,10 +105,16 @@ export class MotionComponent implements OnInit {
       this.selectToday();
     }
 
-  onShowCloudChange() {
-    this.showCloud = !this.showCloud;
-    this.showCloudtext = this.showCloud ? 'Show images' : 'Show cloud';
-    console.log(this.showCloud)
+
+
+  // onShowCloudChange() {
+  //   this.showCloud = !this.showCloud;
+  //   this.showCloudtext = this.showCloud ? 'Show images' : 'Show cloud';
+  //   console.log(this.showCloud)
+  // }
+
+  onSwitchTagCloud(index){
+    this.motions[index].ShowTagCloud = !this.motions[index].ShowTagCloud;
   }
 
   ngOnInit() {
@@ -158,7 +164,8 @@ export class MotionComponent implements OnInit {
             Occurred: this.timeOfTheDay(item.Occurred),
             Frame: item.Frame,
             Labels: labels,
-            Faces: item.Faces
+            Faces: item.Faces,
+            ShowTagCloud: true
           });
           // this.spinner.hide();
         });

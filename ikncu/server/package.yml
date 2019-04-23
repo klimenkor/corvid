@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/d9e60c595bff0d7dee80b8dd4996e08d
+      CodeUri: s3://ikncu-deploy/61413446a472d459047cc76d1d267b82
       Events:
         CameraByUser:
           Properties:
@@ -1022,7 +1022,7 @@ Resources:
     FunctionName: ikncu-IkncuImage-Function
     Name: IkncuImageLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/d9e60c595bff0d7dee80b8dd4996e08d
+      CodeUri: s3://ikncu-deploy/61413446a472d459047cc76d1d267b82
       Handler: image.handler
       Policies: AmazonDynamoDBFullAccess
       Role:

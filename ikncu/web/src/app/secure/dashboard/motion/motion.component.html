@@ -1,4 +1,5 @@
 <section id="simple">
+
   <div *ngIf="!showFrame">
     <div class="row">
       <div class="col-12">
@@ -13,11 +14,11 @@
       </div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-12">
           <button (click)="onShowCloudChange()" class="btn btn-outline-primary btn-lg btn-block">{{showCloudtext}}</button>
       </div>
-    </div>
+    </div> -->
 
     <div class="row">
       <div class="col-12">
@@ -37,7 +38,87 @@
     <app-frame-view [frame]="currentFrame" [faces]="currentFaces" (close) = "onClose($event)"></app-frame-view>
   </div>
 
-  <div class="col-12" *ngIf="!showFrame" [@EnterLeave]="'flyIn'">
+  <div class="panel" *ngIf="!showFrame" >
+    <div class="col-12">
+
+      <div class="row" *ngFor="let motion of motions;let i=index">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h4>{{motion.Occurred}}: {{motion.Camera}}</h4>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-1 card-block" *ngIf="motion.ShowTagCloud" >
+              <div class="btn btn-outline-primary" (click)="onSwitchTagCloud(i)" style="display: block; width: 100%; height:100%; font-size:large">
+                <h3 class="vertical">CAMERA</h3>
+              </div>
+            </div>
+            <div class="col-md-11" *ngIf="motion.ShowTagCloud">
+              <div class="card" >
+                <div class="card-body">
+                  <div class="card-block">
+                    <div class="card-img">
+                      <app-cloud-view [data]="motion.Labels"></app-cloud-view>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-11" *ngIf="!motion.ShowTagCloud">
+              <div class="card" >
+                <div class="card-body">
+                  <div class="card-block">
+                    <div class="card-img">
+                      <app-image-view [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-1 card-block" *ngIf="!motion.ShowTagCloud">
+              <div class="btn btn-outline-primary" (click)="onSwitchTagCloud(i)" style="display: block; width: 100%; height:100%; font-size:large">
+                <h3 class="vertical">TAG CLOUD</h3>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+      <!-- <div class="card" >
+        <div class="card-body">
+          <div class="card-block">
+            <h4 class="card-title">{{motion.Camera}}</h4>
+            <h6 class="card-subtitle text-muted">{{motion.Occurred}}</h6>
+            <div class="card-img">
+              <div class="row">
+                <div class="col-lg-1" *ngIf="showCloud">
+                  <div class="btn btn-outline-primary button-col button-vertical">PHOTO</div>
+                </div>
+                <div class="col-lg-11" *ngIf="showCloud">
+                  <app-cloud-view [data]="motion.Labels"></app-cloud-view>
+                </div>
+                <div class="col-lg-11" *ngIf="!showCloud">
+                  <app-image-view [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+                </div>
+                <div class="col-lg-1" *ngIf="!showCloud">
+                  <div class="btn btn-block shadow-z-1-hover btn-col btn-vertical">CLOUD</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div> -->
+
+  <!-- <div class="col-12" *ngIf="!showFrame" [@EnterLeave]="'flyIn'">
     <div class="card" *ngFor="let motion of motions">
         <div class="card-body">
           <div class="card-block">
@@ -62,7 +143,7 @@
           </div>
         </div>
     </div>
-  </div>
+  </div> -->
 
 </section>
 
