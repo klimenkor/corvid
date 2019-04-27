@@ -9,6 +9,8 @@ var Jimp = require('jimp');
 let uuidv1 = require('uuid/v1');
 AWS.config.update({region: 'us-east-1'});
 const s3url = 'https://s3.amazonaws.com/';
+const frameBucket = 'ikncu-frames';
+const faceBucket = 'ikncu-faces';
 
 console.log(tableNames.getName('UserDynamoDbARN'));
 
@@ -359,7 +361,6 @@ function formatAlarmBodyFooter(bucket, messageId) {
 }
 
 exports.handler = function (event, context, callback) {
-    const frameBucket = 'ikncu-frames';
     const item = event.Records[0].s3;
     const mailBucket = item.bucket.name;
     const messageId = item.object.key;
@@ -444,7 +445,7 @@ exports.handler = function (event, context, callback) {
                                 console.log(faces.length + ' faces found');  
                                 if(faces.length>0) {
                                     console.log('cropping faces');
-                                    saveFaces(image, faces, frameBucket, messageId, () =>
+                                    saveFaces(image, faces, faceBucket, messageId, () =>
                                     {
                                         console.log('saved faces');
                                     });
@@ -453,7 +454,7 @@ exports.handler = function (event, context, callback) {
                                 console.log('sending an email');  
                                 let subject = formatAlarmMessage(camera.Name, labels);
                                 let body = formatAlarmBodyHeader() + 
-                                    getFacesInfo(faces, frameBucket, messageId) + 
+                                    getFacesInfo(faces, faceBucket, messageId) + 
                                     formatAlarmBodyFooter(frameBucket, messageId);
                                 sendEmail(user.Email, subject, '', body);    
                                 saveMotionData(user.Id, camera.Id, detectedLabels, messageId, faces, utcOffset);
