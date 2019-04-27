@@ -161,6 +161,66 @@ Resources:
                 Resource: 
                   - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
 
+  IkncuLamdaFaceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: IkncuS3BucketFaceAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource: "arn:aws:s3:::ikncu-faces/*"
+        - 
+          PolicyName: IkncuRekognitionAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "rekognition:SearchFacesByImage"
+                  - "ses:SendEmail"
+                Resource: "*"
+        - 
+          PolicyName: IkncuDynamoDBRekognitionWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "dynamodb:PutItem"
+                  - "dynamodb:GetItem"  
+                  - "dynamodb:Scan"  
+                Resource: 
+                  - !Join [ ":", ["arn:aws:dynamodb",!Ref "AWS::Region",!Ref "AWS::AccountId","table/*"]]
+        - 
+          PolicyName: IkncuCloudWatchWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  - !Join [ ":", ["arn:aws:logs",!Ref "AWS::Region",!Ref "AWS::AccountId","log-group:/aws/lambda/*:*:*"]]
   # S3BucketIkncu:
   #   Type: AWS::S3::Bucket
   #   Properties:
@@ -1086,6 +1146,16 @@ Resources:
       Handler: image.handler
       Runtime: nodejs8.10
       Role: !GetAtt IkncuLamdaImageRole.Arn
+      Policies: AmazonDynamoDBFullAccess
+
+  IkncuFaceFunction:
+    Type: AWS::Serverless::Function
+    Name: 'IkncuFaceLambda'
+    FunctionName: 'ikncu-IkncuFace-Function'
+    Properties:
+      Handler: face.handler
+      Runtime: nodejs8.10
+      Role: !GetAtt IkncuLamdaFaceRole.Arn
       Policies: AmazonDynamoDBFullAccess
 
   LambdaInvokePermission:

@@ -29,7 +29,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   categories = CategoryList;
   facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
 
-  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
+  bucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
 
   width = 800;
   height = 600;
