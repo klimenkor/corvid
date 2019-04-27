@@ -27,8 +27,8 @@ export class FaceService {
       cacheBusterObserver: cacheBuster$
   })
   public Get() {
-      console.log('FaceService.GetByUser');
-      return this.http.get(environment.apiHost + '/rekognition/face?UserId=' + this.authService.CognitoUser.id + '&MaxResults=10', this.httpOptions);
+      console.log('FaceService.Get');
+      return this.http.get(environment.apiHost + '/face/byuser?hkey=' + this.authService.CognitoUser.id, this.httpOptions);
   }
 
   @CacheBuster({

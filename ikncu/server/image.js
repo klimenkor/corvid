@@ -441,7 +441,7 @@ exports.handler = function (event, context, callback) {
                                     return;     
                                 }
                                 console.log(data);  
-                                faces = data;
+                                faces = data.filter( item => item.Confidence > 90 );
                                 console.log(faces.length + ' faces found');  
                                 if(faces.length>0) {
                                     console.log('cropping faces');

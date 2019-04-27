@@ -45,7 +45,7 @@
         <div class="col-md-12">
           <div class="row">
             <div class="col-md-12">
-              <h4>{{motion.Occurred}}: {{motion.Camera}}</h4>
+              <h3>{{motion.Occurred}}  <b>{{motion.Camera}}</b></h3>
             </div>
           </div>
 
@@ -68,6 +68,11 @@
               </div>
             </div>
 
+            <div class="col-md-1 card-block" *ngIf="!motion.ShowTagCloud">
+              <div class="btn btn-outline-primary" (click)="onSwitchTagCloud(i)" style="display: block; width: 100%; height:100%; font-size:large">
+                <h3 class="vertical">TAG CLOUD</h3>
+              </div>
+            </div>
             <div class="col-md-11" *ngIf="!motion.ShowTagCloud">
               <div class="card" >
                 <div class="card-body">
@@ -77,11 +82,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-1 card-block" *ngIf="!motion.ShowTagCloud">
-              <div class="btn btn-outline-primary" (click)="onSwitchTagCloud(i)" style="display: block; width: 100%; height:100%; font-size:large">
-                <h3 class="vertical">TAG CLOUD</h3>
               </div>
             </div>
 
