@@ -87,7 +87,7 @@ Resources:
                 Resource: "*"
 
 
-  IkncuLamdaImageRole:
+  IkncuLamdaDispatcherRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -1138,15 +1138,16 @@ Resources:
                     passthroughBehavior: "when_no_match"
                     type: "mock"
 
-  IkncuImageFunction:
+  IkncuDispatcherFunction:
     Type: AWS::Serverless::Function
-    Name: 'IkncuImageLambda'
-    FunctionName: 'ikncu-IkncuImage-Function'
+    Name: 'IkncuDispatcherLambda'
+    FunctionName: 'ikncu-IkncuDispatcher-Function'
     Properties:
-      Handler: image.handler
+      Handler: dispatcher.handler
       Runtime: nodejs8.10
-      Role: !GetAtt IkncuLamdaImageRole.Arn
+      Role: !GetAtt IkncuLamdaDispatcherRole.Arn
       Policies: AmazonDynamoDBFullAccess
+      Timeout: 15
 
   IkncuFaceFunction:
     Type: AWS::Serverless::Function
@@ -1157,12 +1158,24 @@ Resources:
       Runtime: nodejs8.10
       Role: !GetAtt IkncuLamdaFaceRole.Arn
       Policies: AmazonDynamoDBFullAccess
+      Timeout: 15
 
-  LambdaInvokePermission:
+  LambdaInvokeFacePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt 
-        - IkncuImageFunction
+        - IkncuFaceFunction
+        - Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: "arn:aws:s3:::ikncu-faces"
+
+  LambdaInvokeDispatcherPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt 
+        - IkncuDispatcherFunction
         - Arn
       Action: 'lambda:InvokeFunction'
       Principal: s3.amazonaws.com
