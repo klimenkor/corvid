@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { IFaceCategorized, CategoryList } from 'src/app/model/category';
 import { FaceService } from 'src/app/service/data/Face.service';
 import { IFace } from 'src/app/model/face';
+import { AuthService } from 'src/app/service/auth/auth.service';
 
 export interface DialogData {
   url: string;
@@ -19,7 +20,8 @@ export interface DialogData {
 export class FrameViewComponent implements OnInit, AfterViewInit {
 
   constructor(
-    private faceService: FaceService
+    private faceService: FaceService,
+    private authService: AuthService
   ) { }
 
   @Input() frame: string;
@@ -30,7 +32,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
 
   bucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
-
+  userId = '';
   width = 800;
   height = 600;
 
@@ -110,6 +112,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.userId = this.authService.CognitoUser.id;
     let i = 0;
     this.facesCategorized = [];
     this.faces.forEach(face => {

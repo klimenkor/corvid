@@ -205,7 +205,7 @@ function detectLabels(bucket, key, callback) {
     });
 }
 
-function saveFaces(image, faces, bucket, frame, callback) {
+function saveFaces(image, faces, bucket, userId, frame, callback) {
     const jimage = new Jimp(image, (res) => {
         var w = jimage.bitmap.width; 
         var h = jimage.bitmap.height;
@@ -220,7 +220,7 @@ function saveFaces(image, faces, bucket, frame, callback) {
             let img = jimage.clone();
             img.crop( cx, cy, cw, ch, () => {
                 i = i + 1;
-                let key = frame + '/' + i.toString();
+                let key = userId + '/' + frame + '/' + i.toString();
         
                 img.getBuffer(Jimp.MIME_JPEG,(err, res) => {
                     saveFrame(bucket, key, res, () => {
@@ -276,10 +276,10 @@ function getAlarmLabels(enabled, detected) {
     return labels;
 }
 
-function getFacesInfo(faces, bucket, key) {
+function getFacesInfo(faces, bucket, userId, key) {
     let html = "<ul>";
     let footer = '</ul><ul>';
-    let path = s3url + bucket + '/' + key; 
+    let path = s3url + bucket + '/' + userId + '/' + key; 
 
     let i = 1     
     faces.forEach(face => {
@@ -445,7 +445,7 @@ exports.handler = function (event, context, callback) {
                                 console.log(faces.length + ' faces found');  
                                 if(faces.length>0) {
                                     console.log('cropping faces');
-                                    saveFaces(image, faces, faceBucket, messageId, () =>
+                                    saveFaces(image, faces, faceBucket, user.Id, messageId, () =>
                                     {
                                         console.log('saved faces');
                                     });
@@ -454,7 +454,7 @@ exports.handler = function (event, context, callback) {
                                 console.log('sending an email');  
                                 let subject = formatAlarmMessage(camera.Name, labels);
                                 let body = formatAlarmBodyHeader() + 
-                                    getFacesInfo(faces, faceBucket, messageId) + 
+                                    getFacesInfo(faces, faceBucket, user.Id, messageId) + 
                                     formatAlarmBodyFooter(frameBucket, messageId);
                                 sendEmail(user.Email, subject, '', body);    
                                 saveMotionData(user.Id, camera.Id, detectedLabels, messageId, faces, utcOffset);
