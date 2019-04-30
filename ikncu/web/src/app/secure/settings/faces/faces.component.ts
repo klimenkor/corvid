@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUser, IFace, IFaceResult, IFacesResult } from 'src/app/model/_index';
+import { CurrentUser, IFace, IFaceResult, IFacesResult, IFaceDelete } from 'src/app/model/_index';
 import { FaceService } from 'src/app/service/data/Face.service';
 import { FaceViewComponent } from '../../components/common/face-view/face-view.component';
 import { CategoryViewComponent } from '../../components/common/category-view/category-view.component';
 import { UserService } from 'src/app/service/data/user.service';
+import { LocalDataSource } from 'ng2-smart-table';
+import { AuthService } from 'src/app/service/auth/auth.service';
 
 @Component({
   selector: 'app-settings-faces',
@@ -15,6 +17,12 @@ export class FacesComponent implements OnInit {
 
   settings = {
     columns: {
+      Frame: {
+        title: 'Photo',
+        filter: false,
+        type: 'custom',
+        renderComponent: FaceViewComponent
+      },
       Name: {
         title: 'Name',
         filter: false,
@@ -54,34 +62,48 @@ export class FacesComponent implements OnInit {
     }
   };
 
-  source = [];
+  // source = [];
+  source: LocalDataSource;
   currentUser: CurrentUser;
 
   constructor(
     private spinner: NgxSpinnerService,
     private userService: UserService,
-    private faceService: FaceService
+    private faceService: FaceService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
     console.log('FacesComponent.ngOnInit');
     this.spinner.show();
 
+
     this.userService.Get().subscribe(() => {
       this.faceService.Get().subscribe(
         (result: IFacesResult) => {
-          console.log(result.Items)
-          this.source = result.Items;
-          this.spinner.hide();
+          console.log(result.Items);
+
+          this.source = new LocalDataSource(
+            result.Items.map(
+              (item) => {
+                return {
+                  Id: item.Id,
+                  Name: item.Name,
+                  CategoryId: item.CategoryId,
+                  Frame: this.authService.CognitoUser.id + '/' + item.Frame
+                };
+              }));
         });
+        this.spinner.hide();
     });
   }
 
   onDeleteConfirm(event) {
       console.log('onDeleteConfirm');
       const item = {
-          Id: event.data.Id
-      } as IFace;
+          UserId: this.authService.CognitoUser.id,
+          FaceId: event.data.Id
+      } as IFaceDelete;
       this.faceService.Delete(item).subscribe(
         (value) => {
           event.confirm.resolve(event.newData);

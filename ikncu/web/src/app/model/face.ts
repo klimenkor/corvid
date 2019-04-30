@@ -13,3 +13,8 @@ export interface IFacesResult {
 export interface IFaceResult {
     Item: IFace;
 }
+
+export interface IFaceDelete {
+  UserId: string;
+  FaceId: string;
+}

@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 export class FaceViewComponent implements ViewCell, OnInit {
   facesFound = false;
 
-  bucketPath = environment.s3url + environment.framesBucket + '/';
+  bucketPath = environment.s3url + environment.facesBucket + '/';
   frameUrl: string;
 
   @Input() value: string;
@@ -21,8 +21,8 @@ export class FaceViewComponent implements ViewCell, OnInit {
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
-    const data = JSON.parse(this.value);
-    this.frameUrl = this.bucketPath + data.Url;
+    this.frameUrl = this.bucketPath + this.value;
+    console.log(this.value);
   }
 
   onClick(event) {

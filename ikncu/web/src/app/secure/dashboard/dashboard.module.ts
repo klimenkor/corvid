@@ -44,7 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CloudViewComponent,
     FaceButtonComponent,
     FrameViewComponent,
-    FaceViewComponent
+    // FaceViewComponent
   ],
   providers: [
     { provide: MAT_DIALOG_DATA, useValue: {} },

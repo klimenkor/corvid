@@ -215,7 +215,7 @@ function saveFaces(image, faces, bucket, userId, frame, callback) {
             var cx = box.Left * w;
             var cy = box.Top * h;
             var cw = box.Width * w;
-            var ch = box.Height * w;
+            var ch = box.Height * h;
     
             let img = jimage.clone();
             console.log('...cropping:');

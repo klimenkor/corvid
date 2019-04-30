@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { CategoryViewComponent } from '../components/common/category-view/category-view.component';
+import { FaceViewComponent } from '../components/common/face-view/face-view.component';
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import { CategoryViewComponent } from '../components/common/category-view/catego
     TiersComponent,
     CheckboxViewComponent,
     CategoryViewComponent,
-    ButtonViewComponent
+    ButtonViewComponent,
+    FaceViewComponent,
   ],
   providers: [
 
@@ -56,7 +58,8 @@ import { CategoryViewComponent } from '../components/common/category-view/catego
   entryComponents: [
     CheckboxViewComponent,
     CategoryViewComponent,
-    ButtonViewComponent
+    ButtonViewComponent,
+    FaceViewComponent
   ]
 })
 export class SettingsModule { }
