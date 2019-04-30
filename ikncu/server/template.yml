@@ -86,6 +86,18 @@ Resources:
                   - "rekognition:CreateCollection"
                 Resource: "*"
 
+        - 
+          PolicyName: IkncuS3BucketFacesAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action: 
+                  - "s3:GetObject"
+                Resource: 
+                  - "arn:aws:s3:::ikncu-faces/*"                
+
 
   IkncuLamdaDispatcherRole:
     Type: AWS::IAM::Role
@@ -122,6 +134,7 @@ Resources:
                   - "s3:PutObject"
                 Resource: 
                   - "arn:aws:s3:::ikncu-frames/*"
+                  - "arn:aws:s3:::ikncu-faces/*"
         - 
           PolicyName: IkncuRekognitionAccess
           PolicyDocument:
@@ -1100,7 +1113,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\n        \"Frame\" : $input.json('$.Frame'),\r\n        \"CategoryId\" : $input.json('$.CategoryId') \r\n    }\r\n}\r\n"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\n        \"Frame\" : $input.json('$.Frame'),\r\n        \"Name\" : $input.json('$.Name'),\r\n        \"CategoryId\" : $input.json('$.CategoryId') \r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -1148,6 +1161,7 @@ Resources:
       Role: !GetAtt IkncuLamdaDispatcherRole.Arn
       Policies: AmazonDynamoDBFullAccess
       Timeout: 15
+      MemorySize: 512
 
   IkncuFaceFunction:
     Type: AWS::Serverless::Function
@@ -1159,6 +1173,7 @@ Resources:
       Role: !GetAtt IkncuLamdaFaceRole.Arn
       Policies: AmazonDynamoDBFullAccess
       Timeout: 15
+      MemorySize: 512
 
   LambdaInvokeFacePermission:
     Type: AWS::Lambda::Permission

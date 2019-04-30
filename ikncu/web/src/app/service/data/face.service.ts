@@ -37,6 +37,7 @@ export class FaceService {
   public Add(data: IFace) {
       console.log('FaceService.Create');
       data.UserId = this.authService.CognitoUser.id;
+      data.Name = 'TempName';
       console.log(data);
       return this.http.post(environment.apiHost + '/rekognition/face', data, this.httpOptions);
   }

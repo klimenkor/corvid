@@ -31,7 +31,8 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   categories = CategoryList;
   facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
 
-  bucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
+  facesBucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
+  frameBucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
   userId = '';
   width = 800;
   height = 600;
@@ -155,7 +156,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
         this.cx.stroke();
       });
     };
-    img.src = this.bucketPath + this.frame;
+    img.src = this.frameBucketPath + this.frame;
 
   }
 }

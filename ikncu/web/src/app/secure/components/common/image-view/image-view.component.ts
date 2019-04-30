@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class ImageViewComponent implements OnInit {
 
   constructor() {}
-  bucketPath = environment.s3url + environment.rekognitionBucket + '/';
+  bucketPath = environment.s3url + environment.framesBucket + '/';
 
   frameUrl: string;
 
@@ -21,6 +21,7 @@ export class ImageViewComponent implements OnInit {
 
   ngOnInit() {
     this.frameUrl = this.bucketPath + this.frame;
+    console.log(this.frameUrl);
   }
 }
 

@@ -15,5 +15,5 @@ aws rekognition list-faces --collection-id ikncu-6dc8a55b-7b6a-4b66-80ab-2d1098c
 aws rekognition list-faces --collection-id ikncu-6dc8a55b-7b6a-4b66-80ab-2d1098c08705
 
 
-aws rekognition delete-collection --collection-id XXXXXXXXXXXXXXXXX
+aws rekognition delete-collection --collection-id ikncu-6dc8a55b-7b6a-4b66-80ab-2d1098c08705
 

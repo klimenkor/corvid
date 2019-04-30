@@ -64,7 +64,7 @@ export class MotionComponent implements OnInit {
   fromHour = 0;
   toHour = 12;
 
-  bucketPath = 'https://s3.amazonaws.com/' + environment.rekognitionBucket + '/';
+  bucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
 
   cameras: [ICamera];
 

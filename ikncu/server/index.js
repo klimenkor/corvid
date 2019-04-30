@@ -3,7 +3,7 @@ let AWS = require('aws-sdk');
 let tableNames = require('./settings.js');
 var documentClient = new AWS.DynamoDB.DocumentClient();
 let rekognition = new AWS.Rekognition();
-const frameBucket = 'ikncu-frames';
+const faceBucket = 'ikncu-faces';
 
 
 function initCollection(id, callback) {
@@ -29,6 +29,7 @@ function addFace(payload, callback) {
     let userId = payload.UserId;
     let frame = payload.Frame;
     let categoryId = payload.CategoryId;
+    let name = payload.Name;
 
     const collectionId = 'ikncu-' + userId;
     initCollection(collectionId, 
@@ -38,17 +39,21 @@ function addFace(payload, callback) {
                 CollectionId: collectionId, 
                 DetectionAttributes: [
                 ], 
-                ExternalImageId: frame, 
+                ExternalImageId: frame.replace('/','_'), 
                 Image: {
                     S3Object: {
-                        Bucket: frameBucket, 
-                        Name: frame
+                        Bucket: faceBucket, 
+                        Name: userId + '/' + frame
                     }
                 }
             };
+            console.log('...indexing face');
             rekognition.indexFaces(params, 
                 (err,data) => {
-                    if (err) callback(err);   
+                    if (err) {
+                        callback(err);   
+                        return;
+                    }
                     console.log(data.FaceRecords[0]);
                     const faceId = data.FaceRecords[0].Face.FaceId;
                     const payload = {
@@ -58,9 +63,10 @@ function addFace(payload, callback) {
                             UserId: userId,
                             CategoryId: categoryId,
                             Frame: frame,
-                            Name: ''
+                            Name: name
                         }
                     };
+                    console.log(payload);
                     documentClient.put(payload, callback);
                 });
         });

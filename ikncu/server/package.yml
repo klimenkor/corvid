@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b145167a50856bd321b63117895da51b
+      CodeUri: s3://ikncu-deploy/a433089796e77ea0c8af16ae01ac9111
       Events:
         CameraByUser:
           Properties:
@@ -835,8 +835,9 @@ Resources:
                   application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
                     \    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\"\
                     ,\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\
-                    \n        \"Frame\" : $input.json('$.Frame'),\r\n        \"CategoryId\"\
-                    \ : $input.json('$.CategoryId') \r\n    }\r\n}\r\n"
+                    \n        \"Frame\" : $input.json('$.Frame'),\r\n        \"Name\"\
+                    \ : $input.json('$.Name'),\r\n        \"CategoryId\" : $input.json('$.CategoryId')\
+                    \ \r\n    }\r\n}"
                 responses:
                   default:
                     responseParameters:
@@ -1022,8 +1023,9 @@ Resources:
     FunctionName: ikncu-IkncuDispatcher-Function
     Name: IkncuDispatcherLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b145167a50856bd321b63117895da51b
+      CodeUri: s3://ikncu-deploy/a433089796e77ea0c8af16ae01ac9111
       Handler: dispatcher.handler
+      MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
       Role:
         Fn::GetAtt:
@@ -1036,8 +1038,9 @@ Resources:
     FunctionName: ikncu-IkncuFace-Function
     Name: IkncuFaceLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b145167a50856bd321b63117895da51b
+      CodeUri: s3://ikncu-deploy/a433089796e77ea0c8af16ae01ac9111
       Handler: face.handler
+      MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
       Role:
         Fn::GetAtt:
@@ -1102,6 +1105,15 @@ Resources:
             Resource: '*'
           Version: '2012-10-17'
         PolicyName: IkncuRekognitionAccess
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - s3:GetObject
+            Effect: Allow
+            Resource:
+            - arn:aws:s3:::ikncu-faces/*
+          Version: '2012-10-17'
+        PolicyName: IkncuS3BucketFacesAccess
     Type: AWS::IAM::Role
   IkncuLamdaDispatcherRole:
     Properties:
@@ -1130,6 +1142,7 @@ Resources:
             Effect: Allow
             Resource:
             - arn:aws:s3:::ikncu-frames/*
+            - arn:aws:s3:::ikncu-faces/*
           Version: '2012-10-17'
         PolicyName: IkncuS3BucketFramesAccess
       - PolicyDocument:

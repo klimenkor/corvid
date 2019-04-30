@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 export class FaceViewComponent implements ViewCell, OnInit {
   facesFound = false;
 
-  bucketPath = environment.s3url + environment.rekognitionBucket + '/';
+  bucketPath = environment.s3url + environment.framesBucket + '/';
   frameUrl: string;
 
   @Input() value: string;

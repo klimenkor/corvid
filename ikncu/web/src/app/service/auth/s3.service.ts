@@ -22,7 +22,7 @@ export class S3Service {
         const clientParams: any = {
             region: environment.bucketRegion,
             apiVersion: '2006-03-01',
-            params: {Bucket: environment.rekognitionBucket}
+            params: {Bucket: environment.framesBucket}
         };
         if (environment.s3_endpoint) {
             clientParams.endpoint = environment.s3_endpoint;

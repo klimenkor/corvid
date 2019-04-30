@@ -16,6 +16,13 @@ const faceBucket = 'ikncu-faces';
 console.log(tableNames.getName('UserDynamoDbARN'));
 
 exports.handler = function (event, context, callback) {
+    if(event.Records === undefined)
+    {
+        console.log('handler: Malformed event object'); 
+        callback(null,null);
+        return;
+    }
+
     const item = event.Records[0].s3;
     const bucket = item.bucket.name;
     const key = item.object.key;
@@ -41,7 +48,7 @@ exports.handler = function (event, context, callback) {
 
             const collectionId = "ikncu-" + userId;
             let param = { 
-                collectionId: collectionId,
+                CollectionId: collectionId,
                 FaceMatchThreshold: 95,
                 Image: {
                     'S3Object': {
@@ -58,7 +65,19 @@ exports.handler = function (event, context, callback) {
                         callback(null,null);
                         return;
                     }
-                    console.log(data);
+                    
+                    data.FaceMatches.forEach( face => {
+                        console.log(face.Similarity);
+                        console.log(face.Face);
+                    });
+                    // { Width: 0.9188481569290161,
+                        // Height: 0.5659894347190857,
+                        // Left: 0.12543664872646332,
+                        // Top: 0.040605995804071426 },
+                        // SearchedFaceConfidence: 99.99998474121094,
+                        // FaceMatches: [ { Similarity: 99.64151763916016, Face: [Object] } ],
+                        // FaceModelVersion: '4.0' }
+                    
                     callback(null,data);
                 });
         });       

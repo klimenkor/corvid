@@ -218,15 +218,26 @@ function saveFaces(image, faces, bucket, userId, frame, callback) {
             var ch = box.Height * w;
     
             let img = jimage.clone();
-            img.crop( cx, cy, cw, ch, () => {
-                i = i + 1;
-                let key = userId + '/' + frame + '/' + i.toString();
-        
-                img.getBuffer(Jimp.MIME_JPEG,(err, res) => {
-                    saveFrame(bucket, key, res, () => {
-                        callback();
+            console.log('...cropping:');
+            img.crop( cx, cy, cw, ch, 
+                (err,data) => {
+                    if(err!==null){
+                        callback(err,null);
+                        return;
+                    }
+                    i = i + 1;
+                    let key = userId + '/' + frame + '/' + i.toString();
+            
+                    console.log('...buffering:');
+                    img.getBuffer(Jimp.MIME_JPEG,(err, res) => {
+                        console.log('...saving to ' + bucket + '/' + key);
+                        saveFrame(bucket, key, res, 
+                            (err,data) => {
+                                
+                                callback(err,data);
+
+                            });
                     });
-                });
             });
         });
     });
@@ -361,6 +372,12 @@ function formatAlarmBodyFooter(bucket, messageId) {
 }
 
 exports.handler = function (event, context, callback) {
+    if(event.Records === undefined)
+    {
+        console.log('handler: Malformed event object'); 
+        callback(null,null);
+        return;
+    }
     const item = event.Records[0].s3;
     const mailBucket = item.bucket.name;
     const messageId = item.object.key;
@@ -448,10 +465,16 @@ exports.handler = function (event, context, callback) {
                                 console.log(faces.length + ' faces found');  
                                 if(faces.length>0) {
                                     console.log('cropping faces');
-                                    saveFaces(image, faces, faceBucket, user.Id, messageId, () =>
-                                    {
-                                        console.log('saved faces');
-                                    });
+                                    saveFaces(image, faces, faceBucket, user.Id, messageId, 
+                                        (err,data) =>
+                                        {
+                                            if(err!==null) {
+                                                console.log(err);
+                                                callback(err);
+                                                return;     
+                                            }
+                                            console.log('saved faces');
+                                        });
                                 }
                                         
                                 console.log('sending an email');  
