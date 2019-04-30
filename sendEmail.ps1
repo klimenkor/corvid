@@ -1,0 +1,1 @@
+﻿Send-MailMessage -From 'klimenkor@gmail.com' -To 'motion@ikncu.com' -Subject 'Motion Detection from Cam{Qky2Se4CJ}' -Attachments c:\tmp\test.jpg -SmtpServer 'smtp.gmail.com'
