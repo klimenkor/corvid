@@ -74,7 +74,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
       UserId: '',
       CategoryId: this.facesCategorized[index].CategoryId,
       Name: this.facesCategorized[index].Name,
-      Frame: this.frame + '/' + (index + 1)
+      Frame: this.motionId + '/' + (index + 1)
     } as IFace);
     response.subscribe((res) => {
       console.log(res);
