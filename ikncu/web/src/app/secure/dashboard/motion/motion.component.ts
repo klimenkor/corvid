@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrentUser, IMotionsResult, ICamera, ICamerasResult, ILabelCloud, IMotionView, IDetectedFace } from 'src/app/model/_index';
+import { CurrentUser, IMotionsResult, ICamera, ICamerasResult, IMotionView,
+  IDetectedFace, IFacesResult, IFace } from 'src/app/model/_index';
 import { MotionService } from 'src/app/service/data/motion.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { environment } from 'src/environments/environment';
@@ -10,6 +11,7 @@ import { CameraService } from 'src/app/service/data/camera.service';
 import { Options } from 'ng5-slider';
 import { CloudData } from 'angular-tag-cloud-module';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { FaceService } from 'src/app/service/data/Face.service';
 
 @Component({
   selector: 'app-dashboard-motion',
@@ -68,6 +70,7 @@ export class MotionComponent implements OnInit {
   bucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
 
   cameras: [ICamera];
+  faces: [IFace];
 
   options: Options = {
     floor: 0,
@@ -82,15 +85,20 @@ export class MotionComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private motionService: MotionService,
     private cameraService: CameraService,
+    private faceService: FaceService,
     private calendar: NgbCalendar) {
       this.selectToday();
     }
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
-    this.cameraService.Get().subscribe((response: ICamerasResult) => {
-      this.cameras = response.Items;
-      this.onDateSelection(this.fromDate);
+    this.cameraService.Get().subscribe((cameras: ICamerasResult) => {
+      this.cameras = cameras.Items;
+      this.faceService.Get().subscribe((faces: IFacesResult) => {
+        this.faces = faces.Items;
+        console.log(faces)
+        this.onDateSelection(this.fromDate);
+      });
     });
   }
 
@@ -107,7 +115,7 @@ export class MotionComponent implements OnInit {
     console.log(motion);
   }
 
-  onClose(event){
+  onClose(event) {
     this.showFrame = false;
     console.log(event);
   }
@@ -149,6 +157,15 @@ export class MotionComponent implements OnInit {
             }
           });
 
+          if (item.People != null) {
+            item.People.forEach(person => {
+              const face = this.faces.find(x => x.Id === person.FaceId);
+              if (face != null) {
+                labels.push({text: face.Name, weight: 10, link: '/home/settings/faces', color: 'red'});
+              }
+            });
+          }
+
           this.motions.push({
             Id: item.Id,
             Camera: this.cameraName(item.CameraId),
@@ -158,9 +175,7 @@ export class MotionComponent implements OnInit {
             Faces: item.Faces,
             ShowTagCloud: true
           });
-          // this.spinner.hide();
         });
-        // console.log(this.motions);
         this.spinner.hide();
     });
   }
