@@ -25,17 +25,31 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   ) { }
 
   @Input() frame: string;
+  @Input() motion: string;
   @Input() faces: IDetectedFace[];
   @Output() close = new EventEmitter<boolean>();
 
   categories = CategoryList;
-  facesCategorized = [{ Id: '', CategoryId: ''}] as IFaceCategorized[];
+  facesCategorized = [{ Id: '', CategoryId: '', Name: ''}] as IFaceCategorized[];
 
   facesBucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
   frameBucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
   userId = '';
+  motionId = '';
   width = 800;
   height = 600;
+
+  ngOnInit(): void {
+    this.userId = this.authService.CognitoUser.id;
+    this.motionId = this.motion;
+    console.log(this.motionId)
+    let i = 0;
+    this.facesCategorized = [];
+    this.faces.forEach(face => {
+      this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0', Name: '' } as IFaceCategorized);
+      i++;
+    });
+  }
 
   @ViewChild('canvas') public canvas: ElementRef;
   private cx: CanvasRenderingContext2D;
@@ -59,6 +73,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
       Id: '',
       UserId: '',
       CategoryId: this.facesCategorized[index].CategoryId,
+      Name: this.facesCategorized[index].Name,
       Frame: this.frame + '/' + (index + 1)
     } as IFace);
     response.subscribe((res) => {
@@ -110,16 +125,6 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
     this.cx.fillText(this.getEyeglasses(face), labelLeft, labelTop + 60);
     this.cx.fillText(this.getSunglasses(face), labelLeft, labelTop + 75);
 
-  }
-
-  ngOnInit(): void {
-    this.userId = this.authService.CognitoUser.id;
-    let i = 0;
-    this.facesCategorized = [];
-    this.faces.forEach(face => {
-      this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0' } as IFaceCategorized);
-      i++;
-    });
   }
 
   public ngAfterViewInit() {

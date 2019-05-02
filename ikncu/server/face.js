@@ -10,10 +10,32 @@ let s3 = new AWS.S3();
 let rekognition = new AWS.Rekognition();
 let docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 AWS.config.update({region: 'us-east-1'});
-const s3url = 'https://s3.amazonaws.com/';
-const faceBucket = 'ikncu-faces';
 
 console.log(tableNames.getName('UserDynamoDbARN'));
+
+function updateMotion(id, people) {
+  var params = {
+    TableName: tableNames.getName('MotionDynamoDbARN'),
+    Key:{
+      "Id": id
+    },
+    UpdateExpression: "set People = :a",
+    ExpressionAttributeValues:{
+      ":a": people.map( x => { return { FaceId: x.Face.FaceId, Similarity: x.Similarity }; })
+    },
+    ReturnValues:"UPDATED_NEW"
+  };
+
+  console.log("Updating motion ID = " + id);
+  docClient.update(params, 
+    (err, data) => {
+      if (err) {
+        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+      } else {
+        console.log("Updated:", JSON.stringify(data, null, 2));
+      }
+    });
+}
 
 exports.handler = function (event, context, callback) {
     if(event.Records === undefined)
@@ -28,10 +50,10 @@ exports.handler = function (event, context, callback) {
     const key = item.object.key;
     const pair = key.split('/');
     const userId = pair[0];
-    const imageId = pair[1];
+    const motionId = pair[1];
 
 
-    console.log('...new face:' + bucket + ' / ' + key);
+    console.log('...new face: ' + bucket + ' / ' + key);
     s3.getObject(
         {
             Bucket: bucket, 
@@ -45,8 +67,10 @@ exports.handler = function (event, context, callback) {
             }
             
             // search Face
-
             const collectionId = "ikncu-" + userId;
+            console.log('...looking for the match - https://s3.amazonaws.com/' + bucket + '/' + key);
+            console.log('...in collection - ' + collectionId);
+            
             let param = { 
                 CollectionId: collectionId,
                 FaceMatchThreshold: 95,
@@ -66,19 +90,19 @@ exports.handler = function (event, context, callback) {
                         return;
                     }
                     
-                    data.FaceMatches.forEach( face => {
+                    console.log('...found ' + data.FaceMatches.length + ' matches');
+                    
+                    if(data.FaceMatches.length>0) {
+
+                      updateMotion(motionId, data.FaceMatches);
+
+                      data.FaceMatches.forEach( face => {
                         console.log(face.Similarity);
                         console.log(face.Face);
-                    });
-                    // { Width: 0.9188481569290161,
-                        // Height: 0.5659894347190857,
-                        // Left: 0.12543664872646332,
-                        // Top: 0.040605995804071426 },
-                        // SearchedFaceConfidence: 99.99998474121094,
-                        // FaceMatches: [ { Similarity: 99.64151763916016, Face: [Object] } ],
-                        // FaceModelVersion: '4.0' }
+                      });
                     
-                    callback(null,data);
+                    }    
+                    callback(null,null);
                 });
         });       
 };

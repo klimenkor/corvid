@@ -47,6 +47,11 @@ export interface IDetectedFace {
   Sunglasses?: IFeature | null;
 }
 
+export interface IDetectedPerson {
+  FaceId: string;
+  Similarity: number;
+}
+
 export interface IMotion {
   Id: string;
   CameraId: string;
@@ -54,6 +59,7 @@ export interface IMotion {
   Frame: string;
   Labels: ILabel[];
   Faces: IDetectedFace[];
+  People: IDetectedPerson[];
 }
 
 export interface ILabelCloud {

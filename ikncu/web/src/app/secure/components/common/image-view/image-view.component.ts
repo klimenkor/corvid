@@ -16,12 +16,12 @@ export class ImageViewComponent implements OnInit {
   frameUrl: string;
 
   @Input() frame: string;
+  @Input() motion: string;
   @Input() faces: IDetectedFace[];
   @Output() click: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
     this.frameUrl = this.bucketPath + this.frame;
-    console.log(this.frameUrl);
   }
 }
 

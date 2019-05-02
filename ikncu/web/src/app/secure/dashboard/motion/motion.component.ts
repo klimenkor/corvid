@@ -52,6 +52,7 @@ export class MotionComponent implements OnInit {
 
   source: LocalDataSource;
   motions: Array<IMotionView> = new Array<IMotionView>();
+  currentMotion: string;
   currentFrame: string;
   currentFaces: IDetectedFace[];
   showFrame = false;
@@ -99,6 +100,7 @@ export class MotionComponent implements OnInit {
 
   onClick(motion: IMotionView){
     this.showFrame = true;
+    this.currentMotion = motion.Id;
     this.currentFrame = motion.Frame;
     this.currentFaces = motion.Faces;
 
@@ -161,6 +163,10 @@ export class MotionComponent implements OnInit {
         // console.log(this.motions);
         this.spinner.hide();
     });
+  }
+
+  onRefresh() {
+    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
   }
 
   onDateSelection(date: NgbDate) {

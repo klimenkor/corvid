@@ -6,6 +6,7 @@ export interface ICategory {
 export interface IFaceCategorized {
   Id: string;
   CategoryId: string;
+  Name: string;
 }
 
 export const CategoryList = [

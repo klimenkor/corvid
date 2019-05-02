@@ -217,6 +217,7 @@ Resources:
                 Effect: "Allow"
                 Action: 
                   - "dynamodb:PutItem"
+                  - "dynamodb:UpdateItem"
                   - "dynamodb:GetItem"  
                   - "dynamodb:Scan"  
                 Resource: 
@@ -1203,6 +1204,7 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs8.10
+      Timeout: 5
       Role: !GetAtt IkncuLambdaApiRole.Arn
       Policies: AmazonDynamoDBFullAccess
       Events:

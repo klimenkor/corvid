@@ -107,7 +107,7 @@ function saveObject(table, item, callback){
     return;
 }
 
-function saveMotionData(userId, cameraId, labels, key, faces, utcOffset) {
+function saveMotionData(id, userId, cameraId, labels, key, faces, utcOffset) {
     var labels_list = [];
 
     labels.forEach(label => {
@@ -153,7 +153,7 @@ function saveMotionData(userId, cameraId, labels, key, faces, utcOffset) {
     }
 
     item = {
-        "Id": uuidv1(),
+        "Id": id,
         "UserId": userId,
         "CameraId": cameraId,
         "Occurred": parseInt(moment().utcOffset(utcOffset).format("YYYYMMDDHHmmss")),
@@ -205,7 +205,7 @@ function detectLabels(bucket, key, callback) {
     });
 }
 
-function saveFaces(image, faces, bucket, userId, frame, callback) {
+function saveFaces(image, faces, bucket, userId, motionId, callback) {
     const jimage = new Jimp(image, (res) => {
         var w = jimage.bitmap.width; 
         var h = jimage.bitmap.height;
@@ -226,7 +226,7 @@ function saveFaces(image, faces, bucket, userId, frame, callback) {
                         return;
                     }
                     i = i + 1;
-                    let key = userId + '/' + frame + '/' + i.toString();
+                    let key = userId + '/' + motionId + '/' + i.toString();
             
                     console.log('...buffering:');
                     img.getBuffer(Jimp.MIME_JPEG,(err, res) => {
@@ -460,12 +460,16 @@ exports.handler = function (event, context, callback) {
                                     callback(err);
                                     return;     
                                 }
-                                console.log(data);  
-                                faces = data.filter( item => item.Confidence > 90 );
+
+                                faces = data.filter( item => item.Confidence > 95 );
+
+                                let motionId = uuidv1();
+                                saveMotionData(motionId, user.Id, camera.Id, detectedLabels, messageId, faces, utcOffset);
+
                                 console.log(faces.length + ' faces found');  
                                 if(faces.length>0) {
                                     console.log('cropping faces');
-                                    saveFaces(image, faces, faceBucket, user.Id, messageId, 
+                                    saveFaces(image, faces, faceBucket, user.Id, motionId,
                                         (err,data) =>
                                         {
                                             if(err!==null) {
@@ -480,10 +484,9 @@ exports.handler = function (event, context, callback) {
                                 console.log('sending an email');  
                                 let subject = formatAlarmMessage(camera.Name, labels);
                                 let body = formatAlarmBodyHeader() + 
-                                    getFacesInfo(faces, faceBucket, user.Id, messageId) + 
+                                    getFacesInfo(faces, faceBucket, user.Id, motionId) + 
                                     formatAlarmBodyFooter(frameBucket, messageId);
                                 sendEmail(user.Email, subject, '', body);    
-                                saveMotionData(user.Id, camera.Id, detectedLabels, messageId, faces, utcOffset);
                             });        
                         });  
                     });

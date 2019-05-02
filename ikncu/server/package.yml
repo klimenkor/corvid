@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/a475e77afdbd3e146217667039e88198
+      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
       Events:
         CameraByUser:
           Properties:
@@ -249,6 +249,7 @@ Resources:
         - IkncuLambdaApiRole
         - Arn
       Runtime: nodejs8.10
+      Timeout: 5
     Type: AWS::Serverless::Function
   IkncuApi:
     Properties:
@@ -1023,7 +1024,7 @@ Resources:
     FunctionName: ikncu-IkncuDispatcher-Function
     Name: IkncuDispatcherLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/53bb8de11a13da26a582c1d05ce51225
+      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
       Handler: dispatcher.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
@@ -1038,7 +1039,7 @@ Resources:
     FunctionName: ikncu-IkncuFace-Function
     Name: IkncuFaceLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/a475e77afdbd3e146217667039e88198
+      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
       Handler: face.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
@@ -1220,6 +1221,7 @@ Resources:
           Statement:
           - Action:
             - dynamodb:PutItem
+            - dynamodb:UpdateItem
             - dynamodb:GetItem
             - dynamodb:Scan
             Effect: Allow
