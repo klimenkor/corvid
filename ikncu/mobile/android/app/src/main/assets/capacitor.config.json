@@ -1,0 +1,7 @@
+{
+  "appId": "com.ikncu.mobile",
+  "appName": "mobile",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
