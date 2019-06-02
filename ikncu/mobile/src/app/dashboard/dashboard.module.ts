@@ -8,6 +8,7 @@ import { MotionComponent } from '../dashboard/motion/motion.component';
 import { CloudViewComponent } from '../dashboard/cloud-view/cloud-view.component';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { DashboardComponent } from './dashboard.component';
+import { ImageViewComponent } from './image-view/image-view.component';
 
 @NgModule({
   imports: [
@@ -25,10 +26,8 @@ import { DashboardComponent } from './dashboard.component';
   declarations: [
     DashboardComponent,
     CloudViewComponent,
+    ImageViewComponent,
     MotionComponent
-  ],
-  // entryComponents: [
-  //   CloudViewComponent
-  // ]
+  ]
 })
 export class DashboardModule {}

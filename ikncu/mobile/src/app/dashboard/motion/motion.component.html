@@ -1,9 +1,24 @@
 <ion-card *ngFor="let motion of motions;let i=index">
   <ion-card-header>
       {{motion.Occurred}} : {{motion.Camera}}
+
+      <ion-segment *ngIf="motion.ShowTagCloud">
+        <ion-segment-button (ionSelect)="onSwitchTagCloud(i)">
+          <ion-label>Camera</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <ion-segment *ngIf="!motion.ShowTagCloud">
+        <ion-segment-button (ionSelect)="onSwitchTagCloud(i)">
+          <ion-label>Tag Cloud</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+  
   </ion-card-header>
   <ion-card-content>
-    <app-cloud-view [data]="motion.Labels"></app-cloud-view>
+    <app-cloud-view *ngIf="motion.ShowTagCloud" [data]="motion.Labels"></app-cloud-view>
+    <app-image-view *ngIf="!motion.ShowTagCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+
   </ion-card-content>
 </ion-card>
 

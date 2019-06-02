@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Home page
+      
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,3 +9,12 @@
 <ion-content>
   <app-dashboard-motion></app-dashboard-motion>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-range dualKnobs="true" min="0" max="24" step="1" snaps="true">
+        <ion-label slot="start">0</ion-label>
+        <ion-label slot="end">3</ion-label>
+      </ion-range>
+  </ion-toolbar>
+</ion-footer>

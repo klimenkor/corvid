@@ -10,6 +10,7 @@ import { ICamera, ICamerasResult } from 'src/app/model/camera';
 import { IFace, IFacesResult } from 'src/app/model/face';
 import { LoadingController } from '@ionic/angular';
 import { integer } from 'aws-sdk/clients/storagegateway';
+import { ImageViewComponent } from '../image-view/image-view.component';
 
 @Component({
   selector: 'app-dashboard-motion',
