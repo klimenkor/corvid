@@ -1,0 +1,10 @@
+<ion-card *ngFor="let motion of motions;let i=index">
+  <ion-card-header>
+      {{motion.Occurred}} : {{motion.Camera}}
+  </ion-card-header>
+  <ion-card-content>
+    <app-cloud-view [data]="motion.Labels"></app-cloud-view>
+  </ion-card-content>
+</ion-card>
+
+

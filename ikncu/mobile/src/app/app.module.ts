@@ -10,15 +10,28 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthService } from './auth/service/auth.service';
 import { CognitoUtil } from './auth/service/cognito.service';
+import { TagCloudModule } from 'angular-tag-cloud-module';
+import { HttpClientModule } from '@angular/common/http';
+import { AwsUtil } from './auth/service/aws.service';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  declarations: [
+    AppComponent
+  ],
+  entryComponents: [
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    IonicModule.forRoot(),
+    AppRoutingModule
+  ],
   providers: [
     StatusBar,
     SplashScreen,
     AuthService,
+    AwsUtil,
+    HttpClientModule,
     CognitoUtil,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

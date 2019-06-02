@@ -43,6 +43,7 @@ export class AuthService {
         sts.getCallerIdentity(
           (err: any, data: any) => {
             console.log('UserLoginService: Successfully set the AWS credentials');
+            console.log(err,data);
             callback.cognitoCallback(null, session);
         });
     }
@@ -66,6 +67,8 @@ export class AuthService {
         };
 
         console.log('UserLoginService: Params set...Authenticating the user');
+        console.log(userData);
+
         const cognitoUser = new CognitoUser(userData);
         console.log('UserLoginService: config is ' + AWS.config);
         cognitoUser.authenticateUser(authenticationDetails, {

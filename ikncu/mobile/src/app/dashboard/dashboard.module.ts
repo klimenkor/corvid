@@ -4,10 +4,10 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { HomePage } from './home.page';
 import { MotionComponent } from '../dashboard/motion/motion.component';
 import { CloudViewComponent } from '../dashboard/cloud-view/cloud-view.component';
 import { TagCloudModule } from 'angular-tag-cloud-module';
+import { DashboardComponent } from './dashboard.component';
 
 @NgModule({
   imports: [
@@ -18,16 +18,17 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
+        component: DashboardComponent
       }
     ])
   ],
   declarations: [
-    HomePage,
+    DashboardComponent,
+    CloudViewComponent,
     MotionComponent
   ],
-  entryComponents: [
-    CloudViewComponent
-  ]
+  // entryComponents: [
+  //   CloudViewComponent
+  // ]
 })
-export class HomePageModule {}
+export class DashboardModule {}

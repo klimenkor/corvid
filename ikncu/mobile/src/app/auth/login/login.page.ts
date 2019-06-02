@@ -40,10 +40,6 @@ export class LoginPage implements CognitoCallback, LoggedInCallback, OnInit {
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
         loadingEl.present();
-        // setTimeout(() => {
-        //   this.isLoading = false;
-        //   loadingEl.dismiss();
-        // }, 1500);
       });
   }
 
@@ -80,7 +76,7 @@ export class LoginPage implements CognitoCallback, LoggedInCallback, OnInit {
           }
       } else { // success
         console.log('result: ' + this.errorMessage);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/dashboard']);
         this.loadingCtrl.dismiss();
         this.isLoading = false;
 
