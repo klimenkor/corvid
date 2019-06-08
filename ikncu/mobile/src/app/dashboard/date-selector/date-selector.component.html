@@ -1,0 +1,10 @@
+<!-- <ion-item>
+  <ion-datetime display-format="MM/MM/YYYY" min="2019" max="2020-01-01"></ion-datetime>
+</ion-item> -->
+<ion-title>
+  {{range.lower}} - {{range.upper}}
+</ion-title>
+<ion-range dualKnobs="true" min="0" max="24" step="1" snaps="true" [(ngModel)]="range" (onFinish)="onFinish">
+  <ion-label slot="start">0</ion-label>
+  <ion-label slot="end">3</ion-label>
+</ion-range>

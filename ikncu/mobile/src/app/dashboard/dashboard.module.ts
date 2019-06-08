@@ -9,6 +9,7 @@ import { CloudViewComponent } from '../dashboard/cloud-view/cloud-view.component
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { DashboardComponent } from './dashboard.component';
 import { ImageViewComponent } from './image-view/image-view.component';
+import { DateSelectorComponent } from './date-selector/date-selector.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { ImageViewComponent } from './image-view/image-view.component';
     DashboardComponent,
     CloudViewComponent,
     ImageViewComponent,
-    MotionComponent
+    MotionComponent,
+    DateSelectorComponent
   ]
 })
 export class DashboardModule {}

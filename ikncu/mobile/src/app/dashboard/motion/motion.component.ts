@@ -46,17 +46,19 @@ export class MotionComponent implements OnInit {
     private cameraService: CameraService,
     private faceService: FaceService,
     private loadingCtrl: LoadingController) {
-      this.selectToday();
+      console.log('MotionComponent: constructor');
     }
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
     this.cameraService.Get().subscribe((cameras: ICamerasResult) => {
       this.cameras = cameras.Items;
+      console.log('...cameras loaded');
       this.faceService.Get().subscribe((faces: IFacesResult) => {
         this.faces = faces.Items;
-        console.log(faces)
+        console.log('...faces loaded');
         // this.onDateSelection(this.fromDate);
+        this.selectToday();
       });
     });
   }
@@ -68,6 +70,13 @@ export class MotionComponent implements OnInit {
     this.currentFaces = motion.Faces;
 
     console.log(motion);
+  }
+
+  changeRange(fromHour, toHour)
+  {
+    this.fromHour = fromHour;
+    this.toHour = toHour;
+    this.onRefresh();
   }
 
   onClose(event) {
@@ -89,13 +98,14 @@ export class MotionComponent implements OnInit {
   }
 
   cameraName(id) {
+    if (this.cameras === undefined) { return 'Error'; }
     return this.cameras.find((c) => {
       return c.Id === id;
     }).Name;
   }
 
   refreshData(fromDate: string, toDate: string) {
-    console.log('refreshData: ' + fromDate +  '-' + toDate);
+    console.log('MotionComponent.refreshData: ' + fromDate +  '-' + toDate);
 
     this.isLoading = true;
     this.loadingCtrl
@@ -107,6 +117,7 @@ export class MotionComponent implements OnInit {
 
     this.motionService.GetByUser(fromDate, toDate,
       (response: IMotionsResult) => {
+        console.log('...motions loaded');
         this.motions = [];
         response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
 
@@ -119,7 +130,7 @@ export class MotionComponent implements OnInit {
             }
           });
 
-          if (item.People != null) {
+          if (item.People !== undefined && this.faces !== undefined) {
             item.People.forEach(person => {
               const face = this.faces.find(x => x.Id === person.FaceId);
               if (face != null) {
