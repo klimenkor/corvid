@@ -80,17 +80,6 @@ export class MotionComponent implements OnInit {
     console.log(motion);
   }
 
-  // changeDate(fromDate) {
-  //   this.fromDate = fromDate;
-  // }
-
-  // changeRange(fromHour, toHour)
-  // {
-  //   this.fromHour = fromHour;
-  //   this.toHour = toHour;
-  //   this.onRefresh();
-  // }
-
   onClose(event) {
     this.showFrame = false;
     console.log(event);
@@ -99,10 +88,6 @@ export class MotionComponent implements OnInit {
   onSwitchTagCloud(index){
     this.motions[index].ShowTagCloud = !this.motions[index].ShowTagCloud;
   }
-
-  // DateTimeToString(date: NgbDate, hour: number ) {
-  //   return date.year + ('0' + date.month).slice(-2) + ('0' + date.day).slice(-2) + hour.toString().padStart(2, '0') + '0000';
-  // }
 
   timeOfTheDay(timestamp: number) {
     const ts = timestamp.toString();
@@ -168,36 +153,8 @@ export class MotionComponent implements OnInit {
     });
   }
 
-  // DateTimeToString(fromDate, fromHour) {
-  //   return fromDate + fromHour.toString().padStart(2, '0') + '0000';
-  // }
-
-  // onRefresh() {
-  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  // }
-
-  // selectToday() {
-  //   this.fromDate = 20190531;
-  //   this.fromHour = 2;
-  //   this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
-  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  // }
-
-  // selectYesterday() {
-    
-  //   this.fromDate = 20190531;
-  //   this.fromHour = 0;
-  //   this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
-  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  // }
-
   formatConfidence(value: number) {
     return Math.round(value);
   }
-
-
-  // formatHappenedFromDate(date: NgbDate) {
-  //   return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';
-  // }
 
 }

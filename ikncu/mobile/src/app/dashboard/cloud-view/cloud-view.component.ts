@@ -21,19 +21,7 @@ export class CloudViewComponent implements OnInit {
     width : 0.8,
     height : 200,
     overflow: false,
-    realignOnResize: true,
-    // zoomOnHover: {
-    //   scale: 1.3,
-    //   transitionTime: 1.2,
-    //   color: '#aaaaaa'
-    // }
-  };
-
-
-  zoomOnHoverOptions: ZoomOnHoverOptions = {
-    scale: 1.3, // Elements will become 130 % of current zize on hover
-    transitionTime: 1.2, // it will take 1.2 seconds until the zoom level defined in scale property has been reached
-    delay: 0.8 // Zoom will take affect after 0.8 seconds
+    realignOnResize: false
   };
 
   ngOnInit() {}
