@@ -28,7 +28,6 @@ export class MotionComponent implements OnInit {
 
   showCloud = true;
   showCloudtext = 'Show images';
-  // currentUser: CurrentUser;
   fromDate: integer;
   toDate: integer;
   fromHour = 0;
@@ -51,16 +50,25 @@ export class MotionComponent implements OnInit {
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
-    this.cameraService.Get().subscribe((cameras: ICamerasResult) => {
-      this.cameras = cameras.Items;
-      console.log('...cameras loaded');
-      this.faceService.Get().subscribe((faces: IFacesResult) => {
-        this.faces = faces.Items;
-        console.log('...faces loaded');
-        // this.onDateSelection(this.fromDate);
-        this.selectToday();
+  }
+
+  loadDictionaries(callback) {
+    console.log(this.cameras)
+    if(this.cameras === undefined) {
+      this.cameraService.Get().subscribe((cameras: ICamerasResult) => {
+        this.cameras = cameras.Items;
+        console.log('...cameras loaded');
+        this.faceService.Get().subscribe((faces: IFacesResult) => {
+          this.faces = faces.Items;
+          console.log('...faces loaded');
+          callback();
+        });
       });
-    });
+    }
+    else {
+      callback();
+    }
+
   }
 
   onClick(motion: IMotionView){
@@ -72,12 +80,16 @@ export class MotionComponent implements OnInit {
     console.log(motion);
   }
 
-  changeRange(fromHour, toHour)
-  {
-    this.fromHour = fromHour;
-    this.toHour = toHour;
-    this.onRefresh();
-  }
+  // changeDate(fromDate) {
+  //   this.fromDate = fromDate;
+  // }
+
+  // changeRange(fromHour, toHour)
+  // {
+  //   this.fromHour = fromHour;
+  //   this.toHour = toHour;
+  //   this.onRefresh();
+  // }
 
   onClose(event) {
     this.showFrame = false;
@@ -114,72 +126,75 @@ export class MotionComponent implements OnInit {
         loadingEl.present();
       });
 
+    this.loadDictionaries(() => {
+      this.motionService.GetByUser(fromDate, toDate,
+        (response: IMotionsResult) => {
+          console.log('...motions loaded');
+          this.motions = [];
+          response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
 
-    this.motionService.GetByUser(fromDate, toDate,
-      (response: IMotionsResult) => {
-        console.log('...motions loaded');
-        this.motions = [];
-        response.Items.sort((a, b) => b.Occurred - a.Occurred).forEach(item => {
-
-          const labels = new Array<CloudData>();
-          let tagsNumber = 0;
-          item.Labels.forEach(element => {
-            if (element.Confidence > 50 && tagsNumber <5 ) {
-              labels.push({text: element.Name, weight: Math.round(element.Confidence / 10), link: '/home/settings/labels', color: 'red'});
-              tagsNumber++;
-            }
-          });
-
-          if (item.People !== undefined && this.faces !== undefined) {
-            item.People.forEach(person => {
-              const face = this.faces.find(x => x.Id === person.FaceId);
-              if (face != null) {
-                labels.push({text: face.Name, weight: 10, link: '/home/settings/faces', color: 'red'});
+            const labels = new Array<CloudData>();
+            let tagsNumber = 0;
+            item.Labels.forEach(element => {
+              if (element.Confidence > 50 && tagsNumber <5 ) {
+                labels.push({text: element.Name, weight: Math.round(element.Confidence / 10), link: '/home/settings/labels', color: 'red'});
+                tagsNumber++;
               }
             });
-          }
 
-          this.motions.push({
-            Id: item.Id,
-            Camera: this.cameraName(item.CameraId),
-            Occurred: this.timeOfTheDay(item.Occurred),
-            Frame: item.Frame,
-            Labels: labels,
-            Faces: item.Faces,
-            ShowTagCloud: true
+            if (item.People !== undefined && this.faces !== undefined) {
+              item.People.forEach(person => {
+                const face = this.faces.find(x => x.Id === person.FaceId);
+                if (face != null) {
+                  labels.push({text: face.Name, weight: 10, link: '/home/settings/faces', color: 'red'});
+                }
+              });
+            }
+
+            this.motions.push({
+              Id: item.Id,
+              Camera: this.cameraName(item.CameraId),
+              Occurred: this.timeOfTheDay(item.Occurred),
+              Frame: item.Frame,
+              Labels: labels,
+              Faces: item.Faces,
+              ShowTagCloud: true
+            });
           });
-        });
 
-        this.loadingCtrl.dismiss();
-        this.isLoading = false;
+          this.loadingCtrl.dismiss();
+          this.isLoading = false;
+      });
     });
   }
 
-  DateTimeToString(fromDate, fromHour) {
-    return fromDate + fromHour.toString().padStart(2, '0') + '0000';
-  }
+  // DateTimeToString(fromDate, fromHour) {
+  //   return fromDate + fromHour.toString().padStart(2, '0') + '0000';
+  // }
 
-  onRefresh() {
-    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  }
+  // onRefresh() {
+  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
+  // }
 
-  selectToday() {
-    this.fromDate = 20190531;
-    this.fromHour = 2;
-    this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
-    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  }
+  // selectToday() {
+  //   this.fromDate = 20190531;
+  //   this.fromHour = 2;
+  //   this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
+  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
+  // }
 
-  selectYesterday() {
-    this.fromDate = 20190531;
-    this.fromHour = 0;
-    this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
-    this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
-  }
+  // selectYesterday() {
+    
+  //   this.fromDate = 20190531;
+  //   this.fromHour = 0;
+  //   this.toDate = this.fromDate; //this.calendar.getNext(this.calendar.getToday(), 'd', 1);
+  //   this.refreshData(this.DateTimeToString(this.fromDate, this.fromHour), this.DateTimeToString(this.toDate, this.toHour));
+  // }
 
   formatConfidence(value: number) {
     return Math.round(value);
   }
+
 
   // formatHappenedFromDate(date: NgbDate) {
   //   return date.year + date.month.toString().padStart(2, '0') + date.day.toString().padStart(2, '0') + '000000';

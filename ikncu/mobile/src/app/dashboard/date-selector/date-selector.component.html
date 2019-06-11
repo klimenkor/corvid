@@ -1,10 +1,12 @@
-<!-- <ion-item>
-  <ion-datetime display-format="MM/MM/YYYY" min="2019" max="2020-01-01"></ion-datetime>
-</ion-item> -->
-<ion-title>
-  {{range.lower}} - {{range.upper}}
-</ion-title>
-<ion-range dualKnobs="true" min="0" max="24" step="1" snaps="true" [(ngModel)]="range" (onFinish)="onFinish">
-  <ion-label slot="start">0</ion-label>
-  <ion-label slot="end">3</ion-label>
-</ion-range>
+<ion-segment>
+  <ion-segment-button (click)="onSelectDayBack()">Day Back</ion-segment-button>
+  <ion-segment-button (click)="onSelectToday()">Today</ion-segment-button>
+  <ion-segment-button (click)="onSelectNextDay()">Next Day</ion-segment-button>
+</ion-segment>
+
+<ion-segment>
+  <ion-segment-button (click)="onSelectHours(0)">0-6</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(6)">6-12</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(12)">12-18</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(18)">18-24</ion-segment-button>
+</ion-segment>
