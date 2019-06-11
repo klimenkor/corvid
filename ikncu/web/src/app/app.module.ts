@@ -27,7 +27,7 @@ import { AuthService } from './service/auth/auth.service';
 import { UserParametersService } from './service/auth/user-parameters.service';
 import { DynamoDBService } from './service/auth/ddb.service';
 import { CurrentUser } from './model/_index';
-import { SettingsModule } from './secure/settings/settings.module';
+import { SettingsModule } from './secure/settings.module';
 import { DashboardModule } from './secure/dashboard/dashboard.module';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { TagCloudModule } from 'angular-tag-cloud-module';

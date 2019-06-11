@@ -12,7 +12,7 @@ import { HomeComponent } from './secure/landing/home.component';
 import { JwtComponent } from './secure/jwttokens/jwt.component';
 import { MyProfileComponent } from './secure/profile/myprofile.component';
 import { UseractivityComponent } from './secure/useractivity/useractivity.component';
-import { SettingsComponent } from './secure/settings/settings.component';
+import { SettingsComponent } from './secure/settings.component';
 import { LogoutComponent } from './secure/logout/logout.component';
 import { BasicComponent } from './secure/settings/basic/basic.component';
 import { LabelsComponent } from './secure/settings/labels/labels.component';
