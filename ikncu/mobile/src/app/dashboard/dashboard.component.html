@@ -1,10 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-menu-toggle>
-      <ion-button>
-        IKNCU
-      </ion-button>
-    </ion-menu-toggle>
+    <ion-button [routerLink]="['/settings']"><ion-icon name="settings"></ion-icon></ion-button>
+    <ion-button (click)="onLogout()" ><ion-icon name="undo"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
   

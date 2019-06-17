@@ -153,7 +153,7 @@ export class AuthService {
                           email: token.payload.email,
                           jwtToken: token.jwtToken
                         } as ICognitoUser;
-
+                    this.userIsAuthenticated = true;
                     callback.isLoggedIn(err, session.isValid());
                 }
             });
