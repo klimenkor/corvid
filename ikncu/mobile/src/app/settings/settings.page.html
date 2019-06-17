@@ -1,24 +1,16 @@
-<ion-split-pane>
-  <ion-menu contentId="content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>
-          Settings
-        </ion-title>
-      </ion-toolbar>
-    </ion-header>
-  </ion-menu>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-content>
-    <ion-list>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item [routerLink]="/settings/profile" routerDirection="root" [class.active-item]="selectedPath = '/settings/profile'">
-          Profile
-        </ion-item>
-       
-      </ion-menu-toggle>
-    </ion-list>
-  </ion-content>
-
-  <ion-router-outlet id="content" main></ion-router-outlet>
-</ion-split-pane>
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+        <ion-router-outlet settings></ion-router-outlet>
+    </ion-row>
+  </ion-grid>
+</ion-content>
