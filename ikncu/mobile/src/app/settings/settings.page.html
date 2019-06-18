@@ -1,16 +1,35 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-button [routerLink]="['/dashboard']" routerLinkActive="router-link-active" >
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-title>Settings</ion-title>
+    <ion-title>Settings / {{route}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-        <ion-router-outlet settings></ion-router-outlet>
-    </ion-row>
-  </ion-grid>
+  <ion-tabs>
+  
+    <ion-tab-bar slot="bottom">
+  
+      <ion-tab-button tab="profile">
+        <ion-icon name="person"></ion-icon>
+      </ion-tab-button>
+  
+      <ion-tab-button tab="camera">
+        <ion-icon name="videocam"></ion-icon>
+      </ion-tab-button>
+
+      <ion-tab-button tab="label">
+        <ion-icon name="done-all"></ion-icon>
+      </ion-tab-button>
+
+      <ion-tab-button tab="face">
+        <ion-icon name="people"></ion-icon>
+      </ion-tab-button>
+
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

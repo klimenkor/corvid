@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -7,9 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsPage implements OnInit {
 
-  constructor() { }
+  tab = '';
+  route: string;
 
-  ngOnInit() {
+  constructor(
+    location: Location,
+    router: Router
+  ) {
+    router.events.subscribe(val => {
+      if (location.path() !== '') {
+        this.route = location.path().split('/')[2];
+      } else {
+        this.route = 'profile';
+      }
+    });
   }
+
+  ngOnInit() { }
 
 }

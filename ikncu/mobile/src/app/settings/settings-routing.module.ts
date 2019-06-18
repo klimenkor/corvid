@@ -11,8 +11,19 @@ const routes: Routes = [
     children: [
       {
         path: 'profile',
-        loadChildren: './profile/profile.module#ProfilePageModule',
-        canLoad: [ AuthGuard ]
+        canLoad: [ AuthGuard ],
+        children: [
+          {
+            path: '',
+            loadChildren: './profile/profile.module#ProfilePageModule',
+            canLoad: [ AuthGuard ]
+          },
+          {
+            path: 'edit/:profileId',
+            loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule',
+            canLoad: [ AuthGuard ]
+          }
+        ]
       },
       {
         path: 'camera',
@@ -73,11 +84,19 @@ const routes: Routes = [
             canLoad: [ AuthGuard ]
           }
         ]
+      },
+      {
+        path: '',
+        redirectTo: '/settings/profile',
+        pathMatch: 'full'
       }
     ]
   },
   { path: 'new-camera', loadChildren: './camera/new-camera/new-camera.module#NewCameraPageModule' },
-  { path: 'edit-camera', loadChildren: './camera/edit-camera/edit-camera.module#EditCameraPageModule' }
+  { path: 'edit-camera', loadChildren: './camera/edit-camera/edit-camera.module#EditCameraPageModule' },
+  { path: 'new-face', loadChildren: './face/new-face/new-face.module#NewFacePageModule' },
+  { path: 'edit-face', loadChildren: './face/edit-face/edit-face.module#EditFacePageModule' },
+  { path: 'edit-profile', loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule' }
 
 ];
 

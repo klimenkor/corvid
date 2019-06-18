@@ -57,7 +57,7 @@ export class AuthService {
 
         const authenticationData = {
             Username: username,
-            Password: password,
+            Password: password
         };
         const authenticationDetails = new AuthenticationDetails(authenticationData);
 
