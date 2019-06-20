@@ -143,7 +143,7 @@ export class MotionComponent implements OnInit {
               Frame: item.Frame,
               Labels: labels,
               Faces: item.Faces,
-              ShowTagCloud: true
+              ShowTagCloud: false
             });
           });
 

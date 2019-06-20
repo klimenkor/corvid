@@ -135,7 +135,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
+      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
       Events:
         CameraByUser:
           Properties:
@@ -1024,7 +1024,7 @@ Resources:
     FunctionName: ikncu-IkncuDispatcher-Function
     Name: IkncuDispatcherLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
+      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
       Handler: dispatcher.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
@@ -1039,7 +1039,7 @@ Resources:
     FunctionName: ikncu-IkncuFace-Function
     Name: IkncuFaceLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/b3320f88a26d200f5a729aef6fb3d712
+      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
       Handler: face.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess

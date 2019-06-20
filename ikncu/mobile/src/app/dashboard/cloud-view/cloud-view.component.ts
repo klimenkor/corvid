@@ -18,10 +18,10 @@ export class CloudViewComponent implements OnInit {
   @Input() data: CloudData[];
 
   options: CloudOptions = {
-    width : 0.8,
+    width : 1,
     height : 200,
     overflow: false,
-    realignOnResize: false
+    realignOnResize: true
   };
 
   ngOnInit() {}

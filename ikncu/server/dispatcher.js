@@ -451,7 +451,7 @@ exports.handler = function (event, context, callback) {
                             console.log('getting configured labels');  
                             let labels = getAlarmLabels(enabledLabels, detectedLabels);
                             console.log(labels.length + ' labels to signal');  
-                            if(labels.length==0) 
+                            if(labels.length==0 || labels.indexOf('Person') == -1 ) 
                                 return;
 
                             console.log('detecting faces');  
@@ -460,7 +460,7 @@ exports.handler = function (event, context, callback) {
                                     callback(err);
                                     return;     
                                 }
-
+                                
                                 faces = data.filter( item => item.Confidence > 95 );
 
                                 let motionId = uuidv1();

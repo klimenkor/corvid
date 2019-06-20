@@ -80,7 +80,7 @@ const routes: Routes = [
           },
           {
             path: 'edit/:labelId',
-            loadChildren: './label/edit-Label/edit-label.module#EditLabelPageModule',
+            loadChildren: './label/edit-label/edit-label.module#EditLabelPageModule',
             canLoad: [ AuthGuard ]
           }
         ]
@@ -96,7 +96,9 @@ const routes: Routes = [
   { path: 'edit-camera', loadChildren: './camera/edit-camera/edit-camera.module#EditCameraPageModule' },
   { path: 'new-face', loadChildren: './face/new-face/new-face.module#NewFacePageModule' },
   { path: 'edit-face', loadChildren: './face/edit-face/edit-face.module#EditFacePageModule' },
-  { path: 'edit-profile', loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule' }
+  { path: 'edit-profile', loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule' },
+  { path: 'edit-label', loadChildren: './label/edit-label/edit-label.module#EditLabelPageModule' },
+  { path: 'new-label', loadChildren: './label/new-label/new-label.module#NewLabelPageModule' }
 
 ];
 
