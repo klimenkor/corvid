@@ -1,9 +1,16 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>new-camera</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
-
+  <ion-item>
+    <ion-label position="floating" color="primary">Name</ion-label>
+    <ion-input [(ngModel)]="camera.Name"></ion-input>
+  </ion-item>
+  <div>
+      <ion-button color="primary" (click) = "onSave()">Save</ion-button>
+  </div>
 </ion-content>
+

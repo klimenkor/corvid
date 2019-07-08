@@ -304,8 +304,8 @@ Resources:
           AttributeType: S
         - AttributeName: UserId
           AttributeType: S
-        - AttributeName: Active
-          AttributeType: S
+        # - AttributeName: Active
+        #   AttributeType: S
       KeySchema:
         - AttributeName: Id
           KeyType: HASH
@@ -313,12 +313,12 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1      
       GlobalSecondaryIndexes:
-      - IndexName: gsiCameryByUserActive
+      - IndexName: gsiCameraByUser
         KeySchema:
         - AttributeName: UserId
           KeyType: HASH
-        - AttributeName: Active
-          KeyType: RANGE
+      #   - AttributeName: Active
+      #     KeyType: RANGE
         Projection:
           ProjectionType: ALL
         ProvisionedThroughput:
@@ -659,7 +659,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiCameryByUserActive\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey and Active = :rkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n            \":rkey\": \"$input.params('rkey')\"\r\n        }\r\n    }\r\n}\r\n"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiCameraByUser\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\"\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -781,6 +781,36 @@ Resources:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
                       application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"create\",\r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"payload\": {      \r\n        \"Item\" : {          \r\n            \"Id\" : $input.json('$.Id'),\r\n            \"UserId\" : $input.json('$.UserId'),\r\n            \"Name\" : $input.json('$.Name'),\r\n            \"Active\" :$input.json('$.Active')\r\n        }\r\n    }\r\n}"
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+
+                put:           ################## PUT
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "#set($inputRoot = $input.path('$')){ \r\n    \"operation\": \"update\",\r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"payload\": {    \r\n        \"Key\": {\r\n            \"Id\": \"$input.params('Id')\"\r\n        },\r\n        \"Item\" : {          \r\n            \"Id\" : $input.json('$.Id'),\r\n            \"UserId\" : $input.json('$.UserId'),\r\n            \"Name\" : $input.json('$.Name'),\r\n            \"Active\" :$input.json('$.Active')\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -1114,7 +1144,7 @@ Resources:
                         responseParameters:
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     requestTemplates:
-                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\",\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\n        \"Frame\" : $input.json('$.Frame'),\r\n        \"Name\" : $input.json('$.Name'),\r\n        \"CategoryId\" : $input.json('$.CategoryId') \r\n    }\r\n}"
+                      application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"gsiCameraByUser\",\r\n        \"KeyConditionExpression\": \"UserId = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n            \":hkey\": \"$input.params('hkey')\"\r\n        }\r\n    }\r\n}"
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
                     passthroughBehavior: "when_no_templates"
@@ -1248,6 +1278,13 @@ Resources:
           Properties:
             Path: /camera
             Method: POST
+            RestApiId:
+                Ref: IkncuApi                
+        CameraPut:
+          Type: Api
+          Properties:
+            Path: /camera
+            Method: PUT
             RestApiId:
                 Ref: IkncuApi                
         CameraByUser:

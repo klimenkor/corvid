@@ -11,6 +11,22 @@
     }
 }
 
+#set($inputRoot = $input.path('$')){ 
+    "operation": "update",
+    "table": "CameraDynamoDbARN",
+    "payload": {    
+        "Key": {
+            "Id": "$input.params('Id')"
+        },
+        "Item" : {          
+            "Id" : $input.json('$.Id'),
+            "UserId" : $input.json('$.UserId'),
+            "Name" : $input.json('$.Name'),
+            "Active" :$input.json('$.Active')
+        }
+    }
+}
+
 #set($inputRoot = $input.path('$'))
 { 
  "table": "CameraDynamoDbARN",
@@ -43,6 +59,19 @@
         "ExpressionAttributeValues": {
             ":hkey": "$input.params('hkey'",
             ":rkey": "$input.params('rkey')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
+    "table": "CameraDynamoDbARN",
+    "operation": "list",
+    "payload": {    
+        "IndexName": "gsiCameraByUser",
+        "KeyConditionExpression": "UserId = :hkey",
+        "ExpressionAttributeValues": {
+            ":hkey": "$input.params('hkey')"
         }
     }
 }

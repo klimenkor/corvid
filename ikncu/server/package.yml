@@ -45,15 +45,11 @@ Resources:
         AttributeType: S
       - AttributeName: UserId
         AttributeType: S
-      - AttributeName: Active
-        AttributeType: S
       GlobalSecondaryIndexes:
-      - IndexName: gsiCameryByUserActive
+      - IndexName: gsiCameraByUser
         KeySchema:
         - AttributeName: UserId
           KeyType: HASH
-        - AttributeName: Active
-          KeyType: RANGE
         Projection:
           ProjectionType: ALL
         ProvisionedThroughput:
@@ -135,7 +131,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
+      CodeUri: s3://ikncu-deploy/a8c5eda8e1cf49f2b81091a728d7c82d
       Events:
         CameraByUser:
           Properties:
@@ -161,6 +157,13 @@ Resources:
         CameraPost:
           Properties:
             Method: POST
+            Path: /camera
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        CameraPut:
+          Properties:
+            Method: PUT
             Path: /camera
             RestApiId:
               Ref: IkncuApi
@@ -388,6 +391,42 @@ Resources:
                 type: aws
                 uri:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            put:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$')){ \r\n   \
+                    \ \"operation\": \"update\",\r\n    \"table\": \"CameraDynamoDbARN\"\
+                    ,\r\n    \"payload\": {    \r\n        \"Key\": {\r\n        \
+                    \    \"Id\": \"$input.params('Id')\"\r\n        },\r\n       \
+                    \ \"Item\" : {          \r\n            \"Id\" : $input.json('$.Id'),\r\
+                    \n            \"UserId\" : $input.json('$.UserId'),\r\n      \
+                    \      \"Name\" : $input.json('$.Name'),\r\n            \"Active\"\
+                    \ :$input.json('$.Active')\r\n        }\r\n    }\r\n}"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
           /camera/byuser:
             get:
               consumes:
@@ -412,11 +451,10 @@ Resources:
                   application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
                     \    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"\
                     list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
-                    gsiCameryByUserActive\",\r\n        \"KeyConditionExpression\"\
-                    : \"UserId = :hkey and Active = :rkey\",\r\n        \"ExpressionAttributeValues\"\
-                    : {\r\n            \":hkey\": \"$input.params('hkey')\",\r\n \
-                    \           \":rkey\": \"$input.params('rkey')\"\r\n        }\r\
-                    \n    }\r\n}\r\n"
+                    gsiCameraByUser\",\r\n        \"KeyConditionExpression\": \"UserId\
+                    \ = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n \
+                    \           \":hkey\": \"$input.params('hkey')\"\r\n        }\r\
+                    \n    }\r\n}"
                 responses:
                   default:
                     responseParameters:
@@ -834,11 +872,12 @@ Resources:
                 passthroughBehavior: when_no_templates
                 requestTemplates:
                   application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
-                    \    \"operation\": \"rekognition\",\r\n    \"method\": \"AddFace\"\
-                    ,\r\n    \"payload\":{    \r\n        \"UserId\" : $input.json('$.UserId'),\r\
-                    \n        \"Frame\" : $input.json('$.Frame'),\r\n        \"Name\"\
-                    \ : $input.json('$.Name'),\r\n        \"CategoryId\" : $input.json('$.CategoryId')\
-                    \ \r\n    }\r\n}"
+                    \    \"table\": \"CameraDynamoDbARN\",\r\n    \"operation\": \"\
+                    list\",\r\n    \"payload\": {    \r\n        \"IndexName\": \"\
+                    gsiCameraByUser\",\r\n        \"KeyConditionExpression\": \"UserId\
+                    \ = :hkey\",\r\n        \"ExpressionAttributeValues\": {\r\n \
+                    \           \":hkey\": \"$input.params('hkey')\"\r\n        }\r\
+                    \n    }\r\n}"
                 responses:
                   default:
                     responseParameters:
@@ -1024,7 +1063,7 @@ Resources:
     FunctionName: ikncu-IkncuDispatcher-Function
     Name: IkncuDispatcherLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
+      CodeUri: s3://ikncu-deploy/a8c5eda8e1cf49f2b81091a728d7c82d
       Handler: dispatcher.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
@@ -1039,7 +1078,7 @@ Resources:
     FunctionName: ikncu-IkncuFace-Function
     Name: IkncuFaceLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/03c009ba6c99a632e9f3d010fd021685
+      CodeUri: s3://ikncu-deploy/a8c5eda8e1cf49f2b81091a728d7c82d
       Handler: face.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
