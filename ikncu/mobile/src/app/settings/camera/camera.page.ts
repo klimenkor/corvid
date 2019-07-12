@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/service/user.service';
 import { CameraService } from 'src/app/service/camera.service';
 import { ICamerasResult } from 'src/app/model/camera';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-camera',
@@ -13,6 +14,7 @@ export class CameraPage implements OnInit {
   isLoading = false;
 
   constructor(
+    private router: Router,
     private userService: UserService,
     public cameraService: CameraService
   ) { }
@@ -36,9 +38,15 @@ export class CameraPage implements OnInit {
     });
   }
 
-  onEdit() {
+  onEdit(cameraId: string) {
     console.log('CamerasComponent.onEdit');
+    this.router.navigateByUrl('/settings/camera/edit');
+    this.router.navigate(['/', 'settings', 'camera', 'edit', cameraId]);
+  }
 
+  onCheck() {
+    console.log('CamerasComponent.onCheck');
+    
   }
 
   onChange(camera) {

@@ -12,6 +12,7 @@
     "aws-sdk": "^2.488.0",
     "copy-dynamodb-table": "^2.0.17",
     "jimp": "^0.6.4",
+    "lodash": "^4.17.14",
     "moment": "^2.24.0"
   },
   "devDependencies": {},

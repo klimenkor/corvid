@@ -20,9 +20,9 @@
   
         <ion-list>
           <ion-item *ngFor="let camera of cameras">
-            <ion-checkbox slot="start" [(ngModel)]= "camera.Active" (ionChange)="onChange(camera)"></ion-checkbox>
+            <ion-toggle slot="start" [(ngModel)]= "camera.Active" (ionChange)="onChange(camera)"></ion-toggle >
             <ion-label>{{camera.Name}}</ion-label>
-            <ion-button color="secondary" (click)="onEdit()">
+            <ion-button color="secondary" (click)="onEdit(camera.Id)">
               <ion-icon slot="icon-only" name="more"></ion-icon>
             </ion-button>
           </ion-item>

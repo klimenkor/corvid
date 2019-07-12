@@ -1,6 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>edit-camera</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button
+        [defaultHref]="'/settings/camera/'"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Camera</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onUpdateCamera()" [disabled]="!form?.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
