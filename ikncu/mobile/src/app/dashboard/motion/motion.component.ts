@@ -55,7 +55,7 @@ export class MotionComponent implements OnInit {
   loadDictionaries(callback) {
     console.log(this.cameras)
     if(this.cameras === undefined) {
-      this.cameraService.Get().subscribe((cameras: ICamerasResult) => {
+      this.cameraService.GetByUser().subscribe((cameras: ICamerasResult) => {
         this.cameras = cameras.Items;
         console.log('...cameras loaded');
         this.faceService.Get().subscribe((faces: IFacesResult) => {

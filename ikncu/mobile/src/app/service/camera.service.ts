@@ -26,7 +26,7 @@ export class CameraService {
     }
 
     public Init(callback) {
-      this.Get().subscribe(
+      this.GetByUser().subscribe(
         (response) => {
           callback(response);
       });
@@ -35,10 +35,17 @@ export class CameraService {
     @Cacheable({
         cacheBusterObserver: cacheBuster$
     })
-    public Get() {
+    public GetByUser() {
         console.log('CameraService.GetByUser');
-        // return this.http.get(environment.apiHost + '/camera/byuser?hkey=' + this.authService.CognitoUser.id + '&rkey=1', this.httpOptions);
         return this.http.get(environment.apiHost + '/camera/byuser?hkey=' + this.authService.CognitoUser.id, this.httpOptions);
+    }
+
+    @Cacheable({
+      cacheBusterObserver: cacheBuster$
+    })
+    public Get(id: string) {
+        console.log('CameraService.GetByUser');
+        return this.http.get(environment.apiHost + '/camera?id=' + id, this.httpOptions);
     }
 
     @CacheBuster({

@@ -23,7 +23,7 @@ export class CameraPage implements OnInit {
     console.log('CamerasComponent.ngOnInit');
     this.isLoading = true;
     this.userService.Get().subscribe((user) => {
-      this.cameraService.Get().subscribe(
+      this.cameraService.GetByUser().subscribe(
         (result: ICamerasResult) => {
             console.log(result);
             this.cameras = result.Items.map(x => {
