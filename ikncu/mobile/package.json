@@ -33,6 +33,7 @@
     "angular-tag-cloud-module": "^3.8.1",
     "aws-sdk": "^2.488.0",
     "core-js": "^2.5.4",
+    "lodash": "^4.17.14",
     "ngx-cacheable": "^1.2.5",
     "rxjs": "^6.5.1",
     "shortid": "^2.2.14",
