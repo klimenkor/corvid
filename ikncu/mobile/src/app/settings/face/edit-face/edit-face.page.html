@@ -1,9 +1,44 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>edit-face</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-</ion-content>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button
+          [defaultHref]="'/settings/face'"
+        ></ion-back-button>
+      </ion-buttons>
+      <ion-title>Edit face</ion-title>
+      <ion-buttons slot="primary">
+        <ion-button (click)="onUpdateface()" [disabled]="!form?.valid">
+          <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content padding>
+    <div *ngIf="isLoading" text-center>
+      <ion-spinner color="primary"></ion-spinner>
+    </div>
+    <form [formGroup]="form" *ngIf="!isLoading">
+      <ion-grid>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Name</ion-label>
+              <ion-input
+                type="text"
+                autocomplete
+                autocorrect
+                formControlName="name"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!form.get('name').valid && form.get('name').touched">
+          <ion-col size-sm="6" offset-sm="3">
+            <p>Name must be between 1 and 20 characters.</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ion-content>
+  

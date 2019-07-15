@@ -1,24 +1,49 @@
 <ion-header>
   <ion-toolbar>
-    <ion-button [routerLink]="['edit/1']"><ion-icon name="create"></ion-icon></ion-button>
+    <ion-buttons slot="start">
+      <ion-button slot="start" color="primary" routerLink="/settings/profile/edit">Edit</ion-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card>
-    <ion-card-title>{{profile.name}}</ion-card-title>
-    <ion-card-subtitle>{{profile.id}}</ion-card-subtitle>
-    <ion-card-content>
-      <ion-row>
-        <ion-col size="12" size-sm="8" offset-sm="2">
-          Email: {{profile.email}} 
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="12" size-sm="8" offset-sm="2">
-          Tier: {{profile.tier}} 
-        </ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+<ion-content padding>
+  <div *ngIf="isLoading" text-center>
+      <ion-spinner color="primary"></ion-spinner>
+  </div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label>Name</ion-label>
+          <ion-label><b>{{user.Name}}</b></ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label>Id</ion-label>
+          <ion-label><b>{{user.Id}}</b></ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label>Email</ion-label>
+          <ion-label><b>{{user.Email}}</b></ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label>TierId</ion-label>
+          <ion-label><b>{{user.TierId}}</b></ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

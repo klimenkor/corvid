@@ -6,11 +6,11 @@
       ></ion-back-button>
     </ion-buttons>
     <ion-title>Edit Camera</ion-title>
-    <!-- <ion-buttons slot="primary">
+    <ion-buttons slot="primary">
       <ion-button (click)="onUpdateCamera()" [disabled]="!form?.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -33,11 +33,7 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row
-        *ngIf="
-          !form.get('name').valid && form.get('name').touched
-        "
-      >
+      <ion-row *ngIf="!form.get('name').valid && form.get('name').touched">
         <ion-col size-sm="6" offset-sm="3">
           <p>Name must be between 1 and 20 characters.</p>
         </ion-col>

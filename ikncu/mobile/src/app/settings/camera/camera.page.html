@@ -1,8 +1,11 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>camera</ion-title>
-  </ion-toolbar>
-</ion-header> -->
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button *ngIf="!isLoading" slot="start" color="primary" routerLink="/settings/camera/new">New</ion-button>
+      </ion-buttons>
+      <ion-title>Cameras</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
 <ion-content>
   <ion-grid>
@@ -14,10 +17,6 @@
         <div text-center *ngIf="!isLoading && cameras.length == 0">
           <p>No cameras defined!</p>
         </div>
-        <div text-center *ngIf="!isLoading">
-          <ion-button slot="start" color="primary" routerLink="/settings/camera/new">New Camera</ion-button>
-        </div>
-  
         <ion-list>
           <ion-item *ngFor="let camera of cameras">
             <ion-toggle slot="start" [(ngModel)]= "camera.Active" (ionChange)="onChange(camera)"></ion-toggle >

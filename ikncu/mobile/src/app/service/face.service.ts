@@ -26,10 +26,18 @@ export class FaceService {
   @Cacheable({
       cacheBusterObserver: cacheBuster$
   })
-  public Get() {
+  public Get(id) {
       console.log('FaceService.Get');
-      return this.http.get(environment.apiHost + '/face/byuser?hkey=' + this.authService.CognitoUser.id, this.httpOptions);
+      return this.http.get(environment.apiHost + '/face?id=' + id, this.httpOptions);
   }
+
+  @Cacheable({
+    cacheBusterObserver: cacheBuster$
+    })
+    public GetByUser() {
+        console.log('FaceService.Get');
+        return this.http.get(environment.apiHost + '/face/byuser?hkey=' + this.authService.CognitoUser.id, this.httpOptions);
+    }
 
   @CacheBuster({
       cacheBusterNotifier: cacheBuster$

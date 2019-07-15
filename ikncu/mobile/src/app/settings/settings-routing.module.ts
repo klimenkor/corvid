@@ -19,7 +19,7 @@ const routes: Routes = [
             canLoad: [ AuthGuard ]
           },
           {
-            path: 'edit/:profileId',
+            path: 'edit',
             loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule',
             canLoad: [ AuthGuard ]
           }

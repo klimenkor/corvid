@@ -58,7 +58,7 @@ export class MotionComponent implements OnInit {
       this.cameraService.GetByUser().subscribe((cameras: ICamerasResult) => {
         this.cameras = cameras.Items;
         console.log('...cameras loaded');
-        this.faceService.Get().subscribe((faces: IFacesResult) => {
+        this.faceService.GetByUser().subscribe((faces: IFacesResult) => {
           this.faces = faces.Items;
           console.log('...faces loaded');
           callback();

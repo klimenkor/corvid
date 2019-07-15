@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/service/user.service';
+import { LoadingController } from '@ionic/angular';
+import { IUser, IUserResult } from 'src/app/model/user';
+import { isBuffer } from 'util';
 
 @Component({
   selector: 'app-profile',
@@ -7,11 +11,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfilePage implements OnInit {
 
-  public profile = { id: '12121212', name: 'Roman KLimenko', email: 'klimenkor@gmail.com', tier: 'Basic' };
+  user: IUser = { Id: '', Name: '', Email: '', TierId: '', UtcOffset: '', Created: null};
+  isLoading = false;
 
-  constructor() { }
+  constructor(
+    private userService: UserService,
+    private loadingCtrl: LoadingController
+) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.isLoading = true;
+    this.userService.Get().subscribe((result: IUserResult) => {
+      this.user = result.Item;
+      this.isLoading = false;
+      console.log(this.user);
+    });
   }
 
 }
