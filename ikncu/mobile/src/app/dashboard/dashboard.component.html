@@ -1,14 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-button [routerLink]="['/settings']"><ion-icon name="settings"></ion-icon></ion-button>
-    <ion-button (click)="onLogout()" >Logout</ion-button>
+    <ion-button slot="start" [routerLink]="['/settings']"><ion-icon name="settings"></ion-icon></ion-button>
+    <ion-button slot="end" (click)="onLogout()">Logout</ion-button>
   </ion-toolbar>
 </ion-header>
   
 <ion-content>
-  <app-dashboard-motion #motions></app-dashboard-motion>
+  <ion-card *ngFor="let motion of motions; let i=index"> 
+    <ion-card-header>
+      <ion-button *ngIf="motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
+        <ion-icon name="image"></ion-icon>
+      </ion-button>
+
+      <ion-button *ngIf="!motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
+        <ion-icon name="list"></ion-icon>
+      </ion-button>
+      {{motion.Occurred}} : {{motion.Camera}}
+    </ion-card-header>
+    <ion-card-content>
+        <app-cloud-view *ngIf="motion.ShowTagCloud" [data]="motion.Labels"></app-cloud-view>
+        <app-image-view *ngIf="!motion.ShowTagCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
 <ion-footer>
-  <app-date-selector [motions]="motions"></app-date-selector>
+  <app-date-selector [dashboard]="this"></app-date-selector>
 </ion-footer>

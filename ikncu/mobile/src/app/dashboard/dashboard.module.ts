@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { MotionComponent } from '../dashboard/motion/motion.component';
 import { CloudViewComponent } from '../dashboard/cloud-view/cloud-view.component';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { DashboardComponent } from './dashboard.component';
@@ -31,7 +30,6 @@ import { DateSelectorComponent } from './date-selector/date-selector.component';
     DashboardComponent,
     CloudViewComponent,
     ImageViewComponent,
-    MotionComponent,
     DateSelectorComponent
   ],
   exports: [

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
-import { MotionComponent } from '../motion/motion.component';
 import { IonRange } from '@ionic/angular';
+import { DashboardComponent } from '../dashboard.component';
 
 @Component({
   selector: 'app-date-selector',
@@ -15,15 +15,19 @@ export class DateSelectorComponent implements OnInit {
 
   constructor() { }
 
-  @Input() motions: MotionComponent;
+  @Input() dashboard: DashboardComponent;
 
   ngOnInit() {
     console.log('DateSelectorComponent.ngOnInit');
-    this.onSelectToday();
+    this.onSelectToday(true);
   }
 
   onRangeChange(event: CustomEvent<IonRange>) {
     console.log('onRangeChange');
+  }
+
+  isChecked(lower) {
+    return lower === this.hours.lower;
   }
 
   onSelectHours(lower) {
@@ -33,7 +37,7 @@ export class DateSelectorComponent implements OnInit {
 
     const from = this.dateTimeToString(this.date, this.hours.lower);
     const to = this.dateTimeToString(this.date, this.hours.upper);
-    this.motions.refreshData(from, to);
+    this.dashboard.refreshData(from, to);
   }
 
   onSelectDayBack() {
@@ -41,7 +45,7 @@ export class DateSelectorComponent implements OnInit {
     this.date.setDate(this.date.getDate() - 1);
     const from = this.dateTimeToString(this.date, this.hours.lower);
     const to = this.dateTimeToString(this.date, this.hours.upper);
-    this.motions.refreshData(from, to);
+    this.dashboard.refreshData(from, to);
   }
 
   onSelectNextDay() {
@@ -49,18 +53,20 @@ export class DateSelectorComponent implements OnInit {
     this.date.setDate(this.date.getDate() + 1);
     const from = this.dateTimeToString(this.date, this.hours.lower);
     const to = this.dateTimeToString(this.date, this.hours.upper);
-    this.motions.refreshData(from, to);
+    this.dashboard.refreshData(from, to);
   }
 
-  onSelectToday() {
+  onSelectToday(resetTime = false) {
     console.log('DateSelectorComponent.onSelectToday');
     this.date = new Date();
-    if (this.hours === undefined) {
-      this.hours = { lower: 0, upper: 3};
+    if (resetTime) {
+      const lh = 6 * Math.floor(this.date.getHours() / 6);
+      this.hours = { lower: lh, upper: lh + 6};
     }
+    console.log(this.hours);
     const from = this.dateTimeToString(this.date, this.hours.lower);
     const to = this.dateTimeToString(this.date, this.hours.upper);
-    this.motions.refreshData(from, to);
+    this.dashboard.refreshData(from, to);
   }
 
   dateToString(date: Date) {

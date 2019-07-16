@@ -1,12 +1,12 @@
 <ion-segment>
   <ion-segment-button (click)="onSelectDayBack()">Day Back</ion-segment-button>
-  <ion-segment-button (click)="onSelectToday()">Today</ion-segment-button>
+  <ion-segment-button (click)="onSelectToday()" checked>Today</ion-segment-button>
   <ion-segment-button (click)="onSelectNextDay()">Next Day</ion-segment-button>
 </ion-segment>
 
 <ion-segment>
-  <ion-segment-button (click)="onSelectHours(0)">0-6</ion-segment-button>
-  <ion-segment-button (click)="onSelectHours(6)">6-12</ion-segment-button>
-  <ion-segment-button (click)="onSelectHours(12)">12-18</ion-segment-button>
-  <ion-segment-button (click)="onSelectHours(18)">18-24</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(0)" [checked]="isChecked(0)">0-6</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(6)" [checked]="isChecked(6)">6-12</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(12)" [checked]="isChecked(12)">12-18</ion-segment-button>
+  <ion-segment-button (click)="onSelectHours(18)" [checked]="isChecked(18)">18-24</ion-segment-button>
 </ion-segment>
