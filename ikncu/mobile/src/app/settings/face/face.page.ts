@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FaceService } from 'src/app/service/face.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
-import { IFacesResult } from 'src/app/model/face';
+import { IFacesResult, IFace } from 'src/app/model/face';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-face',
@@ -11,8 +12,10 @@ import { IFacesResult } from 'src/app/model/face';
 })
 export class FacePage implements OnInit {
 
-  faces = [];
+  faces: Array<IFace> = [];
   isLoading = false;
+
+  facesBucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
 
   constructor(
     private router: Router,
@@ -27,16 +30,15 @@ export class FacePage implements OnInit {
       this.faceService.GetByUser().subscribe(
         (result: IFacesResult) => {
             console.log(result);
-            this.faces = result.Items.map(x => {
-              return {
-                Id: x.Id,
-                Name: x.Name
-              };
-            });
+            this.faces = result.Items;
             this.isLoading = false;
         });
     });
 
+  }
+
+  getFaceImage(i) {
+    return this.facesBucketPath + this.faces[i].UserId + '/' + this.faces[i].Frame;
   }
 
   onEdit(faceId: string) {

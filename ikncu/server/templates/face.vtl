@@ -11,3 +11,13 @@
     }
 }
 
+#set($inputRoot = $input.path('$'))
+{ 
+ "table": "FaceDynamoDbARN",
+ "operation": "read",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}

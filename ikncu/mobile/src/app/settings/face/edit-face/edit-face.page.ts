@@ -4,6 +4,7 @@ import { IFace, IFaceResult } from 'src/app/model/face';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FaceService } from 'src/app/service/face.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-face',
@@ -12,10 +13,12 @@ import { FaceService } from 'src/app/service/face.service';
 })
 export class EditFacePage implements OnInit {
 
-  face: IFace;
+  face: IFace = {Name:'', Id: '', CategoryId: '', Frame: '', UserId: ''};
   faceId: string;
   form: FormGroup;
   isLoading = false;
+
+  facesBucketPath = 'https://s3.amazonaws.com/' + environment.facesBucket + '/';
 
   constructor(
     private route: ActivatedRoute,
@@ -30,13 +33,13 @@ export class EditFacePage implements OnInit {
     console.log('EditFace.ngOnInit');
 
     this.route.paramMap.subscribe(paramMap => {
-      if (!paramMap.has('cameraId')) {
-        this.navCtrl.navigateBack('/settings/cameras');
+      if (!paramMap.has('faceId')) {
+        this.navCtrl.navigateBack('/settings/face');
         return;
       }
       this.faceId = paramMap.get('faceId');
       this.isLoading = true;
-
+      console.log('Fetching ' + this.faceId);
       this.faceService.Get(this.faceId)
         .subscribe(
           (result: IFaceResult) => {
@@ -53,7 +56,7 @@ export class EditFacePage implements OnInit {
             this.alertCtrl
               .create({
                 header: 'An error occurred!',
-                message: 'Camera could not be fetched. Please try again later.',
+                message: 'Face could not be fetched. Please try again later.',
                 buttons: [
                   {
                     text: 'Okay',
@@ -69,6 +72,10 @@ export class EditFacePage implements OnInit {
           }
         );
     });
+  }
+
+  getFaceImage() {
+    return this.facesBucketPath + this.face.UserId + '/' + this.face.Frame;
   }
 
   onUpdateface() {

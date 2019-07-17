@@ -18,7 +18,10 @@
                 <p>No cameras defined!</p>
             </div>
             <ion-list>
-                <ion-item *ngFor="let face of faces">
+                <ion-item *ngFor="let face of faces; let i=index">
+                <ion-avatar>
+                    <img [src]="getFaceImage(i)">
+                </ion-avatar>
                 <ion-label>{{face.Name}}</ion-label>
                 <ion-button color="secondary" (click)="onEdit(face.Id)">
                     <ion-icon slot="icon-only" name="more"></ion-icon>
