@@ -1,5 +1,16 @@
 #set($inputRoot = $input.path('$'))
 { 
+ "table": "MotionDynamoDbARN",
+ "operation": "read",
+ "payload":{    
+    "Key": {
+            "Id": "$input.params('id')"
+        }
+    }
+}
+
+#set($inputRoot = $input.path('$'))
+{ 
     "table": "MotionDynamoDbARN",
     "operation": "list",
     "payload": {    

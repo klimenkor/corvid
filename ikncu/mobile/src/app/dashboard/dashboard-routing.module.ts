@@ -6,15 +6,13 @@ import { AuthGuard } from '../auth/login/auth.guard';
 
 const routes: Routes = [
   {
+    path: 'motion/:motionId',
+    canLoad: [ AuthGuard ],
+    loadChildren: './motion/motion.module#MotionModule'
+  },
+  {
     path: '',
-    component: DashboardPage,
-    children: [
-      {
-        path: 'motion/:motionId',
-        canLoad: [ AuthGuard ],
-        loadChildren: './motion/motion.module#MotionModule'
-      }
-    ]
+    component: DashboardPage
   }
 ];
 

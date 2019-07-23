@@ -1,9 +1,1 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>motion</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-</ion-content>
+<app-frame-view [frame]="motion.Frame" [motion] = "motion" [faces]="motion.Faces" (close) = "onClose($event)"></app-frame-view>

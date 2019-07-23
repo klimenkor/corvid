@@ -7,6 +7,8 @@ import { FaceService } from 'src/app/service/face.service';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { IFaceCategorized, CategoryList } from 'src/app/model/category';
 
+import { Platform } from '@ionic/angular';
+
 export interface DialogData {
   url: string;
   faces: IDetectedFace[];
@@ -21,7 +23,8 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
 
   constructor(
     private faceService: FaceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private platform: Platform
   ) { }
 
   @Input() frame: string;
@@ -29,6 +32,9 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   @Input() faces: IDetectedFace[];
   @Output() close = new EventEmitter<boolean>();
   @ViewChild('canvas') public canvas: ElementRef;
+
+  public width = 300;
+  public height = 200;
 
   private cx: CanvasRenderingContext2D;
 
@@ -39,13 +45,14 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   frameBucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
   userId = '';
   motionId = '';
-  width = 800;
-  height = 600;
 
   ngOnInit(): void {
+    this.width = this.platform.width();
+    this.height = this.width * 0.6;
+
     this.userId = this.authService.CognitoUser.id;
     this.motionId = this.motion;
-    console.log(this.motionId)
+    console.log(this.motionId);
     let i = 0;
     this.facesCategorized = [];
     this.faces.forEach(face => {
@@ -57,8 +64,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   getEmotions(face: IDetectedFace){
     let result = '';
     face.Emotions.forEach(element => {
-      if (element.Confidence > 50)
-      {
+      if (element.Confidence > 50) {
         result += element.Type + ' ';
       }
     });
@@ -137,6 +143,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
     // set the width and height
     canvasEl.width = this.width;
     canvasEl.height = this.height;
+    console.log(this.width, this.height);
 
     // set some default properties about the line
     this.cx.lineWidth = 3;
@@ -145,8 +152,11 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
 
     const img = new Image();
     img.onload = () => {
-      const w = img.width / 2;
-      const h = img.height / 2;
+      // const w = img.width / 2;
+      // const h = img.height / 2;
+      const w = this.width;
+      const h = this.height;
+
       (this.canvas.nativeElement as HTMLCanvasElement).width = w;
       (this.canvas.nativeElement as HTMLCanvasElement).height = h;
       this.cx.drawImage(img, 0, 0, w, h);

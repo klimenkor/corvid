@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MotionPage } from './motion.page';
+import { FrameViewComponent } from './frame-view/frame-view.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MotionPage]
+  declarations: [
+    MotionPage,
+    FrameViewComponent
+  ]
 })
 export class MotionModule {}

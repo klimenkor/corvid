@@ -9,7 +9,6 @@ import { DashboardPage } from './dashboard.page';
 import { ImageViewComponent } from './image-view/image-view.component';
 import { DateSelectorComponent } from './date-selector/date-selector.component';
 import { FaceButtonComponent } from './face-button/face-button.component';
-import { FrameViewComponent } from './frame-view/frame-view.component';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
@@ -29,13 +28,11 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     CloudViewComponent,
     ImageViewComponent,
     FaceButtonComponent,
-    FrameViewComponent,
     DateSelectorComponent
   ],
   exports: [
     CloudViewComponent,
     ImageViewComponent,
-    FrameViewComponent,
     FaceButtonComponent
   ]
 })

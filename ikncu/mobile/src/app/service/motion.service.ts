@@ -19,6 +19,24 @@ export class MotionService {
         private http: HttpClient ) {
     }
 
+
+    public Get(motionId, callback) {
+        console.log('MotionService.Get');
+        const userId = this.authService.CognitoUser.id;
+
+        this.http.get(environment.apiHost + '/motion?id=' + motionId, this.httpOptions)
+            .subscribe(
+                (result: IMotionResult) => {
+                    if (callback !== undefined) { callback(result); }
+                },
+                (error) => {
+                    console.log('Failed to retrieve motion');
+                    console.log(error);
+                }
+            );
+    }
+
+
     public GetByUser(fromDate, toDate, callback) {
         console.log('MotionService.GetByUser');
         const userId = this.authService.CognitoUser.id;

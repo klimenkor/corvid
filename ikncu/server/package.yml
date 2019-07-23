@@ -131,7 +131,7 @@ Resources:
   IkncuAPIFunction:
     Name: IkncuAPILambda
     Properties:
-      CodeUri: s3://ikncu-deploy/1ffa44d7c6a8e91d7c0e22d5badc7c03
+      CodeUri: s3://ikncu-deploy/cf63bdbb4cbf1827ebeaa6fde65b2b53
       Events:
         CameraByUser:
           Properties:
@@ -186,6 +186,13 @@ Resources:
           Properties:
             Method: POST
             Path: /image
+            RestApiId:
+              Ref: IkncuApi
+          Type: Api
+        Motion:
+          Properties:
+            Method: GET
+            Path: /motion
             RestApiId:
               Ref: IkncuApi
           Type: Api
@@ -690,6 +697,68 @@ Resources:
                 type: aws
                 uri:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+          /motion:
+            get:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              security:
+              - sigv4: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                httpMethod: POST
+                passthroughBehavior: when_no_templates
+                requestTemplates:
+                  application/json: "#set($inputRoot = $input.path('$'))\r\n{ \r\n\
+                    \ \"table\": \"MotionDynamoDbARN\",\r\n \"operation\": \"read\"\
+                    ,\r\n \"payload\":{    \r\n    \"Key\": {\r\n            \"Id\"\
+                    : \"$input.params('id')\"\r\n        }\r\n    }\r\n}"
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IkncuAPIFunction.Arn}/invocations
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST,GET,OPTIONS'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
           /motion/bycamera:
             get:
               consumes:
@@ -1132,7 +1201,7 @@ Resources:
     FunctionName: ikncu-IkncuDispatcher-Function
     Name: IkncuDispatcherLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/1ffa44d7c6a8e91d7c0e22d5badc7c03
+      CodeUri: s3://ikncu-deploy/cf63bdbb4cbf1827ebeaa6fde65b2b53
       Handler: dispatcher.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
@@ -1147,7 +1216,7 @@ Resources:
     FunctionName: ikncu-IkncuFace-Function
     Name: IkncuFaceLambda
     Properties:
-      CodeUri: s3://ikncu-deploy/1ffa44d7c6a8e91d7c0e22d5badc7c03
+      CodeUri: s3://ikncu-deploy/cf63bdbb4cbf1827ebeaa6fde65b2b53
       Handler: face.handler
       MemorySize: 512
       Policies: AmazonDynamoDBFullAccess
