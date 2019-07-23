@@ -14,11 +14,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  templateUrl: './dashboard.page.html',
+  styleUrls: ['./dashboard.page.scss'],
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardPage implements OnInit {
 
   motions: Array<IMotionView> = new Array<IMotionView>();
   currentMotion: string;
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
 
   onFaceClick(motion: IMotionView) {
     console.log('onFaceClick' + motion);
-    this.router.navigate(['/', 'dashboard', 'face', motion.Id]);
+    this.router.navigate(['/', 'dashboard', 'motion', motion.Id]);
   }
 
   onClose(event) {
@@ -161,7 +161,7 @@ export class DashboardComponent implements OnInit {
               Frame: item.Frame,
               Labels: labels,
               Faces: item.Faces,
-              ShowTagCloud: false
+              ShowTagCloud: true //  <---------- change to default
             });
           });
 

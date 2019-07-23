@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IonRange } from '@ionic/angular';
-import { DashboardComponent } from '../dashboard.component';
+import { DashboardPage } from '../dashboard.page';
 
 @Component({
   selector: 'app-date-selector',
@@ -15,7 +15,7 @@ export class DateSelectorComponent implements OnInit {
 
   constructor() { }
 
-  @Input() dashboard: DashboardComponent;
+  @Input() dashboard: DashboardPage;
 
   ngOnInit() {
     console.log('DateSelectorComponent.ngOnInit');
