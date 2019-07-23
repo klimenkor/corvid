@@ -7,27 +7,26 @@
   
 <ion-content>
   <ion-card *ngFor="let motion of motions; let i=index"> 
-    <ion-card-header>
-      {{motion.Occurred}} : {{motion.Camera}}
+    <ion-card-header no-padding>
+      <ion-card-subtitle>
+        <ion-list>
+          <ion-item lines="none">
+              {{motion.Occurred}} : {{motion.Camera}}
+            <ion-button slot="end" *ngIf="motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
+              <ion-icon name="image"></ion-icon>
+            </ion-button>
+            <ion-button slot="end" *ngIf="!motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
+              <ion-icon name="list"></ion-icon>
+            </ion-button>
+            <app-face-button slot="end" [faces] = "motion.Faces" (click)="onFaceClick(motion)">
+              
+            </app-face-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content>
-      <ion-grid>
-        <ion-row>
-          <ion-col size="1" size-sm="1">
-            <ion-button *ngIf="motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
-                <ion-icon name="image"></ion-icon>
-              </ion-button>
-              <ion-button *ngIf="!motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
-                <ion-icon name="list"></ion-icon>
-              </ion-button>
-          </ion-col>
-          <ion-col size="11" size-sm="7">
-            <app-cloud-view *ngIf="motion.ShowTagCloud" [data]="motion.Labels"></app-cloud-view>
-            <app-image-view *ngIf="!motion.ShowTagCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
+    <app-cloud-view *ngIf="motion.ShowTagCloud" [data]="motion.Labels"></app-cloud-view>
+    <app-image-view *ngIf="!motion.ShowTagCloud" [frame] = "motion.Frame" [faces] = "motion.Faces" (click)="onClick(motion)"></app-image-view>
   </ion-card>
 </ion-content>
 

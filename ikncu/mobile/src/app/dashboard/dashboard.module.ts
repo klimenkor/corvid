@@ -9,6 +9,8 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
 import { DashboardComponent } from './dashboard.component';
 import { ImageViewComponent } from './image-view/image-view.component';
 import { DateSelectorComponent } from './date-selector/date-selector.component';
+import { FaceButtonComponent } from './face-button/face-button.component';
+import { FrameViewComponent } from './frame-view/frame-view.component';
 
 @NgModule({
   schemas: [
@@ -30,11 +32,15 @@ import { DateSelectorComponent } from './date-selector/date-selector.component';
     DashboardComponent,
     CloudViewComponent,
     ImageViewComponent,
+    FaceButtonComponent,
+    FrameViewComponent,
     DateSelectorComponent
   ],
   exports: [
     CloudViewComponent,
-    ImageViewComponent
+    ImageViewComponent,
+    FrameViewComponent,
+    FaceButtonComponent
   ]
 })
 export class DashboardModule {}

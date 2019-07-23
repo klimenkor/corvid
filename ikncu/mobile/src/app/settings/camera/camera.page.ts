@@ -40,7 +40,7 @@ export class CameraPage implements OnInit {
 
   onEdit(cameraId: string) {
     console.log('CamerasComponent.onEdit');
-    this.router.navigateByUrl('/settings/camera/edit');
+    // this.router.navigateByUrl('/settings/camera/edit');
     this.router.navigate(['/', 'settings', 'camera', 'edit', cameraId]);
   }
 

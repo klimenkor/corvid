@@ -3,13 +3,14 @@ import { AuthService } from '../auth/service/auth.service';
 import { MotionService } from '../service/motion.service';
 import { CameraService } from '../service/camera.service';
 import { FaceService } from '../service/face.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController, AlertController } from '@ionic/angular';
 import { ICamera, ICamerasResult } from '../model/camera';
 import { IFace, IFacesResult } from '../model/face';
 import { integer } from 'aws-sdk/clients/storagegateway';
 import { IMotionView, IDetectedFace, IMotionsResult } from '../model/motion';
 import { environment } from 'src/environments/environment';
 import { CloudData } from 'angular-tag-cloud-module';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,7 +45,14 @@ export class DashboardComponent implements OnInit {
     private motionService: MotionService,
     private cameraService: CameraService,
     private faceService: FaceService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+
+    private route: ActivatedRoute,
+    private navCtrl: NavController,
+    private router: Router,
+    private alertCtrl: AlertController
+
+
   ) { }
 
   onLogout() {
@@ -56,7 +64,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadDictionaries(callback) {
-    console.log(this.cameras)
+    console.log(this.cameras);
     if(this.cameras === undefined) {
       this.cameraService.GetByUser().subscribe((cameras: ICamerasResult) => {
         this.cameras = cameras.Items;
@@ -72,13 +80,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onClick(motion: IMotionView){
+  onClick(motion: IMotionView) {
+    console.log('onClick');
     this.showFrame = true;
     this.currentMotion = motion.Id;
     this.currentFrame = motion.Frame;
     this.currentFaces = motion.Faces;
 
     console.log(motion);
+  }
+
+  onFaceClick(motion: IMotionView) {
+    console.log('onFaceClick' + motion);
+    this.router.navigate(['/', 'dashboard', 'face', motion.Id]);
   }
 
   onClose(event) {

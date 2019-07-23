@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-image-view',
   template: `
-  <ion-img [src] = "frameUrl" style="width:100%;height:100%"></ion-img>
+  <ion-img [src] = "frameUrl"></ion-img>
   `,
 })
 export class ImageViewComponent implements OnInit {
