@@ -11,7 +11,7 @@
       <ion-card-subtitle>
         <ion-list>
           <ion-item lines="none">
-              {{motion.Occurred}} : {{motion.Camera}}
+              {{motion.OccurredFormatted}} : {{motion.Camera}}
             <ion-button slot="end" *ngIf="motion.ShowTagCloud" (click)="onSwitchTagCloud(i)">
               <ion-icon name="image"></ion-icon>
             </ion-button>

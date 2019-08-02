@@ -1,12 +1,12 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit } from '@angular/core';
-import { IDetectedFace } from 'src/app/model/motion';
+import { IDetectedFace, IMotion } from 'src/app/model/motion';
 import { Float } from 'aws-sdk/clients/comprehendmedical';
 import { environment } from 'src/environments/environment';
 import { IFace } from 'src/app/model/face';
 import { FaceService } from 'src/app/service/face.service';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { IFaceCategorized, CategoryList } from 'src/app/model/category';
-
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Platform } from '@ionic/angular';
 
 export interface DialogData {
@@ -24,12 +24,13 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   constructor(
     private faceService: FaceService,
     private authService: AuthService,
-    private platform: Platform
+    private platform: Platform,
+    private screenOrientation: ScreenOrientation
   ) { }
 
+  @Input() motion: IMotion;
   @Input() frame: string;
-  @Input() motion: string;
-  @Input() faces: IDetectedFace[];
+
   @Output() close = new EventEmitter<boolean>();
   @ViewChild('canvas') public canvas: ElementRef;
 
@@ -47,15 +48,19 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
   motionId = '';
 
   ngOnInit(): void {
-    this.width = this.platform.width();
-    this.height = this.width * 0.6;
+
+    console.log('FrameView.ngOnInit:');
+    console.log(this.motion);
+    // this.screenOrientation.onChange().subscribe(
+    //   () => {
+    //       console.log("Orientation Changed");
+    //   }
+    // );
 
     this.userId = this.authService.CognitoUser.id;
-    this.motionId = this.motion;
-    console.log(this.motionId);
     let i = 0;
     this.facesCategorized = [];
-    this.faces.forEach(face => {
+    this.motion.Faces.forEach(face => {
       this.facesCategorized.push({ Id: (i + 1).toString(), CategoryId: '0', Name: '' } as IFaceCategorized);
       i++;
     });
@@ -73,7 +78,6 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
 
   onFaceCategoryChange(index) {
     console.log('frameViewComponent.onFaceCategoryChange: adding face...');
-    // console.log(this.frame, index, this.facesCategorized[index]);
     const response = this.faceService.Add({
       Id: '',
       UserId: '',
@@ -86,9 +90,28 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onClickBack() {
+
+  getFaceByCoordinates(x,y) {
+    let i = 0;
+    let found = null;
+    this.motion.Faces.forEach((face) => {
+      const box = face.Box;
+      if ( x > box.Left && x < box.Left + box.Width && y > box.Top && y < box.Top + box.Height) {
+        found = i;
+      }
+      i++;
+    });
+    return found;
+  }
+
+  onClick(event: MouseEvent) {
     console.log('clicked back');
+    console.log(event.clientX, event.clientY);
+    console.log(this.getFaceByCoordinates(event.clientX, event.clientY));
     this.close.emit(true);
+
+    // this.motion.People.
+
   }
 
   getGender(face: IDetectedFace) {
@@ -129,12 +152,24 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
     this.cx.fillText(this.getSmile(face), labelLeft, labelTop + 45);
     this.cx.fillText(this.getEyeglasses(face), labelLeft, labelTop + 60);
     this.cx.fillText(this.getSunglasses(face), labelLeft, labelTop + 75);
+    this.cx.fillText(this.getSunglasses(face), labelLeft, labelTop + 75);
+    // this.cx.fillText(labelLeft.toString(), labelLeft, labelTop + 100);
+    // this.cx.fillText(labelTop.toString(), labelLeft, labelTop + 115);
 
   }
 
   public ngAfterViewInit() {
 
     console.log('FrameViewComponent.ngAfterViewInit');
+
+    console.log(this.motion);
+    console.log(this.frame);
+
+    this.motionId = this.motion.Id;
+    this.width = this.platform.width();
+    this.height = this.width * 0.6;
+
+    console.log(this.width, this.height);
 
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -160,7 +195,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
       (this.canvas.nativeElement as HTMLCanvasElement).width = w;
       (this.canvas.nativeElement as HTMLCanvasElement).height = h;
       this.cx.drawImage(img, 0, 0, w, h);
-      this.faces.forEach(face => {
+      this.motion.Faces.forEach(face => {
         const box = face.Box;
 
         this.printDetails(this.cx, w as Float, h as Float, face);
@@ -170,7 +205,7 @@ export class FrameViewComponent implements OnInit, AfterViewInit {
         this.cx.stroke();
       });
     };
-    img.src = this.frameBucketPath + this.frame;
+    img.src = this.frameBucketPath + this.motion.Frame;
 
   }
 }

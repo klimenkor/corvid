@@ -18,3 +18,10 @@ export interface IFaceDelete {
   UserId: string;
   FaceId: string;
 }
+
+export interface IBox {
+  Left: number;
+  Right: number;
+  Top: number;
+  Bottom: number;
+}

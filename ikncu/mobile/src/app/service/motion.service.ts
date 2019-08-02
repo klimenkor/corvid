@@ -9,6 +9,8 @@ import { AuthService } from '../auth/service/auth.service';
   })
 export class MotionService {
 
+    private data: IMotion[];
+
     private httpOptions = {
         headers: new HttpHeaders({
         Authorization: this.authService.CognitoUser.jwtToken
@@ -27,6 +29,7 @@ export class MotionService {
         this.http.get(environment.apiHost + '/motion?id=' + motionId, this.httpOptions)
             .subscribe(
                 (result: IMotionResult) => {
+                    console.log(result)
                     if (callback !== undefined) { callback(result); }
                 },
                 (error) => {
@@ -36,6 +39,10 @@ export class MotionService {
             );
     }
 
+    public GetFromCache(motionId) {
+        console.log('MotionService.GetFromCache');
+        return this.data.find( x  => x.Id === motionId);
+    }
 
     public GetByUser(fromDate, toDate, callback) {
         console.log('MotionService.GetByUser');
@@ -49,6 +56,7 @@ export class MotionService {
         this.http.get(environment.apiHost + '/motion/byuser?hkey=' + userId + rkey, this.httpOptions)
             .subscribe(
                 (result: IMotionsResult) => {
+                    this.data = result.Items;
                     if (callback !== undefined) { callback(result); }
                 },
                 (error) => {
@@ -70,7 +78,6 @@ export class MotionService {
         this.http.get(environment.apiHost + '/motion/bycamera?hkey=' + cameraId + rkey, this.httpOptions)
             .subscribe(
                 (result: IMotionResult) => {
-                    console.log(result);
                     if (callback !== undefined) { callback(result); }
                 },
                 (error) => {

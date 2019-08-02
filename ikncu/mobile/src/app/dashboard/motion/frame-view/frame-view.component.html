@@ -1,5 +1,35 @@
+<canvas #canvas (click) = "onClick($event)" width="width" height="height"></canvas>
+
+<!-- <ion-list lines="none">
+  <ion-item *ngFor="let face of faces; let i = index" >
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="3" size-sm="3">
+          <ion-avatar>
+              <ion-img src="{{facesBucketPath}}{{userId}}/{{motionId}}/{{i+1}}"></ion-img>
+          </ion-avatar>
+        </ion-col>
+        <ion-col size-md="9" size-sm="9">
+          <ion-list>
+            <ion-item>
+              <ion-label>Name</ion-label>
+              <ion-input [(ngModel)]="facesCategorized[i].Name"></ion-input>
+            </ion-item>          
+            <ion-item>
+              <ion-label>Category</ion-label>
+              <ion-select [(ngModel)]="facesCategorized[i].CategoryId" (change)="onFaceCategoryChange(i)" [ngModelOptions]="{standalone: true}" class="form-control">
+                <ion-select-option *ngFor="let category of categories" value={{category.Id}}>{{category.Name}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+</ion-list> -->
+
 <!-- <div class="row">
-  <div class="col-lg-4 col-md-4 col-xs-4" *ngFor="let face of faces; let i = index">
+  <div class="col-lg-4 col-md-4 col-xs-4" >
     <div class="card">
       <div class="card-title">
         <h2>Face {{i+1}}</h2>
@@ -18,10 +48,9 @@
           </fieldset>
         </div>
       </div>
-      <div class="card-img img-fluid">
-        <img class="mx-auto d-block" src="{{facesBucketPath}}{{userId}}/{{motionId}}/{{i+1}}"/>
-      </div>
+      <div class="card-img img-fluid"> -->
+        
+      <!-- </div>
     </div>
   </div>
 </div> -->
-<canvas #canvas (click) = "onClickBack()"></canvas>

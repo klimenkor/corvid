@@ -72,7 +72,8 @@ export interface ILabelCloud {
 export interface IMotionView {
   Id: string;
   Camera: string;
-  Occurred: string;
+  Occurred: number;
+  OccurredFormatted: string;
   Frame: string;
   Labels: CloudData[];
   Faces: IDetectedFace[];

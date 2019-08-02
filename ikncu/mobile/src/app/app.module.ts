@@ -12,6 +12,7 @@ import { AuthService } from './auth/service/auth.service';
 import { CognitoUtil } from './auth/service/cognito.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AwsUtil } from './auth/service/aws.service';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @NgModule({
   schemas: [
@@ -29,6 +30,7 @@ import { AwsUtil } from './auth/service/aws.service';
     AppRoutingModule
   ],
   providers: [
+    ScreenOrientation,
     StatusBar,
     SplashScreen,
     AuthService,

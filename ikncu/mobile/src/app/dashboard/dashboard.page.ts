@@ -11,6 +11,7 @@ import { IMotionView, IDetectedFace, IMotionsResult } from '../model/motion';
 import { environment } from 'src/environments/environment';
 import { CloudData } from 'angular-tag-cloud-module';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,12 +34,20 @@ export class DashboardPage implements OnInit {
   fromHour = 0;
   toHour = 12;
 
+  from: string;
+  to: string;
+
+  autoRefresh: true;
+
   bucketPath = 'https://s3.amazonaws.com/' + environment.framesBucket + '/';
 
   cameras: [ICamera];
   faces: [IFace];
 
   isLoading: boolean;
+  lastPushedTimeStamp: integer = 0;
+
+  private updateSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -52,7 +61,6 @@ export class DashboardPage implements OnInit {
     private router: Router,
     private alertCtrl: AlertController
 
-
   ) { }
 
   onLogout() {
@@ -61,6 +69,27 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() {
     console.log('MotionComponent.ngOnInit');
+
+    this.updateSubscription = interval(10000).subscribe(
+      (val) => {
+        // if(this.autoRefresh) {
+          this.refreshData('', '');
+        // }
+      });
+  }
+
+  pushNotification() {
+    if (this.lastPushedTimeStamp === 0) 
+    {
+      console.log(this.motions[0].Occurred)
+      this.lastPushedTimeStamp = Number(this.motions[0].Occurred);
+    }
+ 
+    if (Number(this.motions[0].Occurred) > this.lastPushedTimeStamp)
+    {
+      console.log('Alert!');
+    }
+    console.log('this.lastPushedTimeStamp = ' + this.lastPushedTimeStamp.toString());
   }
 
   loadDictionaries(callback) {
@@ -119,18 +148,23 @@ export class DashboardPage implements OnInit {
   refreshData(fromDate: string, toDate: string) {
     console.log('MotionComponent.refreshData: ' + fromDate +  '-' + toDate);
 
+    if (fromDate !== '' && toDate !== '') {
+      this.from = fromDate;
+      this.to = toDate;
+    }
+
     this.isLoading = true;
     this.loadingCtrl
-      .create({ keyboardClose: true, message: 'Logging in...' })
+      .create({ keyboardClose: true, message: 'Refreshing...' })
       .then(loadingEl => {
         loadingEl.present();
       });
 
     this.loadDictionaries(() => {
-      this.motionService.GetByUser(fromDate, toDate,
+      this.motionService.GetByUser(this.from, this.to,
         (response: IMotionsResult) => {
-          if(response.Items === null) {
-            return; 
+          if (response.Items === null) {
+            return;
           }
           console.log('...motions loaded');
           this.motions = [];
@@ -157,13 +191,16 @@ export class DashboardPage implements OnInit {
             this.motions.push({
               Id: item.Id,
               Camera: this.cameraName(item.CameraId),
-              Occurred: this.timeOfTheDay(item.Occurred),
+              Occurred: item.Occurred,
+              OccurredFormatted: this.timeOfTheDay(item.Occurred),
               Frame: item.Frame,
               Labels: labels,
               Faces: item.Faces,
               ShowTagCloud: true //  <---------- change to default
             });
           });
+
+          this.pushNotification();
 
           this.loadingCtrl.dismiss();
           this.isLoading = false;

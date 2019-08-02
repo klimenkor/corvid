@@ -1,3 +1,5 @@
+import { IBox } from './face';
+
 export interface ICategory {
   Id: string;
   Name: string;
@@ -7,6 +9,7 @@ export interface IFaceCategorized {
   Id: string;
   CategoryId: string;
   Name: string;
+  Box: IBox;
 }
 
 export const CategoryList = [
