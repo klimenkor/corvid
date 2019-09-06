@@ -8,11 +8,15 @@
 /bazel-out
 
 # dependencies
-node_modules/*
-**/node_modules/*
-**/dist/*
-**/.serverless/*
-**/.aws-sam/*
+node_modules/
+**/android/
+**/node_modules/
+**/dist/
+**/.serverless/
+**/.aws-sam/
+**/venv/
+**/media/
+**/www/
 bridge/venv/*
 # profiling files
 chrome-profiler-events.json
