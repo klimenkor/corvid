@@ -9,7 +9,7 @@
     "@angular/http": "^7.2.15",
     "@angular/material": "^7.3.7",
     "angular-tag-cloud-module": "^3.8.1",
-    "aws-sdk": "^2.488.0",
+    "aws-sdk": "^2.814.0",
     "copy-dynamodb-table": "^2.0.17",
     "jimp": "^0.6.4",
     "lodash": "^4.17.14",
